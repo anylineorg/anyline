@@ -1058,7 +1058,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+	public <T extends Table<T>> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1066,7 +1066,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
+	public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1092,7 +1092,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+	public <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1100,7 +1100,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable quer, int types, int struct, ConfigStore configs) {
+	public <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable<T> quer, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1125,7 +1125,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs) {
+	public <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1133,7 +1133,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs) {
+	public <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1239,7 +1239,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+	public <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1247,7 +1247,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
+	public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable<T> query, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -1276,7 +1276,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().partition(runtime, random, table);
 	}
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
+	public <T extends PartitionTable<T>> LinkedHashMap<String, T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable<T> query) {
 		if(null == runtime) {
 			runtime = runtime();
 		}

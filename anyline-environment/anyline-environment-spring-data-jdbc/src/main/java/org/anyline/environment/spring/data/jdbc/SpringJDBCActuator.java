@@ -970,7 +970,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create,  LinkedHashMap<String, T> previous, Table<T> query, int types) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();
@@ -1014,7 +1014,7 @@ public class SpringJDBCActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous,  Table query, int types) throws Exception {
+    public <T extends Table<T>> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous,  Table<T> query, int types) throws Exception {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();

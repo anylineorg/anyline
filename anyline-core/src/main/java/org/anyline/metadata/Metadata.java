@@ -27,7 +27,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 import java.util.*;
 
-public class Metadata<T extends Metadata> implements Serializable {
+public class Metadata<T extends Metadata<T>> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public enum TYPE implements Type{
@@ -721,7 +721,7 @@ public class Metadata<T extends Metadata> implements Serializable {
         this.getmap = getmap;
         if(null != update) {
             update.update = null;
-            update.origin = this;
+            update.origin = (T) this;
         }
         return (T)this;
     }
@@ -733,7 +733,7 @@ public class Metadata<T extends Metadata> implements Serializable {
         this.getmap = getmap;
         update = clone();
         update.update = null;
-        update.origin = this;
+        update.origin = (T) this;
         return update;
     }
 

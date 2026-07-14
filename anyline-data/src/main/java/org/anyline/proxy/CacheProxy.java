@@ -136,32 +136,32 @@ public class CacheProxy {
     public static void name(String key, String origin) {
         names().put(key.toUpperCase(), origin);
     }
-    public static  <T extends Table> List<T> tables(String cache) {
+    public static  <T extends Table<T>> List<T> tables(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends MasterTable> List<T> masters(String cache) {
+    public static  <T extends MasterTable<T>> List<T> masters(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends EdgeTable> List<T> edges(String cache) {
+    public static  <T extends EdgeTable<T>> List<T> edges(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends VertexTable> List<T> vertexes(String cache) {
+    public static  <T extends VertexTable<T>> List<T> vertexes(String cache) {
         List<T> tables = (List<T>)caches().get(cache);
         return tables;
     }
-    public static  <T extends Table> void tables(String cache, List<T> tables) {
+    public static  <T extends Table<T>> void tables(String cache, List<T> tables) {
         caches().put(cache, tables);
     }
-    public static  <T extends MasterTable> void masters(String cache, List<T> masters) {
+    public static  <T extends MasterTable<T>> void masters(String cache, List<T> masters) {
         caches().put(cache, masters);
     }
-    public static  <T extends VertexTable> void vertexes(String cache, List<T> vertexes) {
+    public static  <T extends VertexTable<T>> void vertexes(String cache, List<T> vertexes) {
         caches().put(cache, vertexes);
     }
-    public static  <T extends EdgeTable> void edges(String cache, List<T> edges) {
+    public static  <T extends EdgeTable<T>> void edges(String cache, List<T> edges) {
         caches().put(cache, edges);
     }
 
@@ -178,7 +178,7 @@ public class CacheProxy {
     }
 
 /*
-    public static <T extends Table> void name(DriverAdapter adapter, List<T> tables) {
+    public static <T extends Table<T>> void name(DriverAdapter adapter, List<T> tables) {
         if(null != tables) {
             for (Table table : tables) {
                 name(adapter, table.getCatalog(), table.getSchema(), table.getName(), table.getName());

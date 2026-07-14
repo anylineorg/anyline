@@ -21,7 +21,7 @@ import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 
-public class InfluxTable extends Table {
+public class InfluxTable extends Table<InfluxTable> {
     protected String keyword = "measurement"            ;
     public InfluxTable() {
     }

@@ -23,7 +23,7 @@ import org.anyline.util.BasicUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TableAffiliation<E extends TableAffiliation> extends Metadata<E> implements Serializable {
+public class TableAffiliation<E extends TableAffiliation<E>> extends Metadata<E> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected transient Table<?> table;

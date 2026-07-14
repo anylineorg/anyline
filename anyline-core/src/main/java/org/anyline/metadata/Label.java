@@ -19,7 +19,7 @@ package org.anyline.metadata;
 
 import java.io.Serializable;
 
-public class Label extends Table<Label> implements Serializable {
+public class Label<E extends Label<E>> extends Table<E> implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String keyword = "LABEL"            ;
     protected Label update;
@@ -39,7 +39,7 @@ public class Label extends Table<Label> implements Serializable {
         this.name = name;
     }
 
-    public Label drop() {
+    public E drop() {
         this.action = ACTION.DDL.COLUMN_DROP;
         return super.drop();
     }

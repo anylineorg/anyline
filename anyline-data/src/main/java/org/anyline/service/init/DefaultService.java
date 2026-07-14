@@ -2206,7 +2206,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Table> List<T> tables(boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+        public <T extends Table<T>> List<T> tables(boolean greedy, Table<T> query, int types, int struct, ConfigStore configs) {
             String name = query.getName();
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
@@ -2217,7 +2217,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Table>  LinkedHashMap<String, T> tables(Table query, int types, int struct, ConfigStore configs) {
+        public <T extends Table<T>>  LinkedHashMap<String, T> tables(Table<T> query, int types, int struct, ConfigStore configs) {
             String name = query.getName();
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
@@ -2293,9 +2293,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
         }
         @Override
-        public Table table(boolean greedy, Table query, int struct) {
+        public <T extends Table<T>> Table table(boolean greedy, Table<T> query, int struct) {
             Table table = null;
-            List<Table> tables = tables(greedy, query, Table.TYPE.NORMAL.value, 0, null);
+            List<T> tables = tables(greedy, query, Table.TYPE.NORMAL.value, 0, null);
             if (!tables.isEmpty()) {
                 table = tables.get(0);
                 if(null != table && struct>0) {
@@ -2305,9 +2305,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return table;
         }
         @Override
-        public Table table(Table query, int struct) {
+        public <T extends Table<T>> Table table(Table<T> query, int struct) {
             Table table = null;
-            LinkedHashMap<String, Table> tables = tables(query, Table.TYPE.NORMAL.value, 0, null);
+            LinkedHashMap<String, T> tables = tables(query, Table.TYPE.NORMAL.value, 0, null);
             if (!tables.isEmpty()) {
                 table = tables.values().iterator().next();
                 if(null != table && struct > 0) {
@@ -2350,7 +2350,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends VertexTable> List<T> vertexes(boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+        public <T extends VertexTable<T>> List<T> vertexes(boolean greedy, VertexTable<T> query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 query.setName(ps[1]);
@@ -2360,7 +2360,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends VertexTable> LinkedHashMap<String, T> vertexes(VertexTable query, int types, int struct, ConfigStore configs) {
+        public <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(VertexTable<T> query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 query.setName(ps[1]);
@@ -2416,9 +2416,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
         }
         @Override
-        public VertexTable vertex(boolean greedy, VertexTable query, int struct) {
+        public <T extends VertexTable<T>> VertexTable vertex(boolean greedy, VertexTable<T> query, int struct) {
             VertexTable vertex = null;
-            List<VertexTable> vertexes = vertexes(greedy, query, VertexTable.TYPE.NORMAL.value, 0, null);
+            List<T> vertexes = vertexes(greedy, query, VertexTable.TYPE.NORMAL.value, 0, null);
             if (!vertexes.isEmpty()) {
                 vertex = vertexes.get(0);
                 if(null != vertex && struct>0) {
@@ -2428,9 +2428,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return vertex;
         }
         @Override
-        public VertexTable vertex(VertexTable query, int struct) {
+        public <T extends VertexTable<T>> VertexTable vertex(VertexTable<T> query, int struct) {
             VertexTable vertex = null;
-            LinkedHashMap<String, VertexTable> vertexes = vertexes(query, VertexTable.TYPE.NORMAL.value, 0, null);
+            LinkedHashMap<String, T> vertexes = vertexes(query, VertexTable.TYPE.NORMAL.value, 0, null);
             if (!vertexes.isEmpty()) {
                 vertex = vertexes.values().iterator().next();
                 if(null != vertex && struct > 0) {
@@ -2459,9 +2459,9 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String, EdgeTable> edges(String name, int types)
          * LinkedHashMap<String, EdgeTable> edges(int types)
          * LinkedHashMap<String, EdgeTable> edges()
-         * EdgeTable edge(Catalog catalog, Schema schema, String name)
-         * EdgeTable edge(Schema schema, String name)
-         * EdgeTable edge(String name)
+         * <T extends EdgeTable<T>> EdgeTable edge(Catalog catalog, Schema schema, String name)
+         * <T extends EdgeTable<T>> EdgeTable edge(Schema schema, String name)
+         * <T extends EdgeTable<T>> EdgeTable edge(String name)
          ******************************************************************************************************************/
 
         @Override
@@ -2473,7 +2473,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends EdgeTable> List<T> edges(boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs) {
+        public <T extends EdgeTable<T>> List<T> edges(boolean greedy, EdgeTable<T> query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 query.setName(ps[1]);
@@ -2483,7 +2483,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends EdgeTable>  LinkedHashMap<String, T> edges(EdgeTable query, int types, int struct, ConfigStore configs) {
+        public <T extends EdgeTable<T>>  LinkedHashMap<String, T> edges(EdgeTable<T> query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 query.setName(ps[1]);
@@ -2539,9 +2539,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
         }
         @Override
-        public EdgeTable edge(boolean greedy, EdgeTable query, int struct) {
+        public <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, EdgeTable<T> query, int struct) {
             EdgeTable edge = null;
-            List<EdgeTable> edges = edges(greedy, query, EdgeTable.TYPE.NORMAL.value, 0, null);
+            List<T> edges = edges(greedy, query, EdgeTable.TYPE.NORMAL.value, 0, null);
             if (!edges.isEmpty()) {
                 edge = edges.get(0);
                 if(null != edge && struct>0) {
@@ -2551,9 +2551,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return edge;
         }
         @Override
-        public EdgeTable edge(EdgeTable query, int struct) {
+        public <T extends EdgeTable<T>> EdgeTable edge(EdgeTable<T> query, int struct) {
             EdgeTable edge = null;
-            LinkedHashMap<String, EdgeTable> edges = edges(query, EdgeTable.TYPE.NORMAL.value, 0, null);
+            LinkedHashMap<String, T> edges = edges(query, EdgeTable.TYPE.NORMAL.value, 0, null);
             if (!edges.isEmpty()) {
                 edge = edges.values().iterator().next();
                 if(null != edge && struct > 0) {
@@ -2719,7 +2719,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends MasterTable> List<T> masters(boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+        public <T extends MasterTable<T>> List<T> masters(boolean greedy, MasterTable<T> query, int types, int struct, ConfigStore configs) {
             String name = query.getName();
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
@@ -2729,7 +2729,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.masters(greedy, query, types, struct, configs);
         }
         @Override
-        public <T extends MasterTable>  LinkedHashMap<String, T> masters(MasterTable query, int types, int struct, ConfigStore configs) {
+        public <T extends MasterTable<T>>  LinkedHashMap<String, T> masters(MasterTable<T> query, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(query);
             if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().masters(query, types, struct, configs);
@@ -2784,9 +2784,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
         }
         @Override
-        public MasterTable master(boolean greedy, MasterTable query, int struct) {
+        public <T extends MasterTable<T>> MasterTable master(boolean greedy, MasterTable<T> query, int struct) {
             MasterTable master = null;
-            List<MasterTable> masters = masters(greedy, query, MasterTable.TYPE.NORMAL.value, 0, null);
+            List<T> masters = masters(greedy, query, MasterTable.TYPE.NORMAL.value, 0, null);
             if (!masters.isEmpty()) {
                 master = masters.get(0);
                 if(null != master && struct>0) {
@@ -2796,9 +2796,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return master;
         }
         @Override
-        public MasterTable master(MasterTable query, int struct) {
+        public <T extends MasterTable<T>> MasterTable master(MasterTable<T> query, int struct) {
             MasterTable master = null;
-            LinkedHashMap<String, MasterTable> masters = masters(query, MasterTable.TYPE.NORMAL.value, 0, null);
+            LinkedHashMap<String, T> masters = masters(query, MasterTable.TYPE.NORMAL.value, 0, null);
             if (!masters.isEmpty()) {
                 master = masters.values().iterator().next();
                 if(null != master && struct > 0) {
@@ -2828,9 +2828,9 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String, PartitionTable> partitions(int types)
          * LinkedHashMap<String, PartitionTable> partitions()
          * LinkedHashMap<String, PartitionTable> partitions(MasterTable master)
-         * PartitionTable partition(Catalog catalog, Schema schema, String name)
-         * PartitionTable partition(Schema schema, String name)
-         * PartitionTable partition(String name)
+         * <T extends PartitionTable<T>> PartitionTable partition(Catalog catalog, Schema schema, String name)
+         * <T extends PartitionTable<T>> PartitionTable partition(Schema schema, String name)
+         * <T extends PartitionTable<T>> PartitionTable partition(String name)
          ******************************************************************************************************************/
 
         /**
@@ -2854,7 +2854,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends PartitionTable> LinkedHashMap<String, T> partitions(boolean greedy, PartitionTable query) {
+        public <T extends PartitionTable<T>> LinkedHashMap<String, T> partitions(boolean greedy, PartitionTable<T> query) {
             String[] ps = DataSourceUtil.parseRuntime(query.getMaster());
             if(null != ps[0]) {
                 query.getMaster().setName(ps[1]);
@@ -2864,8 +2864,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public PartitionTable partition(boolean greedy, PartitionTable query) {
-            LinkedHashMap<String, PartitionTable> tables = partitions(greedy, query);
+        public <T extends PartitionTable<T>> PartitionTable partition(boolean greedy, PartitionTable<T> query) {
+            LinkedHashMap<String, T> tables = partitions(greedy, query);
             if (tables.isEmpty()) {
                 return null;
             }

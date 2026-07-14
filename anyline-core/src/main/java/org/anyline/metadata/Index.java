@@ -24,7 +24,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class Index<M extends Index> extends TableAffiliation<M> implements Serializable {
+public class Index<M extends Index<M>> extends TableAffiliation<M> implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String keyword = "INDEX"           ;
     protected String type         ; //属性类型,如 btree

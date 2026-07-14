@@ -480,9 +480,9 @@ public class ArangoActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @SuppressWarnings("unchecked")
-    public <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime,
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime,
                                                              boolean create, LinkedHashMap<String, T> previous,
-                                                             Table query, int types) throws Exception {
+                                                             Table<T> query, int types) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -528,9 +528,9 @@ public class ArangoActuator implements DriverActuator {
      * @return 表元数据列表
      * @throws Exception 异常
      */
-    public <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime,
+    public <T extends Table<T>> List<T> tables(DriverAdapter adapter, DataRuntime runtime,
                                             boolean create, List<T> previous,
-                                            Table query, int types) throws Exception {
+                                            Table<T> query, int types) throws Exception {
         LinkedHashMap<String, T> map = new LinkedHashMap<>();
         if(null != previous) {
             for(T t : previous) {

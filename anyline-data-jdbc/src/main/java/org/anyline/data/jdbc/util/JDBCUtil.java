@@ -661,7 +661,7 @@ public class JDBCUtil {
         return value(keys, key, set, null);
     }
 
-    public static <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, ResultSet set) throws Exception {
+    public static <T extends Table<T>> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, ResultSet set) throws Exception {
         if(null == tables) {
             tables = new LinkedHashMap<>();
         }
@@ -694,7 +694,7 @@ public class JDBCUtil {
         return tables;
     }
 
-    public static <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables, ResultSet set) throws Exception {
+    public static <T extends Table<T>> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables, ResultSet set) throws Exception {
         if(null == tables) {
             tables = new ArrayList<>();
         }

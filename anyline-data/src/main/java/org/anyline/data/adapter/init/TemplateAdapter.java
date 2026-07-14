@@ -2209,17 +2209,17 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * 													table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+     * <T extends Table<T>> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+     * <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
      * List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-     * List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * public <T extends Table<T>> List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends Table<T>> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends Table<T>> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends Table<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
      * [命令合成]
@@ -2240,7 +2240,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+    public <T extends Table<T>> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table<T> query, int types, int struct, ConfigStore configs) {
         return super.tables(runtime, random, greedy, query, types, struct, configs);
     }
 
@@ -2252,7 +2252,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
+    protected <T extends Table<T>> void tableMap(DataRuntime runtime, String random, boolean greedy, Table<T> query, ConfigStore configs) {
         super.tableMap(runtime, random, greedy, query, configs);
     }
 
@@ -2264,7 +2264,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table<T> query, int types, int struct, ConfigStore configs) {
         return super.tables(runtime, random, query, types, struct, configs);
     }
 
@@ -2280,7 +2280,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+    public <T extends Table<T>> List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table<T> query, int types, ConfigStore configs) throws Exception {
         return super.buildSelectTablesRun(runtime, greedy, query, types, configs);
     }
 
@@ -2314,7 +2314,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+    public <T extends Table<T>> List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table<T> query, int types) throws Exception {
         return super.buildSelectTablesCommentRun(runtime, query, types);
     }
 
@@ -2331,7 +2331,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
         return super.tables(runtime, index, create, previous, query, set);
     }
 
@@ -2348,7 +2348,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
+    public <T extends Table<T>> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
         return super.tables(runtime, index, create, previous, query, set);
     }
 
@@ -2364,7 +2364,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table<T> query, int types) throws Exception {
         return super.tables(runtime, create, previous, query, types);
     }
 
@@ -2381,7 +2381,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+    public <T extends Table<T>> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table<T> query, int types) throws Exception {
         return super.tables(runtime, create, previous, query, types);
     }
 
@@ -2396,7 +2396,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> T init(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+    public <T extends Table<T>> T init(DataRuntime runtime, int index, T meta, Table<T> query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
 
@@ -2410,7 +2410,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Table query, DataRow row) {
+    public <T extends Table<T>> T detail(DataRuntime runtime, int index, T meta, Table<T> query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
 
@@ -2427,7 +2427,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
+    public <T extends Table<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
         return super.comments(runtime, index, create, previous, query, set);
     }
 
@@ -2444,7 +2444,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
+    public <T extends Table<T>> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
         return super.comments(runtime, index, create, previous, query, set);
     }
 
@@ -2492,17 +2492,17 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * 													vertex
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+     * <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+     * <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-     * List<Run> buildSelectVertexCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends VertexTable<T>> List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+     * <T extends VertexTable<T>> List<Run> buildSelectVertexCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
-     * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, boolean create, List<T> vertexes, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends VertexTable<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexes, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, VertexTable vertex, boolean init)
      * [命令合成]
@@ -2523,7 +2523,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable query, int types, int struct, ConfigStore configs) {
+    public <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, String random, boolean greedy, VertexTable<T> query, int types, int struct, ConfigStore configs) {
         return super.vertexes(runtime, random, greedy, query, types, struct, configs);
     }
 
@@ -2535,7 +2535,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    protected void vertexMap(DataRuntime runtime, String random, boolean greedy, VertexTable query,  ConfigStore configs) {
+    protected <T extends VertexTable<T>> void vertexMap(DataRuntime runtime, String random, boolean greedy, VertexTable<T> query,  ConfigStore configs) {
         super.vertexMap(runtime, random, greedy, query, configs);
     }
 
@@ -2547,7 +2547,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable query, int types, int struct, ConfigStore configs) {
+    public <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, String random, VertexTable<T> query, int types, int struct, ConfigStore configs) {
         return super.vertexes(runtime, random, query, types, struct, configs);
     }
 
@@ -2562,7 +2562,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, VertexTable query, int types, ConfigStore configs) throws Exception {
+    public <T extends VertexTable<T>> List<Run> buildSelectVertexesRun(DataRuntime runtime, boolean greedy, VertexTable<T> query, int types, ConfigStore configs) throws Exception {
         return super.buildSelectVertexesRun(runtime, greedy, query, types, configs);
     }
 
@@ -2586,7 +2586,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectVertexCommentRun(DataRuntime runtime, VertexTable query, int types) throws Exception {
+    public <T extends VertexTable<T>> List<Run> buildSelectVertexCommentRun(DataRuntime runtime, VertexTable<T> query, int types) throws Exception {
         return super.buildSelectVertexCommentRun(runtime, query, types);
     }
 
@@ -2603,7 +2603,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, VertexTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.vertexes(runtime, index, create, previous, query, set);
     }
 
@@ -2620,7 +2620,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, int index, boolean create, List<T> previous, VertexTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.vertexes(runtime, index, create, previous, query, set);
     }
 
@@ -2636,7 +2636,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends VertexTable> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable query, int types) throws Exception {
+    public <T extends VertexTable<T>> LinkedHashMap<String, T> vertexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, VertexTable<T> query, int types) throws Exception {
         return super.vertexes(runtime, create, previous, query, types);
     }
 
@@ -2653,7 +2653,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> List<T> vertexes(DataRuntime runtime, boolean create, List<T> previous, VertexTable query, int types) throws Exception {
+    public <T extends VertexTable<T>> List<T> vertexes(DataRuntime runtime, boolean create, List<T> previous, VertexTable<T> query, int types) throws Exception {
         return super.vertexes(runtime, create, previous, query, types);
     }
 
@@ -2708,7 +2708,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
+    public <T extends VertexTable<T>> T init(DataRuntime runtime, int index, T meta, VertexTable<T> query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
 
@@ -2722,7 +2722,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> VertexTable
      */
     @Override
-    public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, VertexTable query, DataRow row) {
+    public <T extends VertexTable<T>> T detail(DataRuntime runtime, int index, T meta, VertexTable<T> query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
 
@@ -2730,17 +2730,17 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * 													EdgeTable
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, boolean struct)
-     * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, String types, boolean struct)
+     * <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable<T> query, int types, boolean struct)
+     * <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable<T> query, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs)
-     * List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types)
+     * <T extends EdgeTable<T>> List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable<T> query, int types, ConfigStore configs)
+     * <T extends EdgeTable<T>> List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable<T> query, int types)
      * [结果集封装]<br/>
-     * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, EdgeTable query, int types)
-     * <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, EdgeTable query, int types)
-     * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edges, EdgeTable<T> query, int types)
+     * <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, boolean create, List<T> edges, EdgeTable<T> query, int types)
+     * <T extends EdgeTable<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edges, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
      * [命令合成]
@@ -2761,7 +2761,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs) {
+    public <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, String random, boolean greedy, EdgeTable<T> query, int types, int struct, ConfigStore configs) {
         return super.edges(runtime, random, greedy, query, types, struct, configs);
     }
 
@@ -2773,7 +2773,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    protected void edgeMap(DataRuntime runtime, String random, boolean greedy, EdgeTable query, ConfigStore configs) {
+    protected <T extends EdgeTable<T>> void edgeMap(DataRuntime runtime, String random, boolean greedy, EdgeTable<T> query, ConfigStore configs) {
         super.edgeMap(runtime, random, greedy, query, configs);
     }
 
@@ -2785,7 +2785,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable query, int types, int struct, ConfigStore configs) {
+    public <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, String random, EdgeTable<T> query, int types, int struct, ConfigStore configs) {
         return super.edges(runtime, random, query, types, struct, configs);
     }
 
@@ -2800,7 +2800,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable query, int types, ConfigStore configs) throws Exception {
+    public <T extends EdgeTable<T>> List<Run> buildSelectEdgesRun(DataRuntime runtime, boolean greedy, EdgeTable<T> query, int types, ConfigStore configs) throws Exception {
         return super.buildSelectEdgesRun(runtime, greedy, query, types, configs);
     }
 
@@ -2824,7 +2824,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable query, int types) throws Exception {
+    public <T extends EdgeTable<T>> List<Run> buildSelectEdgesCommentRun(DataRuntime runtime, EdgeTable<T> query, int types) throws Exception {
         return super.buildSelectEdgesCommentRun(runtime, query, types);
     }
 
@@ -2841,7 +2841,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, EdgeTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.edges(runtime, index, create, previous, query, set);
     }
 
@@ -2858,7 +2858,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, int index, boolean create, List<T> previous, EdgeTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.edges(runtime, index, create, previous, query, set);
     }
 
@@ -2874,7 +2874,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends EdgeTable> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable query, int types) throws Exception {
+    public <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, EdgeTable<T> query, int types) throws Exception {
         return super.edges(runtime, create, previous, query, types);
     }
 
@@ -2891,7 +2891,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable query, int types) throws Exception {
+    public <T extends EdgeTable<T>> List<T> edges(DataRuntime runtime, boolean create, List<T> previous, EdgeTable<T> query, int types) throws Exception {
         return super.edges(runtime, create, previous, query, types);
     }
 
@@ -2906,7 +2906,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
+    public <T extends EdgeTable<T>> T init(DataRuntime runtime, int index, T meta, EdgeTable<T> query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
 
@@ -2920,7 +2920,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, EdgeTable query, DataRow row) {
+    public <T extends EdgeTable<T>> T detail(DataRuntime runtime, int index, T meta, EdgeTable<T> query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
 
@@ -3206,17 +3206,17 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * 													master
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, boolean struct)
-     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, String types, boolean struct)
+     * <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable<T> query, int types, boolean struct)
+     * <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable<T> query, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs)
-     * List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types)
+     * <T extends MasterTable<T>> List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable<T> query, int types, ConfigStore configs)
+     * <T extends MasterTable<T>> List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable<T> query, int types)
      * [结果集封装]<br/>
-     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masters, MasterTable query, int types)
-     * <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> masters, MasterTable query, int types)
-     * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masters, MasterTable<T> query, int types)
+     * <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, boolean create, List<T> masters, MasterTable<T> query, int types)
+     * <T extends MasterTable<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masters, Catalog catalog, Schema schema, DataSet<DataRow> set)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, MasterTable master, boolean init)
      * [命令合成]
@@ -3237,7 +3237,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable query, int types, int struct, ConfigStore configs) {
+    public <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, String random, boolean greedy, MasterTable<T> query, int types, int struct, ConfigStore configs) {
         return super.masters(runtime, random, greedy, query, types, struct, configs);
     }
 
@@ -3249,7 +3249,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    protected void masterMap(DataRuntime runtime, String random, boolean greedy, MasterTable query, ConfigStore configs) {
+    protected <T extends MasterTable<T>> void masterMap(DataRuntime runtime, String random, boolean greedy, MasterTable<T> query, ConfigStore configs) {
         super.masterMap(runtime, random, greedy, query, configs);
     }
 
@@ -3261,7 +3261,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param query 查询条件 根据metadata属性
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
+    public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable<T> query, int types, int struct, ConfigStore configs) {
         return super.masters(runtime, random, query, types, struct, configs);
     }
 
@@ -3276,7 +3276,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+    public <T extends MasterTable<T>> List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable<T> query, int types, ConfigStore configs) throws Exception {
         return super.buildSelectMasterTablesRun(runtime, greedy, query, types, configs);
     }
 
@@ -3300,7 +3300,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable query, int types) throws Exception {
+    public <T extends MasterTable<T>> List<Run> buildSelectMasterTablesCommentRun(DataRuntime runtime, MasterTable<T> query, int types) throws Exception {
         return super.buildSelectMasterTablesCommentRun(runtime, query, types);
     }
 
@@ -3317,7 +3317,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
 
@@ -3334,7 +3334,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, int index, boolean create, List<T> previous, MasterTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.masters(runtime, index, create, previous, query, set);
     }
 
@@ -3350,7 +3350,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception {
+    public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable<T> query, int types) throws Exception {
         return super.masters(runtime, create, previous, query, types);
     }
 
@@ -3367,7 +3367,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> List<T> masters(DataRuntime runtime, boolean create, List<T> previous, MasterTable query, int types) throws Exception {
+    public <T extends MasterTable<T>> List<T> masters(DataRuntime runtime, boolean create, List<T> previous, MasterTable<T> query, int types) throws Exception {
         return super.masters(runtime, create, previous, query, types);
     }
 
@@ -3382,7 +3382,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, MasterTable query, DataRow row) {
+    public <T extends MasterTable<T>> T init(DataRuntime runtime, int index, T meta, MasterTable<T> query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
 
@@ -3396,7 +3396,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta,  MasterTable query, DataRow row) {
+    public <T extends MasterTable<T>> T detail(DataRuntime runtime, int index, T meta,  MasterTable<T> query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
 
@@ -3444,14 +3444,14 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * 													partition table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
+     * <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
      * [命令合成]
-     * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types)
-     * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
-     * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
+     * <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable<T> query, int types)
+     * <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
+     * <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
      * [结果集封装]<br/>
-     * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
-     * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
+     * <T extends PartitionTable<T>> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+     * <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
      * [命令合成]
@@ -3563,7 +3563,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
+    public <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable<T> query) {
         return super.partitions(runtime, random, greedy, query);
     }
 
@@ -3576,7 +3576,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
+    public <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable<T> query, int types) throws Exception {
         return super.buildSelectPartitionTablesRun(runtime, greedy, query, types);
     }
 
@@ -3604,7 +3604,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet<DataRow> set) throws Exception {
+    public <T extends PartitionTable<T>> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable<T> query, DataSet<DataRow> set) throws Exception {
         return super.partitions(runtime, total, index, create, previous, query, set);
     }
 
@@ -3619,7 +3619,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @throws Exception 异常
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
+    public <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable<T> query) throws Exception {
         return super.partitions(runtime, create, previous, query);
     }
 
@@ -3671,7 +3671,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return PartitionTable
      */
     @Override
-    public <T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, PartitionTable query, DataRow row) {
+    public <T extends PartitionTable<T>> T init(DataRuntime runtime, int index, T meta, PartitionTable<T> query, DataRow row) {
         return super.init(runtime, index, meta, query, row);
     }
 
@@ -3684,7 +3684,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
      * @return PartitionTable
      */
     @Override
-    public <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, PartitionTable query, DataRow row) {
+    public <T extends PartitionTable<T>> T detail(DataRuntime runtime, int index, T meta, PartitionTable<T> query, DataRow row) {
         return super.detail(runtime, index, meta, query, row);
     }
 

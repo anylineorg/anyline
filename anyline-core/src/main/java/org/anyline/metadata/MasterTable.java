@@ -23,7 +23,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 import java.util.*;
 
-public class MasterTable extends Table<MasterTable> implements Serializable {
+public class MasterTable<E extends MasterTable<E>> extends Table<E> implements Serializable {
     private static final long serialVersionUID = 1L;
     public enum TYPE implements Type{
         NORMAL(1);

@@ -19,7 +19,7 @@ package org.anyline.metadata;
 
 import java.io.Serializable;
 
-public class PartitionTable extends Table<PartitionTable> implements Serializable {
+public class PartitionTable<E extends PartitionTable<E>> extends Table<E> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public PartitionTable() {

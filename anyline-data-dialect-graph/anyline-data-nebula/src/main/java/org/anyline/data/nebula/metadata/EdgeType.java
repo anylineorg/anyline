@@ -21,7 +21,7 @@ import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.graph.EdgeTable;
 
-public class EdgeType extends EdgeTable {
+public class EdgeType<E extends EdgeTable<E>> extends EdgeTable<E> {
     protected String keyword = "EDGE"            ;
     public EdgeType() {
     }

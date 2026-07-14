@@ -22,7 +22,7 @@ import org.anyline.metadata.Schema;
 
 import java.io.Serializable;
 
-public class EdgeTable extends GraphTable implements Serializable {
+public class EdgeTable<E extends EdgeTable<E>> extends GraphTable<E> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public EdgeTable() {

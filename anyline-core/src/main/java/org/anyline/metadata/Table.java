@@ -32,7 +32,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class Table<E extends Table> extends Metadata<E> implements Serializable {
+public class Table<E extends Table<E>> extends Metadata<E> implements Serializable {
     private static final long serialVersionUID = 1L;
     public enum TYPE implements Type{
         //继承子表、父表、分区表、主表、点类型、边类型

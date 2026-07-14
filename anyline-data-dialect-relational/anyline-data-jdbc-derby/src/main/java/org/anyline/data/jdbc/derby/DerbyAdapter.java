@@ -1590,17 +1590,17 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
-	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * <T extends Table<T>> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
 	 * List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
-	 * List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * public <T extends Table<T>> List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
-	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
-	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends Table<T>> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends Table<T>> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends Table<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
@@ -1622,7 +1622,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+	public <T extends Table<T>> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table<T> query, int types, int struct, ConfigStore configs) {
 		return super.tables(runtime, random, greedy, query, types, struct, configs);
 	}
 
@@ -1634,10 +1634,10 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param query 查询条件 根据metadata属性
 	 */
 	@Override
-	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Table query, ConfigStore configs) {
+	protected <T extends Table<T>> void tableMap(DataRuntime runtime, String random, boolean greedy, Table<T> query, ConfigStore configs) {
 		super.tableMap(runtime, random, greedy, query, configs);
 	}
-public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table query, int types, int struct, ConfigStore configs) {
+public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Table<T> query, int types, int struct, ConfigStore configs) {
 		return super.tables(runtime, random, query, types, struct, configs);
 	}
 
@@ -1652,7 +1652,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+	public <T extends Table<T>> List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table<T> query, int types, ConfigStore configs) throws Exception {
 		return super.buildSelectTablesRun(runtime, greedy, query, types, configs);
 	}
 
@@ -1675,7 +1675,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table query, int types) throws Exception {
+	public <T extends Table<T>> List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table<T> query, int types) throws Exception {
 		return super.buildSelectTablesCommentRun(runtime, query, types);
 	}
 
@@ -1692,7 +1692,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
+	public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
 		return super.tables(runtime, index, create, previous, query, set);
 	}
 
@@ -1709,7 +1709,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
+	public <T extends Table<T>> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
 		return super.tables(runtime, index, create, previous, query, set);
 	}
 
@@ -1725,7 +1725,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table query, int types) throws Exception {
+	public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table<T> query, int types) throws Exception {
 		return super.tables(runtime, create, previous, query, types);
 	}
 
@@ -1741,7 +1741,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table query, int types) throws Exception {
+	public <T extends Table<T>> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table<T> query, int types) throws Exception {
 		return super.tables(runtime, create, previous, query, types);
 	}
 
@@ -1758,7 +1758,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table query, DataSet<DataRow> set) throws Exception {
+	public <T extends Table<T>> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
 		return super.comments(runtime, index, create, previous, query, set);
 	}
 
@@ -1775,7 +1775,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table query, DataSet<DataRow> set) throws Exception {
+	public <T extends Table<T>> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> previous, Table<T> query, DataSet<DataRow> set) throws Exception {
 		return super.comments(runtime, index, create, previous, query, set);
 	}
 
@@ -1949,13 +1949,13 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
+	 * <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
 	 * [命令合成]
-	 * List<Run> buildSelectMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * <T extends MasterTable<T>> List<Run> buildSelectMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
@@ -1975,7 +1975,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable query, int types, int struct, ConfigStore configs) {
+	public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, String random, MasterTable<T> query, int types, int struct, ConfigStore configs) {
 		return super.masters(runtime, random, query, types, struct, configs);
 	}
 
@@ -1988,7 +1988,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable query, int types, ConfigStore configs) throws Exception {
+	public <T extends MasterTable<T>> List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable<T> query, int types, ConfigStore configs) throws Exception {
 		return super.buildSelectMasterTablesRun(runtime, greedy, query, types,  configs);
 	}
 
@@ -2014,7 +2014,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable query, DataSet<DataRow> set) throws Exception {
+	public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, MasterTable<T> query, DataSet<DataRow> set) throws Exception {
 		return super.masters(runtime, index, create, previous, query, set);
 	}
 
@@ -2029,7 +2029,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable query, int types) throws Exception {
+	public <T extends MasterTable<T>> LinkedHashMap<String, T> masters(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, MasterTable<T> query, int types) throws Exception {
 		return super.masters(runtime, create, previous, query, types);
 	}
 
@@ -2074,14 +2074,14 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
+	 * <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
-	 * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Catalog catalog, Schema schema, String pattern, int types)
-	 * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
-	 * List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
+	 * <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags, String pattern)
+	 * <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  Table master, Map<String, Tag> tags)
 	 * [结果集封装]<br/>
-	 * <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
-	 * <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
+	 * <T extends PartitionTable<T>> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet<DataRow> set)
+	 * <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
@@ -2100,7 +2100,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable query) {
+	public <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, String random, boolean greedy, PartitionTable<T> query) {
 		return super.partitions(runtime, random, greedy, query);
 	}
 
@@ -2113,7 +2113,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable query, int types) throws Exception {
+	public <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable<T> query, int types) throws Exception {
 		return super.buildSelectPartitionTablesRun(runtime, greedy, query, types);
 	}
 
@@ -2131,7 +2131,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable query, DataSet<DataRow> set) throws Exception {
+	public <T extends PartitionTable<T>> LinkedHashMap<String, T> partitions(DataRuntime runtime, int total, int index, boolean create, LinkedHashMap<String, T> previous, PartitionTable<T> query, DataSet<DataRow> set) throws Exception {
 		return super.partitions(runtime, total, index, create, previous, query, set);
 	}
 
@@ -2146,7 +2146,7 @@ public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, St
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable query) throws Exception {
+	public <T extends PartitionTable<T>> LinkedHashMap<String,T> partitions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, PartitionTable<T> query) throws Exception {
 		return super.partitions(runtime, create, previous, query);
 	}
 

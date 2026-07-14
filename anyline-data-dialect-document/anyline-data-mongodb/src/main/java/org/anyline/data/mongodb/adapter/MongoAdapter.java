@@ -1106,7 +1106,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table query, int types, ConfigStore configs) throws Exception {
+    public <T extends Table<T>> List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table<T> query, int types, ConfigStore configs) throws Exception {
         return new ArrayList<>();
     }
 
@@ -1131,7 +1131,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return List
      * @param <T> Table
      */
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table query, int types, int struct, ConfigStore configs) {
+    public <T extends Table<T>> List<T> tables(DataRuntime runtime, String random, boolean greedy, Table<T> query, int types, int struct, ConfigStore configs) {
         Catalog catalog = query.getCatalog();
         Schema schema = query.getSchema();
         String pattern = query.getName();
