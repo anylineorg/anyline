@@ -18,7 +18,9 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Index;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
+import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -41,12 +43,17 @@ public class IndexesDiffer extends AbstractDiffer implements Serializable {
         if(null == dests) {
             dests = new LinkedHashMap<>();
         }
+        LinkedHashMap<String, Index> id_map = Metadata.name2id(dests);
         for(String key:origins.keySet()) {
             Index origin = origins.get(key);
             if(origin.isPrimary()) {
                 continue;
             }
             Index dest = dests.get(key);
+            String id = origin.getId();
+            if(null == dest && BasicUtil.isNotEmpty(id)){
+                dest = id_map.get(id);
+            }
             if(null != dest && dest.isPrimary()) {
                 continue;
             }
@@ -61,13 +68,16 @@ public class IndexesDiffer extends AbstractDiffer implements Serializable {
                 }
             }
         }
+        id_map = Metadata.name2id(origins);
         for(String key:dests.keySet()) {
-            if(!origins.containsKey(key)) {
-                Index index = dests.get(key);
-                if(index.isPrimary()) {
-                    continue;
-                }
-                adds.put(key, index);
+            Index dest = dests.get(key);
+            if(dest.isPrimary()) {
+                continue;
+            }
+            String id = dest.getId();
+            boolean exists = origins.containsKey(key) || (null != id && id_map.containsKey(id));
+            if(!exists) {
+                adds.put(key, dest);
             }
         }
         differ.setDirect(direct);

@@ -66,15 +66,12 @@ public class TablesDiffer extends AbstractDiffer implements Serializable {
         if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        LinkedHashMap<String, Table> id_map = null;
+        LinkedHashMap<String, Table> id_map = Metadata.name2id(dests);
         for(String key:origins.keySet()) {
             Table origin = origins.get(key);
             Table dest = dests.get(key);
             String id = origin.getId();
-            if(BasicUtil.isNotEmpty(id)){
-                if(null == id_map){
-                    id_map = Metadata.name2id(dests);
-                }
+            if(null == dest && BasicUtil.isNotEmpty(id)){
                 dest = id_map.get(id);
             }
             if(null == dest) {
@@ -90,11 +87,13 @@ public class TablesDiffer extends AbstractDiffer implements Serializable {
                 }
             }
         }
+        id_map = Metadata.name2id(origins);
         for(String key:dests.keySet()) {
             Table dest = dests.get(key);
             String id = dest.getId();
-            if(!origins.containsKey(key) && (null != id_map && !id_map.containsKey(id))) {
-                adds.put(key, dests.get(key));
+            boolean exists = origins.containsKey(key) || (null != id && id_map.containsKey(id));
+            if(!exists) {
+                adds.put(key, dest);
             }
         }
         differ.setDirect(direct);

@@ -34,7 +34,7 @@ and generates DDL/DML/DQL instructions compatible with each database dialect —
   <tr>
   <td>QQ群86020680</td>
   <td>微信群</td>
-  <td>过期或满员联系管理员</td>
+  <td>商业版联系管理员</td>
   </tr>
 </table>
 

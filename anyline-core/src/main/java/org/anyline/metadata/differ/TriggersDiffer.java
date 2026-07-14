@@ -17,7 +17,9 @@
 
 package org.anyline.metadata.differ;
 
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Trigger;
+import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -46,9 +48,14 @@ public class TriggersDiffer extends AbstractDiffer implements Serializable {
         if(null == dests) {
             dests = new LinkedHashMap<>();
         }
+        LinkedHashMap<String, Trigger> id_map = Metadata.name2id(dests);
         for(String key:origins.keySet()) {
             Trigger origin = origins.get(key);
             Trigger dest = dests.get(key);
+            String id = origin.getId();
+            if(null == dest && BasicUtil.isNotEmpty(id)){
+                dest = id_map.get(id);
+            }
             if(null == dest) {
                 //新表不存在
                 drops.put(key, origins.get(origin));
@@ -59,9 +66,13 @@ public class TriggersDiffer extends AbstractDiffer implements Serializable {
                 }
             }
         }
+        id_map = Metadata.name2id(origins);
         for(String key:dests.keySet()) {
-            if(!origins.containsKey(key)) {
-                adds.put(key, dests.get(key));
+            Trigger dest = dests.get(key);
+            String id = dest.getId();
+            boolean exists = origins.containsKey(key) || (null != id && id_map.containsKey(id));
+            if(!exists) {
+                adds.put(key, dest);
             }
         }
         differ.setAdds(adds);
