@@ -106,7 +106,7 @@ public class ElasticSearchActuator implements DriverActuator {
         return dsl;
     }
     @Override
-    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         DataSet<DataRow> set = new DataSet();
         if(null == columns){
             columns = new LinkedHashMap<>();

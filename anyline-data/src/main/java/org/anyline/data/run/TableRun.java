@@ -48,6 +48,12 @@ public class TableRun extends AbstractRun implements Run {
 		this.runtime = runtime;
 	}
 
+	public TableRun(DataRuntime runtime) {
+		this.builder = new StringBuilder();
+		this.conditionChain = new DefaultAutoConditionChain();
+		this.orders = new DefaultOrderStore();
+		this.runtime = runtime;
+	}
 	private void parseDataSource() {
 		String table = getTableName();
 		if(null != prepare) {

@@ -1189,15 +1189,15 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return selects(runtime, random, pr.getProcedure(), configs.getPageNavi());
         }
-        return query(runtime, random, system, ACTION.DML.SELECT, table, configs, run);
+        return selects(runtime, random, system, ACTION.DML.SELECT, table, configs, run);
     }
 
-    protected DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run) {
+    protected DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run) {
 
         if(null != configs) {
             configs.add(run);
@@ -1220,7 +1220,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
 
         try{
-            set = actuator.query(this, runtime, random, system, action, table, configs, run, null, null, null);
+            set = actuator.selects(this, runtime, random, system, action, table, configs, run, null, null, null);
             long count = set.size();
             long time = System.currentTimeMillis() - fr;
             boolean slow = false;
@@ -4678,10 +4678,10 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             return false;
         }
         boolean result = false;
-        String sql = run.getBuilder().toString();
+        String cmd = run.getBuilder().toString();
         run.metadata(meta);
-        meta.addDdl(sql);
-        if(BasicUtil.isNotEmpty(sql)) {
+        meta.addDdl(cmd);
+        if(BasicUtil.isNotEmpty(cmd)) {
             if(meta.execute()) {
                 try {
                     update(runtime, random, (Table) null, null, null, run);

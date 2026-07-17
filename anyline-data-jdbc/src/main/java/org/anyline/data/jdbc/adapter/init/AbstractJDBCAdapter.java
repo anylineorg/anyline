@@ -1383,7 +1383,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return selects(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -1393,7 +1393,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
             return new DataSet().setTable(table);
         }
         List<Object> values = run.getValues();
-        return query(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
+        return selects(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
     }
 
     /**
@@ -1439,7 +1439,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                 }
                 return new DataRow();
             }
-            DataSet<DataRow> set = query(runtime, random, true, (Table)null, null, run);
+            DataSet<DataRow> set = selects(runtime, random, true, (Table)null, null, run);
             if (!set.isEmpty()) {
                 return set.getRow(0);
             }
@@ -1507,7 +1507,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
-        DataSet<DataRow> set = query(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalSelect(), run.getValues());
+        DataSet<DataRow> set = selects(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalSelect(), run.getValues());
         if(!set.isEmpty()) {
             total = set.getRow(0).toUpperKey().getLong("CNT", 0L);
         }
@@ -3939,7 +3939,7 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
                 if (null != runs) {
                     int idx = 0;
                     for (Run run: runs) {
-                        DataSet<DataRow> set = query(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+                        DataSet<DataRow> set = selects(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
                         tags = tags(runtime, idx, true, tags, query, set);
                         idx++;
                     }
@@ -9309,7 +9309,7 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 *
 	 **********************************************************************************************************************/
 
-	protected DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
+	protected DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
@@ -9359,7 +9359,7 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
             if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
                 log.info("{}[action:select]{}", random, run.log(action,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
-			set = actuator.query(this, runtime, random, system, action, table, configs, run, sql, values, columns);
+			set = actuator.selects(this, runtime, random, system, action, table, configs, run, sql, values, columns);
 			LinkedHashMap<String,Column> metadatas = set.getMetadatas();
 			if(!system && (null == metadatas || metadatas.isEmpty())&&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {
 				metadatas.putAll(metadata(runtime, new DefaultTextPrepare(sql), false));

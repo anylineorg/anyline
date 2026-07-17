@@ -957,7 +957,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
         }
         long fr = System.currentTimeMillis();
 
-        /*执行SQL*/
+        /*执行*/
         if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
             if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
                 log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
@@ -1339,7 +1339,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return selects(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -1349,10 +1349,10 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
             return new DataSet().setTable(table);
         }
         List<Object> values = run.getValues();
-        return query(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
+        return selects(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
     }
 
-    protected DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values) {
+    protected DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values) {
         if(BasicUtil.isEmpty(cmd)) {
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
                 throw new CommandSelectException("未指定命令");
@@ -1389,7 +1389,7 @@ public class Neo4jAdapter extends AbstractGraphAdapter implements DriverAdapter 
             columns = columns(runtime, random, false, table, false);
         }
         try{
-            set = actuator.query(this, runtime, random, system, action, table, configs, run, cmd, values, columns);
+            set = actuator.selects(this, runtime, random, system, action, table, configs, run, cmd, values, columns);
             long count = set.size();
             LinkedHashMap<String,Column> metadatas = set.getMetadatas();
             if(!system && (null == metadatas || metadatas.isEmpty())&& ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {

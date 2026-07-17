@@ -73,7 +73,7 @@ public abstract class AbstractRun implements Run {
 	protected boolean valid = true;
 	protected LinkedHashMap<String, Column> insertColumns = null;
 	protected LinkedHashMap<String, Column> updateColumns;
-	protected List<String> queryColumns;	//查询列
+	protected List<String> selectColumns;	//查询列
 	protected List<String> excludeColumn;  //不查询列
 	protected Object from;
 	protected int getOriginType = 1;
@@ -1185,20 +1185,20 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public Run setSelectColumns(String... columns) {
 		if(null != columns) {
-			this.queryColumns = BeanUtil.array2list(columns);
+			this.selectColumns = BeanUtil.array2list(columns);
 		}
 		return this;
 	}
 
 	@Override
 	public Run setSelectColumns(List<String> columns) {
-		this.queryColumns = columns;
+		this.selectColumns = columns;
 		return this;
 	}
 
 	@Override
 	public List<String> getSelectColumns() {
-		return this.queryColumns;
+		return this.selectColumns;
 	}
 
 	@Override
@@ -1215,7 +1215,7 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public Run setExcludeColumns(String... columns) {
 		if(null != columns) {
-			this.queryColumns = BeanUtil.array2list(columns);
+			this.selectColumns = BeanUtil.array2list(columns);
 		}
 		return this;
 	}

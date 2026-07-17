@@ -18,17 +18,11 @@
 package org.anyline.data.arango.adapter;
 
 import com.arangodb.ArangoCollection;
-import com.arangodb.ArangoCursor;
 import com.arangodb.ArangoDatabase;
-import com.arangodb.entity.BaseDocument;
-import com.arangodb.entity.DocumentCreateEntity;
-import com.arangodb.entity.DocumentUpdateEntity;
-import com.arangodb.model.AqlQueryOptions;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
-import org.anyline.data.arango.entity.ArangoRow;
 import org.anyline.data.arango.run.ArangoRun;
 import org.anyline.data.arango.runtime.ArangoRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -38,8 +32,13 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.text.TextPrepare;
+import org.anyline.data.prepare.text.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.CommandParser;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
@@ -53,11 +52,9 @@ import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 
 import java.util.*;
 
@@ -349,12 +346,8 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             for (Object item : list) {
                 Object pv = BeanUtil.getFieldValue(item, "_key", true);
                 if(null == pv) {
-                    pv = BeanUtil.getFieldValue(item, "_id", true);
+                    generator.create(item, DatabaseType.ArangoDB, dest.getName(), pk, null);
                 }
-                if(null != pv) {
-                    break;
-                }
-                generator.create(item, DatabaseType.ArangoDB, dest.getName(), pk, null);
             }
         }
         run.setValue(list);
@@ -371,155 +364,8 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.generatedKey();
     }
 
-    /**
-     * insert [命令执行]
-     * <br/>
-     * 执行完成后会补齐自增主键值
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param data data
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     * @param pks 需要返回的主键
-     * @return 影响行数
-     */
-    @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
-        long cnt = 0;
-        Object value = run.getValue();
-        String collection = run.getTableName();
-        if(null == value) {
-            if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-                log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]", run.getTableName());
-            }
-            return -1;
-        }
-        ArangoRuntime rt = (ArangoRuntime) runtime;
-        ArangoDatabase database = rt.getDatabase();
-        long fr = System.currentTimeMillis();
-        try {
-            ArangoCollection cons = database.collection(run.getTableName());
-            if(value instanceof List) {
-                List list = (List) value;
-                cnt = list.size();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(Object item : list) {
-                    docs.add(toBaseDocument(item));
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(Object item : list) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    BeanUtil.setFieldValue(item, "_key", result.getKey());
-                    BeanUtil.setFieldValue(item, "_id", result.getId());
-                }
-            } else if(value instanceof DataSet) {
-                DataSet<DataRow> set = (DataSet)value;
-                cnt = set.size();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(DataRow row : set) {
-                    docs.add(toBaseDocument(row));
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(DataRow row : set) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    row.set("_key", result.getKey());
-                    row.set("_id", result.getId());
-                }
-            } else if(value instanceof EntitySet) {
-                List<Object> datas = ((EntitySet)value).getDatas();
-                cnt = datas.size();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(Object item : datas) {
-                    docs.add(toBaseDocument(item));
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(Object item : datas) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    BeanUtil.setFieldValue(item, "_key", result.getKey());
-                    BeanUtil.setFieldValue(item, "_id", result.getId());
-                }
-            } else if(value instanceof Collection) {
-                Collection items = (Collection) value;
-                List<Object> list = new ArrayList<>();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(Object item : items) {
-                    list.add(item);
-                    docs.add(toBaseDocument(item));
-                    cnt++;
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(Object item : list) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    BeanUtil.setFieldValue(item, "_key", result.getKey());
-                    BeanUtil.setFieldValue(item, "_id", result.getId());
-                }
-            } else {
-                BaseDocument doc = toBaseDocument(value);
-                DocumentCreateEntity<Void> result = cons.insertDocument(doc);
-                BeanUtil.setFieldValue(value, "_key", result.getKey());
-                BeanUtil.setFieldValue(value, "_id", result.getId());
-                cnt = 1;
-            }
-
-            long millis = System.currentTimeMillis() - fr;
-            boolean slow = false;
-            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-                if(millis > SLOW_SQL_MILLIS) {
-                    slow = true;
-                    log.warn("{}[{}][action:insert][collection:{}][执行耗时:{}][collection:{}]", random, LogUtil.format("slow cmd", 33), run.getTableName(), DateUtil.format(millis), collection);
-                    if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
-                    }
-                }
-            }
-            if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[action:insert][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(cnt, 34));
-            }
-        } catch(Exception e) {
-            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                log.error("insert 异常:", e);
-            }
-            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-                CommandUpdateException ex = new CommandUpdateException("insert异常:" + e, e);
-                throw ex;
-            } else {
-                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
-                    log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTableName(), BeanUtil.object2json(data));
-                }
-            }
-        }
-        return cnt;
-    }
-
-    private BaseDocument toBaseDocument(Object obj) {
-        BaseDocument doc = new BaseDocument();
-        if(obj instanceof DataRow) {
-            DataRow row = (DataRow) obj;
-            for(String key : row.keySet()) {
-                doc.addAttribute(key, row.get(key));
-            }
-        } else if(obj instanceof Map) {
-            Map<String, Object> map = (Map<String, Object>) obj;
-            for(String key : map.keySet()) {
-                doc.addAttribute(key, map.get(key));
-            }
-        } else {
-            Map<String, Object> map = BeanUtil.object2map(obj);
-            for(String key : map.keySet()) {
-                doc.addAttribute(key, map.get(key));
-            }
-        }
-        Object key = doc.getAttribute("_key");
-        if(null != key) {
-            doc.setKey(key.toString());
-            doc.removeAttribute("_key");
-        }
-        return doc;
-    }
+    // insert [命令执行] 由父类 AbstractDriverAdapter 委托给 actuator.insert()
+    // 无需覆盖, ArangoActuator.insert() 已实现完整的 ArangoDB 驱动执行逻辑
 
     /**
      * 是否支持返回自增主键值
@@ -797,6 +643,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
 
     /**
      * update [命令执行]<br/>
+     * Adapter 负责 AQL 命令生成(key 匹配时无需生成 AQL), Actuator 负责调用 ArangoDB 驱动执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -806,52 +653,37 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
-        ArangoRun mr = (ArangoRun) run;
         long result = -1;
         long fr = System.currentTimeMillis();
-        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTableName(), mr.getUpdateData(), mr.getFilter());
-        ArangoRuntime rt = (ArangoRuntime) runtime;
-        ArangoDatabase database = rt.getDatabase();
-        ArangoCollection cons = database.collection(run.getTableName());
-
-        Map<String, Object> updateData = mr.getUpdateData();
-        Map<String, Object> filter = mr.getFilter();
-
-        if(null != filter && !filter.isEmpty() && null != updateData && !updateData.isEmpty()) {
-            BaseDocument doc = new BaseDocument();
-            for(Map.Entry<String, Object> entry : updateData.entrySet()) {
-                doc.addAttribute(entry.getKey(), entry.getValue());
+        try {
+            ArangoRun mr = (ArangoRun) run;
+            Map<String, Object> updateData = mr.getUpdateData();
+            Map<String, Object> filter = mr.getFilter();
+            if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTableName(), updateData, filter);
             }
-
-            String key = null;
-            if(filter.containsKey("_key")) {
-                key = filter.get("_key").toString();
-            } else if(filter.containsKey("_id")) {
-                String id = filter.get("_id").toString();
-                if(id.contains("/")) {
-                    key = id.substring(id.lastIndexOf("/") + 1);
-                } else {
-                    key = id;
+            if(null != filter && !filter.isEmpty() && null != updateData && !updateData.isEmpty()) {
+                // AQL 命令生成 (Adapter 职责): 非 key 匹配时生成 AQL 并存入 Run
+                boolean keyBased = filter.containsKey("_key") || filter.containsKey("_id");
+                if(!keyBased) {
+                    mr.cmd(buildUpdateAQL(mr, updateData));  // 生成 AQL 存入 Run
                 }
+                // 驱动执行 (Actuator 职责)
+                result = actuator.update(this, runtime, random, dest, data, configs, run);
             }
-
-            if(null != key) {
-                doc.setKey(key);
-                DocumentUpdateEntity<Void> updateResult = cons.updateDocument(key, doc);
-                result = 1;
+        } catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("update 异常:", e);
+            }
+            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+                CommandUpdateException ex = new CommandUpdateException("update异常:" + e, e);
+                throw ex;
             } else {
-                String aql = buildUpdateAQL(mr, updateData);
-                AqlQueryOptions options = new AqlQueryOptions();
-                Map<String, Object> bindVars = new HashMap<>();
-                if(null != filter) {
-                    bindVars.putAll(filter);
+                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
+                    log.error("{}[{}][action:update][collection:{}]", random, LogUtil.format("更新异常:", 33)+e, run.getTableName());
                 }
-                bindVars.putAll(updateData);
-                ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
-                result = 1;
             }
         }
-
         long millis = System.currentTimeMillis() - fr;
         boolean slow = false;
         long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
@@ -878,11 +710,63 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(null != filter && !filter.isEmpty()) {
             sb.append(" FILTER ");
             boolean first = true;
-            for(Map.Entry<String, Object> entry : filter.entrySet()) {
+            for(Map.Entry<String, Object> entry : new ArrayList<>(filter.entrySet())) {
                 if(!first) {
                     sb.append(" AND ");
                 }
-                sb.append("doc.").append(entry.getKey()).append(" == @").append(entry.getKey());
+                String rawKey = entry.getKey();
+                if(rawKey.contains(" NOT IN")) {
+                    String col = rawKey.replace(" NOT IN", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" NOT IN @").append(clean);
+                } else if(rawKey.contains("!=")) {
+                    String col = rawKey.replace("!=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" != @").append(clean);
+                } else if(rawKey.contains(">=")) {
+                    String col = rawKey.replace(">=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" >= @").append(clean);
+                } else if(rawKey.contains("<=")) {
+                    String col = rawKey.replace("<=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" <= @").append(clean);
+                } else if(rawKey.contains(">")) {
+                    String col = rawKey.replace(">", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" > @").append(clean);
+                } else if(rawKey.contains("<")) {
+                    String col = rawKey.replace("<", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" < @").append(clean);
+                } else if(rawKey.contains("@LIKE_PREFIX@")) {
+                    String[] parts = rawKey.split("@LIKE_PREFIX@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", CONCAT(@").append(clean).append(", '%'), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE_SUFFIX@")) {
+                    String[] parts = rawKey.split("@LIKE_SUFFIX@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", CONCAT('%', @").append(clean).append("), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE_CONTAINS@")) {
+                    String[] parts = rawKey.split("@LIKE_CONTAINS@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", CONCAT('%', @").append(clean).append(", '%'), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE@")) {
+                    String[] parts = rawKey.split("@LIKE@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", @").append(clean).append(", ").append(ic).append(")");
+                } else if(rawKey.contains("@REGEX@")) {
+                    String[] parts = rawKey.split("@REGEX@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("REGEX_TEST(doc.").append(parts[0]).append(", @").append(clean).append(", ").append(ic).append(")");
+                } else {
+                    sb.append("doc.").append(rawKey).append(" == @").append(rawKey);
+                }
                 first = false;
             }
         }
@@ -1121,6 +1005,19 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /**
+     * 构建 RunPrepare<br/>
+     * 覆盖父类默认行为，使用 text.init.DefaultTextPrepare 避免 auto.init.DefaultTextPrepare 的 split()
+     * 将 AQL 中的 LIMIT/RETURN/WHERE 等关键字错误地截断
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param text 原始 AQL 文本
+     * @return RunPrepare
+     */
+    @Override
+    public RunPrepare buildRunPrepare(DataRuntime runtime, String text) {
+        return new DefaultTextPrepare(text, false);
+    }
+
+    /**
      * select[命令合成]<br/> 最终可执行命令<br/>
      * 创建查询SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1131,21 +1028,30 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
-        ArangoRun run = null;
         if(prepare instanceof TablePrepare) {
-            run = new ArangoRun(runtime, prepare.getTableName());
+            ArangoRun run = new ArangoRun(runtime, prepare.getTableName());
+            run.setRuntime(runtime);
+            run.setPrepare(prepare);
+            run.setConfigStore(configs);
+            run.addCondition(conditions);
+            if(run.checkValid()) {
+                run.init();
+                fillSelectContent(runtime, run, placeholder, unicode);
+            }
+            return run;
         } else {
-            throw new RuntimeException("不支持查询的类型");
+            // 原始 AQL 文本 或其他类型(如 TextPrepare)，使用 TextRun
+            TextRun run = new TextRun();
+            run.setRuntime(runtime);
+            run.setPrepare(prepare);
+            run.setConfigStore(configs);
+            run.addCondition(conditions);
+            if(run.checkValid()) {
+                run.init();
+                fillSelectContent(runtime, run, placeholder, unicode);
+            }
+            return run;
         }
-        run.setRuntime(runtime);
-        run.setPrepare(prepare);
-        run.setConfigStore(configs);
-        run.addCondition(conditions);
-        if(run.checkValid()) {
-            run.init();
-            fillSelectContent(runtime, run, placeholder, unicode);
-        }
-        return run;
     }
 
     /**
@@ -1272,23 +1178,23 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             r.setExcludeColumns(excludeColumns);
         }
 
-        List<String> queryColumns = r.getSelectColumns();
-        if(null == queryColumns || queryColumns.isEmpty()) {
+        List<String> selectColumns = r.getSelectColumns();
+        if(null == selectColumns || selectColumns.isEmpty()) {
             ConfigStore configs = r.getConfigs();
             if(null != configs) {
-                queryColumns = configs.columns();
+                selectColumns = configs.columns();
             }
         }
-        if(null == queryColumns || queryColumns.isEmpty()) {
+        if(null == selectColumns || selectColumns.isEmpty()) {
             RunPrepare prepare = run.getPrepare();
             if(null != prepare) {
                 LinkedHashMap<String, Column> columns = prepare.getColumns();
-                queryColumns = Column.names(columns);
+                selectColumns = Column.names(columns);
             }
         }
 
-        if(null != queryColumns && !queryColumns.isEmpty()) {
-            r.setSelectColumns(queryColumns);
+        if(null != selectColumns && !selectColumns.isEmpty()) {
+            r.setSelectColumns(selectColumns);
         }
         return r;
     }
@@ -1303,37 +1209,94 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             AutoCondition auto = (AutoCondition) condition;
             List<Object> values = auto.getValues();
             String column = condition.getId();
-            if(null != values && !values.isEmpty()) {
-                Object value = values.get(0);
-                int cc = auto.getCompare().getCode();
-                if(cc == 10) {
+            if(null == values || values.isEmpty() || null == column) {
+                return;
+            }
+            Compare compare = auto.getCompare();
+            if(null == compare) {
+                return;
+            }
+            Object value = values.get(0);
+            switch(compare) {
+                // 等于
+                case EQUAL:
+                case EQUALS:
                     filter.put(column, value);
-                } else if(cc == 40) {
+                    break;
+                // IN
+                case IN:
                     filter.put(column, values);
-                } else if(cc == 20) {
+                    break;
+                // 大于 / 大于等于
+                case GREAT:
                     filter.put(column + ">", value);
-                } else if(cc == 21) {
+                    break;
+                case GREAT_EQUAL:
                     filter.put(column + ">=", value);
-                } else if(cc == 30) {
+                    break;
+                // 小于 / 小于等于
+                case LESS:
                     filter.put(column + "<", value);
-                } else if(cc == 31) {
+                    break;
+                case LESS_EQUAL:
                     filter.put(column + "<=", value);
-                } else if(cc == 50 || cc == 99) {
-                    filter.put(column + " LIKE", value);
-                } else if(cc == 110) {
+                    break;
+                // LIKE 系列 — 使用 ArangoDB LIKE() 函数
+                // key 格式: column@LIKE@ic (ic=ignoreCase, 0或1)
+                case LIKE:
+                case LIKE_SIMPLE:
+                    filter.put(column + "@LIKE@0", value);
+                    break;
+                case LIKE_IGNORE_CASE:
+                case LIKE_SIMPLE_IGNORE_CASE:
+                    filter.put(column + "@LIKE@1", value);
+                    break;
+                case LIKE_PREFIX:
+                case START_WITH:
+                    filter.put(column + "@LIKE_PREFIX@0", value);
+                    break;
+                case LIKE_PREFIX_IGNORE_CASE:
+                case START_WITH_IGNORE_CASE:
+                    filter.put(column + "@LIKE_PREFIX@1", value);
+                    break;
+                case LIKE_SUFFIX:
+                case END_WITH:
+                    filter.put(column + "@LIKE_SUFFIX@0", value);
+                    break;
+                case LIKE_SUFFIX_IGNORE_CASE:
+                case END_WITH_IGNORE_CASE:
+                    filter.put(column + "@LIKE_SUFFIX@1", value);
+                    break;
+                case LIKES:
+                    filter.put(column + "@LIKE_CONTAINS@0", value);
+                    break;
+                case LIKES_IGNORE_CASE:
+                    filter.put(column + "@LIKE_CONTAINS@1", value);
+                    break;
+                // REGEX — 使用 ArangoDB REGEX_TEST() 函数
+                case REGEX:
+                    filter.put(column + "@REGEX@0", value);
+                    break;
+                // 不等于
+                case NOT_EQUAL:
                     filter.put(column + "!=", value);
-                } else if(cc == 140) {
+                    break;
+                // NOT IN
+                case NOT_IN:
                     filter.put(column + " NOT IN", values);
-                } else if(cc == 80) {
-                    if(values.size() > 1) {
+                    break;
+                // BETWEEN
+                case BETWEEN:
+                    if(values.size() >= 2) {
                         filter.put(column + ">=", values.get(0));
                         filter.put(column + "<=", values.get(1));
                     }
-                }
+                    break;
+                default:
+                    break;
             }
         }
     }
-
     /**
      * 有些非JDBC环境也需要用到SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1414,6 +1377,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
 
     /**
      * select [命令执行]<br/>
+     * Adapter 负责生成 AQL 命令并存入 Run, Actuator 负责调用 ArangoDB 驱动执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param system 系统表不检测列属性
@@ -1422,35 +1386,32 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        ArangoRun r = (ArangoRun) run;
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         long fr = System.currentTimeMillis();
         if(null == random) {
             random = random(runtime);
         }
         DataSet<DataRow> set = new DataSet();
         try {
-            ArangoRuntime rt = (ArangoRuntime) runtime;
-            ArangoDatabase database = rt.getDatabase();
-            Map<String, Object> filter = r.getFilter();
-            String aql = buildAQL(r);
-            if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), filter);
-            }
-            AqlQueryOptions options = new AqlQueryOptions();
-            options.count(true);
-            Map<String, Object> bindVars = (null != filter) ? new HashMap<>(filter) : new HashMap<>();
-            ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
-            for(BaseDocument row : cursor) {
-                ArangoRow arangoRow = new ArangoRow();
-                for(String key : row.getProperties().keySet()) {
-                    arangoRow.set(key, row.getAttribute(key));
+            // AQL 命令生成 (Adapter 职责)
+            if(run instanceof ArangoRun) {
+                ArangoRun r = (ArangoRun) run;
+                Map<String, Object> filter = r.getFilter();
+                if(BasicUtil.isEmpty(r.cmd())) {
+                    r.cmd(buildAQL(r));  // 生成 AQL 存入 Run
                 }
-                arangoRow.set("_key", row.getKey());
-                arangoRow.set("_id", row.getId());
-                arangoRow.set("_rev", row.getRevision());
-                set.add(arangoRow);
+                r.vars((null != filter) ? new HashMap<>(filter) : new HashMap<>());
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:select][collection:{}][aql:{}][filter:{}]", random, run.getTableName(), r.cmd(), filter);
+                }
+            } else {
+                // TextRun: AQL 由 mergeFinalSelect 合成, 直接委托 actuator 执行
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:select][aql:{}]", random, run.getFinalSelect());
+                }
             }
+            // 驱动执行 (Actuator 职责)
+            set = actuator.selects(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, null);
             if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                 log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), set.size());
             }
@@ -1473,6 +1434,27 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         return set;
     }
 
+    /**
+     * 将 filter key 中的特殊字符替换为干净的 bind parameter name（仅允许字母/数字/下划线）。
+     * 按规则映射常见 AQL 操作符，避免 ArangoDB 解析 bind parameter 时报错。
+     */
+    private String cleanBindKey(Map<String, Object> filter, String rawKey) {
+        String cleanKey = rawKey
+            .replace(" NOT IN", "_NOT_IN")
+            .replace(" LIKE", "_LIKE")
+            .replace(">=", "_gte_")
+            .replace("<=", "_lte_")
+            .replace("!=", "_ne_")
+            .replace(">", "_gt_")
+            .replace("<", "_lt_")
+            .replace("@", "_");
+        if (!cleanKey.equals(rawKey)) {
+            Object value = filter.remove(rawKey);
+            filter.put(cleanKey, value);
+        }
+        return cleanKey;
+    }
+
     private String buildAQL(ArangoRun run) {
         StringBuilder sb = new StringBuilder();
         sb.append("FOR doc IN ").append(run.getTableName());
@@ -1481,7 +1463,8 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(null != filter && !filter.isEmpty()) {
             sb.append(" FILTER ");
             boolean first = true;
-            for(Map.Entry<String, Object> entry : filter.entrySet()) {
+            // 遍历 entry 快照，避免修改 filter 时 CME
+            for(Map.Entry<String, Object> entry : new ArrayList<>(filter.entrySet())) {
                 if(!first) {
                     sb.append(" AND ");
                 }
@@ -1489,20 +1472,62 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
                 Object value = entry.getValue();
                 if(rawKey.contains(" NOT IN")) {
                     String col = rawKey.replace(" NOT IN", "");
-                    sb.append("doc.").append(col).append(" NOT IN @").append(rawKey);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" NOT IN @").append(clean);
                 } else if(rawKey.contains("!=")) {
-                    sb.append("doc.").append(rawKey.replace("!=", " != @")).append(rawKey);
+                    String col = rawKey.replace("!=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" != @").append(clean);
                 } else if(rawKey.contains(">=")) {
-                    sb.append("doc.").append(rawKey.replace(">=", " >= @")).append(rawKey);
-                } else if(rawKey.contains(">")) {
-                    sb.append("doc.").append(rawKey.replace(">", " > @")).append(rawKey);
+                    String col = rawKey.replace(">=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" >= @").append(clean);
                 } else if(rawKey.contains("<=")) {
-                    sb.append("doc.").append(rawKey.replace("<=", " <= @")).append(rawKey);
+                    String col = rawKey.replace("<=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" <= @").append(clean);
+                } else if(rawKey.contains(">")) {
+                    String col = rawKey.replace(">", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" > @").append(clean);
                 } else if(rawKey.contains("<")) {
-                    sb.append("doc.").append(rawKey.replace("<", " < @")).append(rawKey);
+                    String col = rawKey.replace("<", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" < @").append(clean);
                 } else if(rawKey.contains(" LIKE")) {
                     String col = rawKey.replace(" LIKE", "");
-                    sb.append("doc.").append(col).append(" LIKE @").append(rawKey);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" LIKE @").append(clean);
+                } else if(rawKey.contains("@LIKE_PREFIX@")) {
+                    String[] parts = rawKey.split("@LIKE_PREFIX@");
+                    String col = parts[0];
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(col).append(", CONCAT(@").append(clean).append(", '%'), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE_SUFFIX@")) {
+                    String[] parts = rawKey.split("@LIKE_SUFFIX@");
+                    String col = parts[0];
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(col).append(", CONCAT('%', @").append(clean).append("), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE_CONTAINS@")) {
+                    String[] parts = rawKey.split("@LIKE_CONTAINS@");
+                    String col = parts[0];
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(col).append(", CONCAT('%', @").append(clean).append(", '%'), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE@")) {
+                    String[] parts = rawKey.split("@LIKE@");
+                    String col = parts[0];
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(col).append(", @").append(clean).append(", ").append(ic).append(")");
+                } else if(rawKey.contains("@REGEX@")) {
+                    String[] parts = rawKey.split("@REGEX@");
+                    String col = parts[0];
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("REGEX_TEST(doc.").append(col).append(", @").append(clean).append(", ").append(ic).append(")");
                 } else {
                     sb.append("doc.").append(rawKey).append(" == @").append(rawKey);
                 }
@@ -1534,12 +1559,52 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             sb.append(" LIMIT ").append(navi.getFirstRow()).append(", ").append(limit);
         }
 
-        sb.append(" RETURN doc");
+        // RETURN 列投影：如果指定了列（如 table(name as user_name)），则生成 RETURN { alias: doc.origin, ... }
+        // _key _id _rev 无论什么情况都必须返回
+        LinkedHashMap<String, Column> columns = getColumns(run);
+        if(null != columns && !columns.isEmpty()) {
+            sb.append(" RETURN { ");
+            // 1) 始终包含 _key _id _rev
+            sb.append("_key: doc._key, _id: doc._id, _rev: doc._rev");
+            // 2) 记录已包含的 origin 列名，避免重复
+            Set<String> included = new HashSet<>();
+            included.add("_key");
+            included.add("_id");
+            included.add("_rev");
+            for(Column col : columns.values()) {
+                String name = col.getName();
+                if(null == name || name.isEmpty()) continue;
+                if(name.toUpperCase().contains(" AS ")) {
+                    int split = name.toUpperCase().indexOf(" AS ");
+                    String origin = name.substring(0, split).trim();
+                    String alias = name.substring(split + 4).trim();
+                    if(included.contains(origin.toLowerCase())) continue;
+                    sb.append(", ").append(alias).append(": doc.").append(origin);
+                    included.add(origin.toLowerCase());
+                } else {
+                    if(included.contains(name.toLowerCase())) continue;
+                    sb.append(", ").append(name).append(": doc.").append(name);
+                    included.add(name.toLowerCase());
+                }
+            }
+            sb.append(" }");
+        } else {
+            sb.append(" RETURN doc");
+        }
         return sb.toString();
+    }
+
+    private LinkedHashMap<String, Column> getColumns(ArangoRun run) {
+        RunPrepare prepare = run.getPrepare();
+        if(prepare instanceof TablePrepare) {
+            return ((TablePrepare) prepare).getColumns();
+        }
+        return null;
     }
 
     /**
      * select [命令执行]<br/>
+     * Adapter 负责生成 AQL 命令并存入 Run, Actuator 负责调用 ArangoDB 驱动执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -1554,30 +1619,27 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(null != configs) {
             configs.add(run);
         }
-        ArangoRun r = (ArangoRun) run;
         long fr = System.currentTimeMillis();
         try {
-            ArangoRuntime rt = (ArangoRuntime) runtime;
-            ArangoDatabase database = rt.getDatabase();
-            Map<String, Object> filter = r.getFilter();
-            String aql = buildAQL(r);
-            if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), filter);
-            }
-            AqlQueryOptions options = new AqlQueryOptions();
-            options.count(true);
-            Map<String, Object> bindVars = (null != filter) ? new HashMap<>(filter) : new HashMap<>();
-            ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
-            for(BaseDocument row : cursor) {
-                Map<String, Object> map = new HashMap<>();
-                for(String key : row.getProperties().keySet()) {
-                    map.put(key, row.getAttribute(key));
+            // AQL 命令生成 (Adapter 职责)
+            if(run instanceof ArangoRun) {
+                ArangoRun r = (ArangoRun) run;
+                Map<String, Object> filter = r.getFilter();
+                if(BasicUtil.isEmpty(r.cmd())) {
+                    r.cmd(buildAQL(r));  // 生成 AQL 存入 Run
                 }
-                map.put("_key", row.getKey());
-                map.put("_id", row.getId());
-                map.put("_rev", row.getRevision());
-                maps.add(map);
+                r.vars((null != filter) ? new HashMap<>(filter) : new HashMap<>());
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), filter);
+                }
+            } else {
+                // TextRun: AQL 由 mergeFinalSelect 合成
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:select][aql:{}]", random, run.getFinalSelect());
+                }
             }
+            // 驱动执行 (Actuator 职责)
+            maps = actuator.maps(this, runtime, random, configs, run);
             if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                 log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), maps.size());
             }
@@ -1672,6 +1734,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
 
     /**
      * count [命令执行]<br/>
+     * Adapter 负责生成 count AQL 命令并存入 Run, Actuator 负责调用 ArangoDB 驱动执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -1679,29 +1742,40 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
-        ArangoRun r = (ArangoRun) run;
-        ArangoRuntime rt = (ArangoRuntime) runtime;
-        ArangoDatabase database = rt.getDatabase();
-        Map<String, Object> filter = r.getFilter();
-        if(null == filter) {
-            filter = new HashMap<>();
+        try {
+            // AQL 命令生成 (Adapter 职责)
+            if(run instanceof ArangoRun) {
+                ArangoRun r = (ArangoRun) run;
+                Map<String, Object> filter = r.getFilter();
+                if(null == filter) {
+                    filter = new HashMap<>();
+                }
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:count][collection:{}][filter:{}]", random, run.getTableName(), filter);
+                }
+                String selectAql = BasicUtil.isNotEmpty(r.cmd()) ? r.cmd() : buildAQL(r);
+                // 截掉末尾的 RETURN 子句，替换为 COUNT
+                int returnIdx = selectAql.lastIndexOf("RETURN");
+                r.cmd(selectAql.substring(0, returnIdx) + "COLLECT WITH COUNT INTO cnt RETURN cnt");
+                r.vars((null != filter && !filter.isEmpty()) ? new HashMap<>(filter) : new HashMap<>());
+                // 驱动执行 (Actuator 职责)
+                return ((ArangoActuator) actuator).count(runtime, run);
+            } else {
+                // TextRun: AQL 由 mergeFinalSelect 合成, 无法通过 Run.setFinalSelect 回写, 沿用内联执行
+                String selectAql = run.getFinalSelect();
+                int returnIdx = selectAql.lastIndexOf("RETURN");
+                String countAql = selectAql.substring(0, returnIdx) + "COLLECT WITH COUNT INTO cnt RETURN cnt";
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:count][aql:{}]", random, countAql);
+                }
+                return ((ArangoActuator) actuator).countDirect(runtime, countAql, new HashMap<>());
+            }
+        } catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("count 异常:", e);
+            }
+            return 0;
         }
-        if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-            log.info("{}[cmd:count][collection:{}][filter:{}]", random, run.getTableName(), filter);
-        }
-        // Reuse buildAQL to construct filter/sort portion, then add COLLECT WITH COUNT
-        String selectAql = buildAQL(r);
-        // Replace "RETURN doc" with "COLLECT WITH COUNT INTO cnt RETURN cnt"
-        String aql = selectAql.substring(0, selectAql.lastIndexOf("RETURN doc")) + "COLLECT WITH COUNT INTO cnt RETURN cnt";
-        AqlQueryOptions options = new AqlQueryOptions();
-        options.count(true);
-        Map<String, Object> bindVars = (null != filter && !filter.isEmpty()) ? new HashMap<>(filter) : new HashMap<>();
-        ArangoCursor<Integer> cursor = database.query(aql, Integer.class, bindVars, options);
-        if(cursor.hasNext()) {
-            Integer cnt = cursor.next();
-            return cnt != null ? cnt.longValue() : 0;
-        }
-        return 0;
     }
 
     /* *****************************************************************************************************************
@@ -1818,7 +1892,23 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
-        return super.buildExecuteRun(runtime, prepare, configs, placeholder, unicode, conditions);
+        Run run = null;
+        if(prepare instanceof TextPrepare) {
+            run = new ArangoRun(runtime);
+        }else if(prepare instanceof org.anyline.data.prepare.auto.TextPrepare) {
+            run = prepare.build(runtime);
+        }
+        if(null != run) {
+            run.setConfigStore(configs);
+            run.setBatch(prepare.getBatch());
+            run.setRuntime(runtime);
+            run.setPrepare(prepare);
+            parsePlaceholder(runtime, run);
+            run.addCondition(conditions);
+            run.init();
+            fillExecuteContent(runtime, run, placeholder, unicode);
+        }
+        return run;
     }
 
     /**
@@ -1851,7 +1941,17 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     protected void fillExecuteContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
-        super.fillExecuteContent(runtime, run, placeholder, unicode);
+        // 替换变量: 先用 blocks/变量处理 (不传 TextRun, 用无 Run 参数的重载)
+        String text = CommandParser.replaceVariable(runtime, run.getVariableBlocks(), run.getVariables(), run.getText());
+        run.getBuilder().append(text);
+        run.appendCondition(run.getAdapter(), true, placeholder, unicode);
+        run.appendGroup(runtime, placeholder, unicode);
+        // 将最终 AQL 写入 ArangoRun.cmd(), 确保 Actuator.resolveAql() 能正确获取
+        if(run instanceof ArangoRun) {
+            ArangoRun ar = (ArangoRun) run;
+            ar.cmd(run.getBuilder().toString());
+        }
+        run.checkValid();
     }
 
     /**
@@ -1978,75 +2078,136 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, placeholder, unicode, columns);
+        List<Run> runs = new ArrayList<>();
+        if(null == obj && (null == configs || configs.isEmptyCondition())) {
+            return null;
+        }
+        if(obj instanceof Collection) {
+            Collection list = (Collection) obj;
+            for(Object item : list) {
+                runs.addAll(buildDeleteRun(runtime, dest, configs, item, placeholder, unicode, columns));
+            }
+            return runs;
+        }
+        if(null == dest) {
+            dest = DataSourceUtil.parseDest(null, obj, configs);
+        }
+        if(null == dest) {
+            Object entity = obj;
+            if(obj instanceof Collection) {
+                entity = ((Collection)obj).iterator().next();
+            }
+            Table table = EntityAdapterProxy.table(entity.getClass());
+            if(null != table) {
+                dest = table;
+            }
+        }
+        if(obj instanceof ConfigStore) {
+            ArangoRun run = new ArangoRun(runtime, dest);
+            RunPrepare prepare = new DefaultTablePrepare();
+            prepare.setDest(dest);
+            run.setPrepare(prepare);
+            run.setConfigStore((ConfigStore)obj);
+            run.addCondition(columns);
+            run.init();
+            fillDeleteRunContent(runtime, run, placeholder, unicode);
+            runs.add(run);
+        }else{
+            runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, placeholder, unicode, columns);
+        }
+        return runs;
+    }
+
+    /**
+     * delete[命令合成]<br/>
+     * 合成 ArangoRun 根据 ConfigStore 条件生成 filter
+     * @param runtime 运行环境
+     * @param table 表
+     * @param configs ConfigStore
+     * @return Run 列表
+     */
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode) {
+        List<Run> runs = new ArrayList<>();
+        ArangoRun run = new ArangoRun(runtime, table);
+        run.setConfigs(configs);
+        run.init();
+        fillDeleteRunContent(runtime, run, placeholder, unicode);
+        runs.add(run);
+        return runs;
     }
 
     /**
      * delete[命令合成]<br/>
      * 合成 where column in (values)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param key 列
-     * @param values values
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * ArangoDB 中删除由 delete(Run) + Actuator 统一执行, build 阶段暂不实现
      */
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
-        return super.buildDeleteRun(runtime, batch, table, configs, placeholder, unicode, key, values);
+        return null;
     }
 
     /**
      * delete[命令合成]<br/>
-     * 合成 where column in (values)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * truncate 已在 truncate() 中直接实现, 不需要 build run
      */
     @Override
     public List<Run> buildTruncateRun(DataRuntime runtime, Table table) {
-        return super.buildTruncateRun(runtime, table);
+        return null;
     }
 
     /**
      * delete[命令合成-子流程]<br/>
-     * 合成 where column in (values)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param column 列
-     * @param values values
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * ArangoDB 中删除由 delete(Run) + Actuator 统一执行, build 阶段暂不实现
      */
     @Override
     public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
-        return super.buildDeleteRunFromTable(runtime, batch, table, configs, placeholder, unicode, column, values);
+        return null;
     }
 
     /**
      * delete[命令合成-子流程]<br/>
-     * 合成 where k1 = v1 and k2 = v2
+     * 从 entity 属性解析删除条件, 最终转换为 ArangoRun 供 delete(Run) 执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
      * @param obj entity或DataRow
      * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * @return Run 最终执行命令
      */
     @Override
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
-        return super.buildDeleteRunFromEntity(runtime, table, configs, obj, placeholder, unicode, columns);
+        // 没有 configs 条件的, 根据 obj 主键/指定列构建条件
+        if(null == configs || configs.isEmptyCondition()) {
+            if(null == columns || columns.length == 0) {
+                columns = new String[]{"_key"};
+            }
+            if(null == configs) {
+                configs = new DefaultConfigStore();
+            }
+            for(String column : columns) {
+                configs.and(column, BeanUtil.getFieldValue(obj, column, true));
+            }
+        }
+        return buildDeleteRun(runtime, table, configs, placeholder, unicode);
     }
 
     /**
      * delete[命令合成-子流程]<br/>
-     * 构造查询主体 拼接where group等(不含分页 ORDER)
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * 将 ConditionChain 解析为 ArangoRun 的 filter Map, 后续由 delete(Run) → buildDeleteAQL 生成最终 AQL
      */
     @Override
     public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
-        super.fillDeleteRunContent(runtime, run, placeholder, unicode);
+        if(run instanceof ArangoRun) {
+            ArangoRun r = (ArangoRun) run;
+            ConditionChain chain = r.getConditionChain();
+            Map<String, Object> filter = new HashMap<>();
+            buildFilter(filter, chain);
+            r.setFilter(filter);
+        }
     }
 
     /**
      * delete[命令执行]<br/>
+     * Adapter 负责 AQL 命令生成(key 匹配时无需生成 AQL), 委托父类 → Actuator 执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param configs 查询条件及相关设置
@@ -2055,44 +2216,18 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
+        // AQL 命令生成 (Adapter 职责): 非 key 匹配时生成 AQL 并存入 Run
         ArangoRun r = (ArangoRun) run;
-        long result = -1;
-        long fr = System.currentTimeMillis();
-        ArangoRuntime rt = (ArangoRuntime) runtime;
-        ArangoDatabase database = rt.getDatabase();
-        ArangoCollection cons = database.collection(run.getTableName());
-
         Map<String, Object> filter = r.getFilter();
         if(null != filter && !filter.isEmpty()) {
-            String key = null;
-            if(filter.containsKey("_key")) {
-                key = filter.get("_key").toString();
-            } else if(filter.containsKey("_id")) {
-                String id = filter.get("_id").toString();
-                if(id.contains("/")) {
-                    key = id.substring(id.lastIndexOf("/") + 1);
-                } else {
-                    key = id;
-                }
+            boolean keyBased = filter.containsKey("_key") || filter.containsKey("_id");
+            if(!keyBased) {
+                r.cmd(buildDeleteAQL(r));  // 生成 AQL 存入 Run
             }
-
-            if(null != key) {
-                cons.deleteDocument(key);
-                result = 1;
-            } else {
-                String aql = buildDeleteAQL(r);
-                AqlQueryOptions options = new AqlQueryOptions();
-                Map<String, Object> bindVars = new HashMap<>(filter);
-                ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
-                result = 1;
-            }
+            r.vars(new HashMap<>(filter));  // 存储 bindVars
         }
-
-        long millis = System.currentTimeMillis() - fr;
-        if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-            log.info("{}[action:delete][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
-        }
-        return result;
+        // 驱动执行 (Actuator 职责): 父类 delete 内部调用 execute → actuator.execute
+        return super.delete(runtime, random, configs, run);
     }
 
     private String buildDeleteAQL(ArangoRun run) {
@@ -2103,27 +2238,64 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(null != filter && !filter.isEmpty()) {
             sb.append(" FILTER ");
             boolean first = true;
-            for(Map.Entry<String, Object> entry : filter.entrySet()) {
+            for(Map.Entry<String, Object> entry : new ArrayList<>(filter.entrySet())) {
                 if(!first) {
                     sb.append(" AND ");
                 }
                 String rawKey = entry.getKey();
                 if(rawKey.contains(" NOT IN")) {
                     String col = rawKey.replace(" NOT IN", "");
-                    sb.append("doc.").append(col).append(" NOT IN @").append(rawKey);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" NOT IN @").append(clean);
                 } else if(rawKey.contains("!=")) {
-                    sb.append("doc.").append(rawKey.replace("!=", " != @")).append(rawKey);
+                    String col = rawKey.replace("!=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" != @").append(clean);
                 } else if(rawKey.contains(">=")) {
-                    sb.append("doc.").append(rawKey.replace(">=", " >= @")).append(rawKey);
-                } else if(rawKey.contains(">")) {
-                    sb.append("doc.").append(rawKey.replace(">", " > @")).append(rawKey);
+                    String col = rawKey.replace(">=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" >= @").append(clean);
                 } else if(rawKey.contains("<=")) {
-                    sb.append("doc.").append(rawKey.replace("<=", " <= @")).append(rawKey);
+                    String col = rawKey.replace("<=", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" <= @").append(clean);
+                } else if(rawKey.contains(">")) {
+                    String col = rawKey.replace(">", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" > @").append(clean);
                 } else if(rawKey.contains("<")) {
-                    sb.append("doc.").append(rawKey.replace("<", " < @")).append(rawKey);
+                    String col = rawKey.replace("<", "");
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" < @").append(clean);
                 } else if(rawKey.contains(" LIKE")) {
                     String col = rawKey.replace(" LIKE", "");
-                    sb.append("doc.").append(col).append(" LIKE @").append(rawKey);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("doc.").append(col).append(" LIKE @").append(clean);
+                } else if(rawKey.contains("@LIKE_PREFIX@")) {
+                    String[] parts = rawKey.split("@LIKE_PREFIX@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", CONCAT(@").append(clean).append(", '%'), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE_SUFFIX@")) {
+                    String[] parts = rawKey.split("@LIKE_SUFFIX@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", CONCAT('%', @").append(clean).append("), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE_CONTAINS@")) {
+                    String[] parts = rawKey.split("@LIKE_CONTAINS@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", CONCAT('%', @").append(clean).append(", '%'), ").append(ic).append(")");
+                } else if(rawKey.contains("@LIKE@")) {
+                    String[] parts = rawKey.split("@LIKE@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("LIKE(doc.").append(parts[0]).append(", @").append(clean).append(", ").append(ic).append(")");
+                } else if(rawKey.contains("@REGEX@")) {
+                    String[] parts = rawKey.split("@REGEX@");
+                    boolean ic = "1".equals(parts[1]);
+                    String clean = cleanBindKey(filter, rawKey);
+                    sb.append("REGEX_TEST(doc.").append(parts[0]).append(", @").append(clean).append(", ").append(ic).append(")");
                 } else {
                     sb.append("doc.").append(rawKey).append(" == @").append(rawKey);
                 }
@@ -6062,7 +6234,16 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
-        return super.execute(runtime, random, meta, action, run);
+        if(meta.execute()) {
+            try {
+                actuator.update(this, runtime, random, null, null, null, run);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                CacheProxy.clear();
+            }
+        }
+        return true;
     }
 
     /* *****************************************************************************************************************
@@ -6618,7 +6799,12 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Database meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        ArangoRun run = new ArangoRun(runtime);
+        run.metadata(meta);
+        run.action(ACTION.DDL.DATABASE_CREATE);
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -6657,7 +6843,12 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Database meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        ArangoRun run = new ArangoRun(runtime);
+        run.metadata(meta);
+        run.action(ACTION.DDL.DATABASE_DROP);
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -6907,7 +7098,12 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        ArangoRun run = new ArangoRun(runtime);
+        run.metadata(meta);
+        run.action(ACTION.DDL.TABLE_CREATE);
+        runs.add(run);
+        return runs;
     }
 
 
@@ -6963,7 +7159,12 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildDropRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        ArangoRun run = new ArangoRun(runtime);
+        run.metadata(meta);
+        run.action(ACTION.DDL.TABLE_DROP);
+        runs.add(run);
+        return runs;
     }
 
     /**

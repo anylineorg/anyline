@@ -19,7 +19,6 @@ package org.anyline.data.jdbc.cloudera;
 
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.ImpalaGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -995,8 +994,8 @@ public class ClouderaAdapter extends ImpalaGenusAdapter implements DriverAdapter
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return super.query(runtime, random, system, table, configs, run);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        return super.selects(runtime, random, system, table, configs, run);
     }
 
     /**

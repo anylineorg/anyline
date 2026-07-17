@@ -1134,8 +1134,8 @@ PUT * /_bulk
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return query(runtime, random, system, table, configs, (ElasticSearchRun) run);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        return selects(runtime, random, system, table, configs, (ElasticSearchRun) run);
     }
 
     /**
@@ -1253,7 +1253,7 @@ PUT * /_bulk
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
         ElasticSearchRun r = (ElasticSearchRun)run;
-        DataSet<DataRow> set = query(runtime, random, false, (Table)null, run.getConfigs(), r);
+        DataSet<DataRow> set = selects(runtime, random, false, (Table)null, run.getConfigs(), r);
         if(null != r.getText()){
             //sql格式 select count(*) as CNT
             if(!set.isEmpty()){
@@ -6540,7 +6540,7 @@ PUT * /_bulk
         return maps;
     }
 
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, ElasticSearchRun run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, ElasticSearchRun run) {
         if(null == configs) {
             configs = new DefaultConfigStore();
         }
@@ -6563,7 +6563,7 @@ PUT * /_bulk
             columns = columns(runtime, random, false, table, false);
         }
         try{
-            set = actuator.query(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
+            set = actuator.selects(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, columns);
 
             LinkedHashMap<String,Column> metadatas = set.getMetadatas();
             if(!system && (null == metadatas || metadatas.isEmpty())&&ConfigStore.IS_CHECK_EMPTY_SET_METADATA(configs)) {

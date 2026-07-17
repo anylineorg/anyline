@@ -18,7 +18,6 @@
 package org.anyline.data.jdbc.druid;
 
 import org.anyline.annotation.AnylineComponent;
-import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -1006,8 +1005,8 @@ public class DruidAdapter extends MySQLGenusAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return super.query(runtime, random, system, table, configs, run);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        return super.selects(runtime, random, system, table, configs, run);
     }
 
     /**

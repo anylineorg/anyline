@@ -70,7 +70,7 @@
 		<influxdb-client.version>5.0.0</influxdb-client.version>
 		<milvus-client.version>2.5.7</milvus-client.version>
 		<weaviate-client.version>5.2.1</weaviate-client.version>
-		<pinecone-client.version>2.0.0</pinecone-client.version>
+		<pinecone-client.version>5.0.0</pinecone-client.version>
 		<hbase-client.version>2.6.0</hbase-client.version>
 		<jdbc-redshift.version>2.1.0.30</jdbc-redshift.version>
 		<jdbc-yashandb.version>1.6.1</jdbc-yashandb.version>

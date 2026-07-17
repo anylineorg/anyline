@@ -17,8 +17,11 @@
 
 package org.anyline.data.milvus.adapter;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.common.DataType;
+import io.milvus.v2.common.IndexParam;
 import io.milvus.v2.service.collection.request.AddFieldReq;
 import io.milvus.v2.service.collection.request.CreateCollectionReq;
 import io.milvus.v2.service.collection.request.DescribeCollectionReq;
@@ -28,18 +31,37 @@ import io.milvus.v2.service.collection.response.ListCollectionsResp;
 import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import io.milvus.v2.service.database.request.DropDatabaseReq;
 import io.milvus.v2.service.database.response.ListDatabasesResp;
+import io.milvus.v2.service.index.request.*;
+import io.milvus.v2.service.index.response.DescribeIndexResp;
 import io.milvus.v2.service.rbac.request.*;
 import io.milvus.v2.service.rbac.response.DescribeRoleResp;
 import io.milvus.v2.service.rbac.response.DescribeUserResp;
+import io.milvus.v2.service.vector.request.InsertReq;
+import io.milvus.v2.service.vector.request.DeleteReq;
+import io.milvus.v2.service.vector.request.QueryReq;
+import io.milvus.v2.service.vector.request.GetReq;
+import io.milvus.v2.service.vector.request.SearchReq;
+import io.milvus.v2.service.vector.response.InsertResp;
+import io.milvus.v2.service.vector.response.DeleteResp;
+import io.milvus.v2.service.vector.response.QueryResp;
+import io.milvus.v2.service.vector.response.GetResp;
+import io.milvus.v2.service.vector.response.SearchResp;
+import io.milvus.v2.service.collection.request.GetCollectionStatsReq;
+import io.milvus.v2.service.collection.response.GetCollectionStatsResp;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.milvus.metadata.MilvusCollection;
+import org.anyline.data.milvus.run.MilvusRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
@@ -49,6 +71,8 @@ import org.anyline.metadata.refer.MetadataReferHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
@@ -57,6 +81,8 @@ import java.util.*;
 
 @AnylineComponent("anyline.environment.data.driver.actuator.milvus")
 public class MilvusActuator implements DriverActuator {
+    private static final Log log = LogProxy.get(MilvusActuator.class);
+    
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return MilvusAdapter.class;
@@ -153,8 +179,17 @@ public class MilvusActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
-        return new DataSet();
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+        DataSet<DataRow> result = new DataSet<>();
+        if(action == ACTION.DML.SELECT) {
+            List<Map<String, Object>> maps = maps(adapter, runtime, random, configs, run);
+            for(Map<String, Object> map : maps) {
+                DataRow row = new DataRow();
+                row.putAll(map);
+                result.add(row);
+            }
+        }
+        return result;
     }
     
     /**
@@ -179,7 +214,193 @@ public class MilvusActuator implements DriverActuator {
      */
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
-        return new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
+        MilvusClientV2 client = client(runtime);
+        if(run instanceof TableRun) {
+            TableRun tableRun = (TableRun) run;
+            String tableName = tableRun.getTableName();
+            List<String> selectColumns = tableRun.getSelectColumns();
+            List<RunValue> runValues = tableRun.getRunValues();
+            PageNavi navi = tableRun.getPageNavi();
+            OrderStore orders = tableRun.getOrders();
+
+            // 1. 检测是否向量搜索：值中包含向量List
+            Object vectorParam = null;
+            String vectorField = null;
+            int topK = 10;
+            if(null != runValues) {
+                for(RunValue rv : runValues) {
+                    Object value = rv.getValue();
+                    if(value instanceof List && !((List<?>)value).isEmpty() 
+                        && ((List<?>)value).get(0) instanceof Number) {
+                        vectorParam = value;
+                        vectorField = rv.getKey();
+                        break;
+                    }
+                }
+            }
+            // 从PageNavi获取topK
+            if(null != navi) {
+                topK = navi.getPageRows();
+                if(topK <= 0) {
+                    topK = 10;
+                }
+            }
+
+            // 2. 构建filter表达式
+            String filterExpr = null;
+            if(run instanceof MilvusRun) {
+                MilvusRun milvusRun = (MilvusRun) run;
+                filterExpr = milvusRun.getFilter();
+            }
+            if(null == filterExpr) {
+                filterExpr = buildFilter(runValues, vectorField);
+            }
+
+            // 3. 根据查询类型分发
+            if(vectorParam != null && vectorField != null) {
+                // 向量搜索 (SearchReq)
+                result = searchMaps(client, tableName, vectorField, (List<List<Float>>) vectorParam, 
+                    topK, selectColumns, filterExpr, navi, orders);
+            } else {
+                // 标量查询 (QueryReq)
+                result = queryMaps(client, tableName, selectColumns, filterExpr, navi, orders);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 执行向量搜索
+     */
+    private List<Map<String, Object>> searchMaps(MilvusClientV2 client, String tableName, String vectorField, 
+            List<List<Float>> vectors, int topK, List<String> selectColumns, String filterExpr, 
+            PageNavi navi, OrderStore orders) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        // 将 List<List<Float>> 转换为 List<BaseVector>
+        List<io.milvus.v2.service.vector.request.data.BaseVector> data = new ArrayList<>();
+        if(vectors != null) {
+            for(List<Float> vec : vectors) {
+                data.add(new io.milvus.v2.service.vector.request.data.FloatVec(vec));
+            }
+        }
+        
+        SearchReq.SearchReqBuilder builder = SearchReq.builder()
+                .collectionName(tableName)
+                .annsField(vectorField)
+                .data(data)
+                .topK(topK);
+        
+        if(selectColumns != null && !selectColumns.isEmpty()) {
+            builder.outputFields(selectColumns);
+        }
+        if(filterExpr != null && !filterExpr.isEmpty()) {
+            builder.filter(filterExpr);
+        }
+        // 分页：向量搜索通过offset实现
+        if(navi != null && navi.getFirstRow() > 0) {
+            builder.offset(navi.getFirstRow());
+        }
+        
+        SearchResp resp = client.search(builder.build());
+        if(resp != null && resp.getSearchResults() != null) {
+            for(List<SearchResp.SearchResult> resultList : resp.getSearchResults()) {
+                for(SearchResp.SearchResult sr : resultList) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("id", sr.getId());
+                    row.put("score", sr.getScore());
+                    if(sr.getEntity() != null) {
+                        row.putAll(sr.getEntity());
+                    }
+                    result.add(row);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 执行标量查询（不带向量的filter查询）
+     */
+    private List<Map<String, Object>> queryMaps(MilvusClientV2 client, String tableName, 
+            List<String> selectColumns, String filterExpr, PageNavi navi, OrderStore orders) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        QueryReq.QueryReqBuilder builder = QueryReq.builder()
+                .collectionName(tableName);
+        
+        if(selectColumns != null && !selectColumns.isEmpty()) {
+            builder.outputFields(selectColumns);
+        }
+        if(filterExpr != null && !filterExpr.isEmpty()) {
+            builder.filter(filterExpr);
+        }
+        
+        // 分页处理
+        if(navi != null) {
+            if(navi.getFirstRow() > 0) {
+                builder.offset((int) navi.getFirstRow());
+            }
+            int limit = navi.getPageRows();
+            if(limit > 0) {
+                builder.limit(limit);
+            }
+        }
+        
+        try {
+            QueryResp resp = client.query(builder.build());
+            if(resp != null && resp.getQueryResults() != null) {
+                for(QueryResp.QueryResult qr : resp.getQueryResults()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    if(qr.getEntity() != null) {
+                        row.putAll(qr.getEntity());
+                    }
+                    result.add(row);
+                }
+            }
+        } catch(Exception e) {
+            // Milvus query API 可能抛异常，记录日志
+            log.error("Milvus query 异常: {}", e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * 构建Milvus filter表达式
+     * @param runValues 运行参数值
+     * @param excludeField 排除的字段（如向量搜索字段）
+     * @return filter表达式
+     */
+    private String buildFilter(List<RunValue> runValues, String excludeField) {
+        if(null == runValues || runValues.isEmpty()) {
+            return null;
+        }
+        StringBuilder filterBuilder = new StringBuilder();
+        for(RunValue rv : runValues) {
+            String key = rv.getKey();
+            Object value = rv.getValue();
+            // 跳过向量参数
+            if(value instanceof List) {
+                continue;
+            }
+            // 跳过排除字段
+            if(excludeField != null && excludeField.equals(key)) {
+                continue;
+            }
+            if(BasicUtil.isEmpty(key)) {
+                continue;
+            }
+            if(filterBuilder.length() > 0) {
+                filterBuilder.append(" AND ");
+            }
+            if(value instanceof String) {
+                filterBuilder.append(key).append(" == \"").append(value).append("\"");
+            } else if(value instanceof Number) {
+                filterBuilder.append(key).append(" == ").append(value);
+            } else {
+                filterBuilder.append(key).append(" == ").append(value);
+            }
+        }
+        return filterBuilder.length() > 0 ? filterBuilder.toString() : null;
     }
 
     /**
@@ -191,7 +412,28 @@ public class MilvusActuator implements DriverActuator {
      */
     @Override
     public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
+        List<Map<String, Object>> maps = maps(adapter, runtime, random, configs, run);
+        if(maps != null && !maps.isEmpty()) {
+            return maps.get(0);
+        }
         return new HashMap<>();
+    }
+    
+    public long count(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
+        MilvusClientV2 client = client(runtime);
+        if(run instanceof TableRun) {
+            TableRun tableRun = (TableRun) run;
+            String tableName = tableRun.getTableName();
+            
+            GetCollectionStatsReq req = GetCollectionStatsReq.builder()
+                    .collectionName(tableName)
+                    .build();
+            GetCollectionStatsResp resp = client.getCollectionStats(req);
+            
+            Long count = resp.getNumOfEntities();
+            return count != null ? count : -1;
+        }
+        return -1;
     }
 
     /**
@@ -209,6 +451,36 @@ public class MilvusActuator implements DriverActuator {
      */
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
+        MilvusClientV2 client = client(runtime);
+        if(run instanceof TableRun) {
+            TableRun tableRun = (TableRun) run;
+            String tableName = tableRun.getTableName();
+            List<JsonObject> rows = new ArrayList<>();
+            Gson gson = new Gson();
+            
+            if(data instanceof List) {
+                for(Object item : (List<?>) data) {
+                    if(item instanceof Map) {
+                        rows.add(gson.toJsonTree((Map<String, Object>) item).getAsJsonObject());
+                    } else if(item instanceof DataRow) {
+                        rows.add(gson.toJsonTree(((DataRow) item).toMap()).getAsJsonObject());
+                    }
+                }
+            } else if(data instanceof Map) {
+                rows.add(gson.toJsonTree((Map<String, Object>) data).getAsJsonObject());
+            } else if(data instanceof DataRow) {
+                rows.add(gson.toJsonTree(((DataRow) data).toMap()).getAsJsonObject());
+            }
+            
+            if(!rows.isEmpty()) {
+                InsertReq req = InsertReq.builder()
+                        .collectionName(tableName)
+                        .data(rows)
+                        .build();
+                InsertResp resp = client.insert(req);
+                return resp.getInsertCnt();
+            }
+        }
         return -1;
     }
 
@@ -263,11 +535,30 @@ public class MilvusActuator implements DriverActuator {
      */
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
+        MilvusClientV2 client = client(runtime);
+        if(run instanceof TableRun) {
+            TableRun tableRun = (TableRun) run;
+            String tableName = tableRun.getTableName();
+            List<Object> values = tableRun.getValues();
+            
+            if(values != null && !values.isEmpty()) {
+                DeleteReq req = DeleteReq.builder()
+                        .collectionName(tableName)
+                        .ids(values)
+                        .build();
+                DeleteResp resp = client.delete(req);
+                return resp.getDeleteCnt();
+            }
+        }
         return -1;
     }
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, List<Run> run) throws Exception {
-        return -1;
+        long total = 0;
+        for(Run r : run) {
+            total += execute(adapter, runtime, random, configs, r);
+        }
+        return total;
     }
 
     /**
@@ -462,7 +753,64 @@ public class MilvusActuator implements DriverActuator {
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
-        return new LinkedHashMap<>();
+        if(null == previous) {
+            previous = new LinkedHashMap<>();
+        }
+        MilvusClientV2 client = client(runtime);
+        String tableName = query.getTable().getName();
+        
+        List<String> indexNames = client.listIndexes(ListIndexesReq.builder()
+                .collectionName(tableName)
+                .build());
+        
+        for(String indexName : indexNames) {
+            DescribeIndexReq describeReq = DescribeIndexReq.builder()
+                    .collectionName(tableName)
+                    .indexName(indexName)
+                    .build();
+            DescribeIndexResp describeResp = client.describeIndex(describeReq);
+            DescribeIndexResp.IndexDesc desc = describeResp.getIndexDescByIndexName(indexName);
+            
+            if(desc != null) {
+                Index index = new Index();
+                index.setName(indexName);
+                index.setTable(query.getTable());
+                index.setType(desc.getIndexType().name());
+                index.addColumn(desc.getFieldName());
+                
+                previous.put(indexName.toUpperCase(), (T) index);
+            }
+        }
+        return previous;
+    }
+    
+    public boolean createIndex(DataRuntime runtime, String collectionName, String fieldName, String indexType, Map<String, Object> params) throws Exception {
+        MilvusClientV2 client = client(runtime);
+        IndexParam.IndexParamBuilder indexParamBuilder = IndexParam.builder()
+                .fieldName(fieldName)
+                .indexType(IndexParam.IndexType.valueOf(indexType));
+        
+        if(params != null && !params.isEmpty()) {
+            indexParamBuilder.extraParams(params);
+        }
+        
+        CreateIndexReq req = CreateIndexReq.builder()
+                .collectionName(collectionName)
+                .indexParams(Collections.singletonList(indexParamBuilder.build()))
+                .build();
+        
+        client.createIndex(req);
+        return true;
+    }
+    
+    public boolean dropIndex(DataRuntime runtime, String collectionName, String indexName) throws Exception {
+        MilvusClientV2 client = client(runtime);
+        DropIndexReq req = DropIndexReq.builder()
+                .collectionName(collectionName)
+                .indexName(indexName)
+                .build();
+        client.dropIndex(req);
+        return true;
     }
 
     private MilvusClientV2 client(DataRuntime runtime) {

@@ -17,17 +17,29 @@
 
 package org.anyline.data.milvus.adapter;
 
+import io.milvus.v2.service.vector.request.DeleteReq;
+import io.milvus.v2.service.vector.response.DeleteResp;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.milvus.run.MilvusRun;
+import org.anyline.data.milvus.runtime.MilvusRuntime;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.AutoCondition;
+import org.anyline.data.prepare.auto.AutoConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
+import org.anyline.exception.CommandSelectException;
+import org.anyline.log.Log;
 import org.anyline.metadata.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
@@ -35,6 +47,12 @@ import org.anyline.metadata.refer.MetadataFieldRefer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
+import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.proxy.InterceptorProxy;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.LogUtil;
 
 import java.util.*;
 
@@ -793,7 +811,16 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
-        return super.buildSelectRun(runtime, prepare, configs, placeholder, unicode, conditions);
+        MilvusRun run = new MilvusRun(runtime, prepare.getTableName());
+        run.setRuntime(runtime);
+        run.setConfigStore(configs);
+        run.setPrepare(prepare);
+        run.addCondition(conditions);
+        if(run.checkValid()) {
+            run.init();
+            fillSelectContent(runtime, run, placeholder, unicode);
+        }
+        return run;
     }
 
     /**
@@ -960,6 +987,7 @@ public class MilvusAdapter extends AbstractDriverAdapter {
 
     /**
      * select [命令执行]<br/>
+     * Milvus非关系型数据库，不使用SQL文本命令，直接通过SDK调用<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param system 系统表不检测列属性
@@ -968,12 +996,50 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return super.query(runtime, random, system, table, configs, run);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        long fr = System.currentTimeMillis();
+        if(null == random) {
+            random = random(runtime);
+        }
+        DataSet<DataRow> set = new DataSet();
+        try{
+            if(run instanceof MilvusRun) {
+                MilvusRun r = (MilvusRun) run;
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:select][collection:{}][filter:{}]", random, r.getTableName(), r.getFilter());
+                }
+            } else {
+                if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+                    log.info("{}[cmd:select][collection:{}]", random, run.getTableName());
+                }
+            }
+            // 驱动执行 (Actuator 职责)
+            set = actuator().selects(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, null);
+            if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), set.size());
+            }
+            if((!system || !ConfigStore.IS_LOG_QUERY_RESULT_EXCLUDE_METADATA(configs)) && ConfigStore.IS_LOG_QUERY_RESULT(configs) && log.isInfoEnabled()) {
+                log.info("{}[查询结果]{}", random, LogUtil.table(set));
+            }
+        }catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("select 异常:", e);
+            }
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+                CommandSelectException ex = new CommandSelectException("query异常:" + e, e);
+                throw ex;
+            } else {
+                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
+                    log.error("{}[{}][collection:{}]", random, LogUtil.format("查询异常:", 33) + e, run.getTableName());
+                }
+            }
+        }
+        return set;
     }
 
     /**
      * select [命令执行]<br/>
+     * Milvus不使用SQL文本命令，直接委托actuator执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
@@ -981,7 +1047,39 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-        return super.maps(runtime, random, configs, run);
+        if(null == random) {
+            random = random(runtime);
+        }
+        if(null != configs) {
+            configs.add(run);
+        }
+        if(log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+            log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+        }
+        boolean exe = true;
+        if(null != configs) {
+            exe = configs.execute();
+        }
+        if(!exe) {
+            return new ArrayList<>();
+        }
+        try{
+            List<Map<String, Object>> maps = actuator().maps(this, runtime, random, configs, run);
+            return process(runtime, maps);
+        }catch(Exception e) {
+            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                log.error("maps 异常:", e);
+            }
+            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+                log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+            if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+                CommandSelectException ex = new CommandSelectException("query异常:" + e, e);
+                ex.setCmd(run.getTableName());
+                throw ex;
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -993,7 +1091,11 @@ public class MilvusAdapter extends AbstractDriverAdapter {
      */
     @Override
     public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-        return super.map(runtime, random, configs, run);
+        List<Map<String, Object>> maps = maps(runtime, random, configs, run);
+        if(maps != null && !maps.isEmpty()) {
+            return maps.get(0);
+        }
+        return new HashMap<>();
     }
 
     /**
@@ -1309,105 +1411,329 @@ public class MilvusAdapter extends AbstractDriverAdapter {
 
     /**
      * truncate [调用入口]<br/>
+     * 参考MongoDB实现:直接调用Milvus client删除全部数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param table 表
-     * @return 1表示成功执行
+     * @return 影响行数
      */
     @Override
     public long truncate(DataRuntime runtime, String random, Table table) {
-        return super.truncate(runtime, random, table);
+        long result = -1;
+        long fr = System.currentTimeMillis();
+        try {
+            MilvusRuntime rt = (MilvusRuntime) runtime;
+            DeleteReq req = DeleteReq.builder()
+                    .collectionName(table.getName())
+                    .filter("id != \"\"")
+                    .build();
+            DeleteResp resp = rt.client().delete(req);
+            result = resp.getDeleteCnt();
+        } catch (Exception e) {
+            log.error("truncate exception:", e);
+        }
+        long millis = System.currentTimeMillis() - fr;
+        if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+            log.info("{}[action:truncate][collection:{}][执行耗时:{}]", random, table.getName(), DateUtil.format(millis));
+        }
+        return result;
     }
 
     /**
      * delete[命令合成]<br/>
      * 合成 where k1 = v1 and k2 = v2
+     * 参考MongoDB模式:创建MilvusRun,填充条件
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj entity或DataRow
      * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * @return Run 最终执行命令
      */
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String ... columns) {
-        return super.buildDeleteRun(runtime, dest, configs, obj, placeholder, unicode, columns);
+        List<Run> runs = new ArrayList<>();
+        if(null == obj && (null == configs || configs.isEmptyCondition())) {
+            return null;
+        }
+        if(obj instanceof Collection) {
+            Collection list = (Collection) obj;
+            for(Object item : list) {
+                runs.addAll(buildDeleteRun(runtime, dest, configs, item, placeholder, unicode, columns));
+            }
+            return runs;
+        }
+        if(null == dest) {
+            dest = DataSourceUtil.parseDest(null, obj, configs);
+        }
+        if(null == dest) {
+            Object entity = obj;
+            if(obj instanceof Collection) {
+                entity = ((Collection)obj).iterator().next();
+            }
+            Table table = EntityAdapterProxy.table(entity.getClass());
+            if(null != table) {
+                dest = table;
+            }
+        }
+        if(obj instanceof ConfigStore) {
+            MilvusRun run = new MilvusRun(runtime, dest);
+            RunPrepare prepare = new DefaultTablePrepare();
+            prepare.setDest(dest);
+            run.setPrepare(prepare);
+            run.setConfigStore((ConfigStore)obj);
+            run.addCondition(columns);
+            run.init();
+            fillDeleteRunContent(runtime, run, placeholder, unicode);
+            runs.add(run);
+        }else{
+            runs = buildDeleteRunFromEntity(runtime, dest, configs, obj, placeholder, unicode, columns);
+        }
+        return runs;
     }
 
     /**
      * delete[命令合成]<br/>
      * 合成 where column in (values)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param key 列
-     * @param values values
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * Milvus批量删除由delete(Run)+表达式处理,build阶段暂不实现
      */
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String key, Object values) {
-        return super.buildDeleteRun(runtime, batch, table, configs, placeholder, unicode, key, values);
+        return null;
     }
 
     /**
      * delete[命令合成]<br/>
-     * 合成 where column in (values)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * truncate已在truncate()中直接实现,不需要build run
      */
     @Override
     public List<Run> buildTruncateRun(DataRuntime runtime, Table table) {
-        return super.buildTruncateRun(runtime, table);
+        return null;
+    }
+
+    /**
+     * delete[命令合成]<br/>
+     * 创建MilvusRun并从ConfigStore构建删除条件
+     */
+    public List<Run> buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode) {
+        List<Run> runs = new ArrayList<>();
+        MilvusRun run = new MilvusRun(runtime, table);
+        run.setConfigs(configs);
+        run.init();
+        fillDeleteRunContent(runtime, run, placeholder, unicode);
+        runs.add(run);
+        return runs;
     }
 
     /**
      * delete[命令合成-子流程]<br/>
-     * 合成 where column in (values)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param column 列
-     * @param values values
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * Milvus中删除由delete(Run)+表达式处理,build阶段暂不实现
      */
     @Override
     public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
-        return super.buildDeleteRunFromTable(runtime, batch, table, configs, placeholder, unicode, column, values);
+        return null;
     }
 
     /**
      * delete[命令合成-子流程]<br/>
-     * 合成 where k1 = v1 and k2 = v2
+     * 从entity属性解析删除条件,最终转换为MilvusRun供delete(Run)执行
+     * 参考MongoDB模式
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
+     * @param table 表
      * @param obj entity或DataRow
-     * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
-     * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
+     * @param columns 删除条件的列或属性
+     * @return Run 最终执行命令
      */
     @Override
     public List<Run> buildDeleteRunFromEntity(DataRuntime runtime, Table table, ConfigStore configs, Object obj, Boolean placeholder, Boolean unicode, String... columns) {
-        return super.buildDeleteRunFromEntity(runtime, table, configs, obj, placeholder, unicode, columns);
+        if(null == configs || configs.isEmptyCondition()) {
+            if(null == columns || columns.length == 0) {
+                columns = new String[]{"id"};
+            }
+            if(null == configs) {
+                configs = new DefaultConfigStore();
+            }
+            for(String column : columns) {
+                configs.and(column, BeanUtil.getFieldValue(obj, column, true));
+            }
+        }
+        return buildDeleteRun(runtime, table, configs, placeholder, unicode);
     }
 
     /**
      * delete[命令合成-子流程]<br/>
-     * 构造查询主体 拼接where group等(不含分页 ORDER)
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * 将ConditionChain解析为MilvusRun的filter表达式,后续由delete(Run)→buildExpression生成Milvus filter
+     * 参考MongoDB parseCondition模式
      */
     @Override
     public void fillDeleteRunContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
-        super.fillDeleteRunContent(runtime, run, placeholder, unicode);
+        if(run instanceof MilvusRun) {
+            MilvusRun mr = (MilvusRun) run;
+            ConditionChain chain = mr.getConditionChain();
+            String expression = buildExpression(chain);
+            mr.setFilter(expression);
+        }
     }
 
     /**
      * delete[命令执行]<br/>
+     * 参考MongoDB模式:在Adapter层直接操作Milvus Client执行删除
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param configs 查询条件及相关设置
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
+     * @param run 最终待执行的命令和参数
      * @return 影响行数
      */
     @Override
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-        return super.delete(runtime, random, configs, run);
+        MilvusRun mr = (MilvusRun) run;
+        long result = -1;
+        boolean cmd_success = false;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        long fr = System.currentTimeMillis();
+        swt = InterceptorProxy.beforeDelete(runtime, random, run, configs);
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        if(null != dmListener) {
+            swt = dmListener.beforeDelete(runtime, random, run);
+        }
+        if(swt == ACTION.SWITCH.BREAK) {
+            return -1;
+        }
+        try {
+            MilvusRuntime rt = (MilvusRuntime) runtime;
+            String tableName = run.getTableName();
+            String filter = mr.getFilter();
+            log.info("{}[action:delete][collection:{}][filter:{}]", random, tableName, filter);
+            DeleteReq req = DeleteReq.builder()
+                    .collectionName(tableName)
+                    .filter(filter)
+                    .build();
+            DeleteResp resp = rt.client().delete(req);
+            result = resp.getDeleteCnt();
+            cmd_success = true;
+        } catch (Exception e) {
+            log.error("delete exception:", e);
+        }
+        long millis = System.currentTimeMillis() - fr;
+        if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+            log.info("{}[action:delete][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
+        }
+        if(null != dmListener) {
+            dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
+        }
+        InterceptorProxy.afterDelete(runtime, random, run, configs, cmd_success, result, millis);
+        return result;
+    }
+
+    /**
+     * ConditionChain → Milvus filter表达式
+     * 参考MongoDB parseCondition逐层遍历AutoConditionChain/AutoCondition
+     * Milvus表达式语法: field == value, field in [v1,v2], expr1 && expr2
+     */
+    private String buildExpression(Condition condition) {
+        if(condition instanceof ConditionChain) {
+            return buildExpressionChain((ConditionChain) condition);
+        }else if(condition instanceof AutoCondition) {
+            return buildExpressionAuto((AutoCondition) condition);
+        }
+        return null;
+    }
+
+    private String buildExpressionChain(ConditionChain chain) {
+        Condition.JOIN join = chain.getJoin();
+        String connector = (Condition.JOIN.OR == join) ? " || " : " && ";
+        List<Condition> conditions = chain.getConditions();
+        StringBuilder builder = new StringBuilder();
+        for(Condition con : conditions) {
+            String expr = buildExpression(con);
+            if(expr != null) {
+                if(builder.length() > 0) {
+                    builder.append(connector);
+                }
+                builder.append(expr);
+            }
+        }
+        return builder.length() > 0 ? builder.toString() : null;
+    }
+
+    private String buildExpressionAuto(AutoCondition auto) {
+        String column = auto.getId();
+        List<Object> values = auto.getValues();
+        Compare compare = auto.getCompare();
+        if(null == compare) {
+            compare = Compare.EQUAL;
+        }
+        if(null == column || null == values || values.isEmpty()) {
+            return null;
+        }
+        // 处理不同比较类型
+        if(compare == Compare.IN) {
+            return column + " in " + formatMilvusValues(values, true);
+        }else if(compare == Compare.NOT_IN) {
+            return column + " not in " + formatMilvusValues(values, true);
+        }else if(compare == Compare.LIKE || compare == Compare.LIKE_PREFIX || compare == Compare.LIKE_SUFFIX) {
+            return column + " like " + formatMilvusValue(values.get(0));
+        }else if(compare == Compare.NULL) {
+            return column + " == null";
+        }else if(compare == Compare.NOT_NULL) {
+            return column + " != null";
+        }else if(compare == Compare.BETWEEN) {
+            if(values.size() >= 2) {
+                return "(" + column + " >= " + formatMilvusValue(values.get(0)) + " && " + column + " <= " + formatMilvusValue(values.get(1)) + ")";
+            }
+            return null;
+        }else {
+            String op = getMilvusOperator(compare);
+            return column + " " + op + " " + formatMilvusValue(values.get(0));
+        }
+    }
+
+    private String getMilvusOperator(Compare compare) {
+        if(compare == Compare.EQUAL || compare == Compare.EQUALS) {
+            return "==";
+        }else if(compare == Compare.GREAT) {
+            return ">";
+        }else if(compare == Compare.GREAT_EQUAL) {
+            return ">=";
+        }else if(compare == Compare.LESS) {
+            return "<";
+        }else if(compare == Compare.LESS_EQUAL) {
+            return "<=";
+        }else if(compare == Compare.NOT_EQUAL) {
+            return "!=";
+        }
+        return "==";
+    }
+
+    private String formatMilvusValue(Object value) {
+        if(value == null) {
+            return "null";
+        }
+        if(value instanceof Number || value instanceof Boolean) {
+            return value.toString();
+        }
+        return "\"" + value.toString().replace("\"", "\\\"") + "\"";
+    }
+
+    private String formatMilvusValues(List<Object> values, boolean array) {
+        if(values == null || values.isEmpty()) {
+            return "[]";
+        }
+        StringBuilder builder = new StringBuilder();
+        if(array) {
+            builder.append("[");
+        }
+        for(int i = 0; i < values.size(); i++) {
+            if(i > 0) {
+                builder.append(", ");
+            }
+            builder.append(formatMilvusValue(values.get(i)));
+        }
+        if(array) {
+            builder.append("]");
+        }
+        return builder.toString();
     }
 
     @Override

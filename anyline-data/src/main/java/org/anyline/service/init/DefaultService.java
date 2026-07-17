@@ -3456,7 +3456,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 Database exists = metadata.database(meta.getName());
                 if (null != exists) {
                     exists.execute(meta.execute());
-                    Database update = meta.getUpdate();
+                    Database update = (Database)meta.getUpdate();
                     if (null == update) {
                         update = meta;
                     }
@@ -3481,7 +3481,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean alter(Database meta) throws Exception {
             CacheProxy.clear();
             try {
-                Database update = meta.getUpdate();
+                Database update = (Database) meta.getUpdate();
                 if (null == update) {
                     update = meta;
                 }

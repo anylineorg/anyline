@@ -781,9 +781,9 @@ public class DifyAdapter extends AbstractDriverAdapter implements DriverAdapter 
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         try {
-            return actuator.query(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, null);
+            return actuator.selects(this, runtime, random, system, ACTION.DML.SELECT, table, configs, run, null, null, null);
         }catch (Exception e){
             return new DataSet<>();
         }

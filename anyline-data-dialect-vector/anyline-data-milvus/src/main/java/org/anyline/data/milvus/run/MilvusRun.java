@@ -28,6 +28,8 @@ import java.util.List;
 
 public class MilvusRun extends TableRun implements Run {
 
+    private String filter;  // Milvus scalar filter expression, 参考MongoRun模式
+
     public MilvusRun(DataRuntime runtime) {
         super(runtime, (Table)null);
     }
@@ -38,6 +40,14 @@ public class MilvusRun extends TableRun implements Run {
 
     public MilvusRun(DataRuntime runtime, Table table) {
         super(runtime, table);
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     @Override

@@ -28,6 +28,10 @@ public interface ACTION {
         EXECUTE,
         PROCEDURE
     }
+    enum META implements ACTION {
+        TABLES,
+        DATABASES
+    }
     enum DDL implements ACTION{
         IGNORE          (CMD.IGNORE, "忽略"),
         ALL             (CMD.IGNORE, "全部"), //注册事件时用到

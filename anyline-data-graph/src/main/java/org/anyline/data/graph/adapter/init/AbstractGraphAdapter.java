@@ -1288,7 +1288,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(run instanceof ProcedureRun) {
             ProcedureRun pr = (ProcedureRun)run;
             return selects(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -1298,7 +1298,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
             return new DataSet().setTable(table);
         }
         List<Object> values = run.getValues();
-        return query(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
+        return selects(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
     }
 
     /**
@@ -1478,7 +1478,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 }
                 return new DataRow();
             }
-            DataSet<DataRow> set = query(runtime, random, true, (Table)null, null, run);
+            DataSet<DataRow> set = selects(runtime, random, true, (Table)null, null, run);
             if (!set.isEmpty()) {
                 return set.getRow(0);
             }
@@ -1565,7 +1565,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
         long total = 0;
-        DataSet<DataRow> set = query(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalSelect(), run.getValues());
+        DataSet<DataRow> set = selects(runtime, random, false, ACTION.DML.COUNT, null, run.getConfigs(), run, run.getTotalSelect(), run.getValues());
         if(!set.isEmpty()) {
             total = set.getRow(0).toUpperKey().getLong("CNT", 0L);
         }
@@ -4819,10 +4819,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			return false;
 		}
 		boolean result = false;
-		String sql = run.getFinalUpdate();
+		String cmd = run.getFinalUpdate();
         run.metadata(meta);
-		meta.addDdl(sql);
-		if(BasicUtil.isNotEmpty(sql)) {
+		meta.addDdl(cmd);
+		if(BasicUtil.isNotEmpty(cmd)) {
 			if(meta.execute()) {
 				try {
 					update(runtime, random, (Table) null, null, null, run);
@@ -8128,7 +8128,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return runs;
 	}
 
-	protected DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
+	protected DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 
 		return new DataSet();
 	}

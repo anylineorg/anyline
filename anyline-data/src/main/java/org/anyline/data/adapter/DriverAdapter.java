@@ -2019,9 +2019,9 @@ public interface DriverAdapter {
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      * @return DataSet
      */
-    DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run);
-    default DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
-        return query(runtime, random, system, new Table(table), configs, run);
+    DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run);
+    default DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+        return selects(runtime, random, system, new Table(table), configs, run);
     }
 
     /**
@@ -2768,6 +2768,18 @@ public interface DriverAdapter {
      * @throws Exception 异常
      */
     <T extends Database> LinkedHashMap<String, T> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> previous, Database query, DataSet<DataRow> set) throws Exception;
+
+    /**
+     * database[结果集封装]<br/>
+     *
+     * @param runtime  运行环境主要包含驱动适配器 数据源或客户端
+     * @param index    第几条SQL 对照 buildSelectDatabaseRun 返回顺序
+     * @param create   上一步没有查到的,这一步是否需要新创建
+     * @param previous 上一步查询结果
+     * @param set      查询结果集
+     * @return List
+     * @throws Exception 异常
+     */
     <T extends Database> List<T> databases(DataRuntime runtime, int index, boolean create, List<T> previous, Database query, DataSet<DataRow> set) throws Exception;
 
     /**
@@ -2812,6 +2824,7 @@ public interface DriverAdapter {
      * @return Table
      */
     <T extends Database> T detail(DataRuntime runtime, int index, T meta, Database query, DataRow row);
+
 
     /* *****************************************************************************************************************
      *                                                     catalog

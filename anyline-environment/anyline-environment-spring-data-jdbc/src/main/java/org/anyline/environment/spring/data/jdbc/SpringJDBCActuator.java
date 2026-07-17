@@ -184,7 +184,7 @@ public class SpringJDBCActuator implements DriverActuator {
     }
 
     @Override
-    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values, LinkedHashMap<String,Column> columns) throws Exception {
         DataSet<DataRow> set = new DataSet();
         long fr = System.currentTimeMillis();
         final DataRuntime rt = runtime;

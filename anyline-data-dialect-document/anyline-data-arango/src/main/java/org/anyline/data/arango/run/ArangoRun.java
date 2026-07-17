@@ -34,7 +34,7 @@ public class ArangoRun extends TableRun implements Run {
     /** AQL 查询字符串(完整 AQL 语句或 WHERE 子句片段) */
     private String cmd;
     /** AQL 绑定变量 key-value */
-    private Map<String, Object> bindVars;
+    private Map<String, Object> vars;
     /** 更新数据 Map(对应 AQL UPDATE ... WITH @update 中的 @update) */
     private Map<String, Object> updateData;
     /** 过滤器条件 Map(用于构建 AQL WHERE 子句) */
@@ -46,32 +46,35 @@ public class ArangoRun extends TableRun implements Run {
     public ArangoRun(DataRuntime runtime, Table table) {
         super(runtime, table);
     }
+    public ArangoRun(DataRuntime runtime) {
+        super(runtime);
+    }
 
     // ===== AQL =====
 
-    public String getCmd() {
+    public String cmd() {
         return cmd;
     }
-    public void setCmd(String cmd) {
+    public void cmd(String cmd) {
         this.cmd = cmd;
     }
 
     // ===== bindVars =====
 
-    public Map<String, Object> getBindVars() {
-        if(null == bindVars) {
-            bindVars = new HashMap<>();
+    public Map<String, Object> vars() {
+        if(null == vars) {
+            vars = new HashMap<>();
         }
-        return bindVars;
+        return vars;
     }
-    public void setBindVars(Map<String, Object> bindVars) {
-        this.bindVars = bindVars;
+    public void vars(Map<String, Object> vars) {
+        this.vars = vars;
     }
-    public void addBindVar(String key, Object value) {
-        if(null == bindVars) {
-            bindVars = new HashMap<>();
+    public void addVar(String key, Object value) {
+        if(null == vars) {
+            vars = new HashMap<>();
         }
-        bindVars.put(key, value);
+        vars.put(key, value);
     }
 
     // ===== updateData =====

@@ -2343,7 +2343,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 if(swt == ACTION.SWITCH.BREAK) {
                     return new DataSet().setTable(table);
                 }
-                set = query(runtime, random, false, table, configs, run);
+                set = selects(runtime, random, false, table, configs, run);
                 cmd_success = true;
             }else{
                 if(null != configs) {
@@ -2530,7 +2530,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null != configs) {
             configs.entityClass(clazz);
         }
-        DataSet<DataRow> rows = query(runtime, random, false, table, configs, run);
+        DataSet<DataRow> rows = selects(runtime, random, false, table, configs, run);
         for(DataRow row:rows) {
             T entity = null;
             if(EntityAdapterProxy.hasAdapter(clazz)) {
@@ -3133,7 +3133,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
         }
@@ -3397,7 +3397,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
         run = buildSelectLengthRun(runtime, cn, configs);
 
-        DataSet<DataRow> set = query(runtime, random, true, new Table(), configs, run);
+        DataSet<DataRow> set = selects(runtime, random, true, new Table(), configs, run);
         if(!set.isEmpty()){
             count = set.getRow(0).getInt( "CNT", -1);
         }
@@ -4824,7 +4824,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         meta.setEngine(getString(row, refer, Database.FIELD_ENGINE));
         return meta;
     }
-	/* *****************************************************************************************************************
+
+    /* *****************************************************************************************************************
 	 * 													catalog
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
@@ -5273,7 +5274,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             RunPrepare prepare = new DefaultTextPrepare(text);
             run = buildSelectRun(runtime, prepare, configs, true, true);
         }
-        DataSet<DataRow> set = query(runtime, random, true, (Table)null, configs, run);
+        DataSet<DataRow> set = selects(runtime, random, true, (Table)null, configs, run);
         return set;
     }
 	/**
@@ -6049,13 +6050,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table<T> query, int types) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Table<T> query, int types)", 37));
-		}
-		if(null == previous) {
-            previous = new LinkedHashMap<>();
-		}
-		return previous;
+        return actuator.tables(this, runtime, create, previous, query, types);
 	}
 
 	/**
@@ -6072,13 +6067,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Table<T>> List<T> tables(DataRuntime runtime, boolean create, List<T> previous, Table<T> query, int types) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table<T>> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Table<T> query, int types)", 37));
-		}
-		if(null == previous) {
-            previous = new ArrayList<>();
-		}
-		return previous;
+        return actuator.tables(this, runtime, create, previous, query, types);
 	}
 
 	/**
@@ -7863,12 +7852,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, View query, int types)", 37));
-		}
-		if(null == previous) {
+        previous = actuator.views(this, runtime, create, previous, query, types);
+        if(null == previous) {
             previous = new LinkedHashMap<>();
-		}
+        }
 		return previous;
 	}
 
@@ -7886,13 +7873,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, View query, int types)", 37));
-		}
-		if(null == previous) {
+        previous = actuator.views(this, runtime, create, previous, query, types);
+        if(null == previous) {
             previous = new ArrayList<>();
-		}
-		return previous;
+        }
+        return previous;
 	}
 
 	/**

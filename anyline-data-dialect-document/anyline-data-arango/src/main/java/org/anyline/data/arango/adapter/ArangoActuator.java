@@ -17,23 +17,29 @@
 
 package org.anyline.data.arango.adapter;
 
+import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
+import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
-import com.arangodb.entity.BaseDocument;
-import com.arangodb.entity.CollectionEntity;
-import com.arangodb.entity.CollectionType;
+import com.arangodb.entity.*;
+import com.arangodb.model.AqlQueryOptions;
+import com.arangodb.model.CollectionCreateOptions;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.arango.entity.ArangoRow;
+import org.anyline.data.arango.run.ArangoRun;
 import org.anyline.data.arango.runtime.ArangoRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -44,9 +50,8 @@ import java.util.*;
 
 /**
  * ArangoDB 驱动执行器<br/>
- * 负责元数据查询(table/column/index/database 列表)以及通过 AQL 执行的数据操作<br/>
- * <br/>
- * 注意: insert/update/delete 的实际执行在 {@link ArangoAdapter} 中完成, Actuator 主要负责元数据与 AQL 查询
+ * 负责调用 ArangoDB 原生驱动(ArangoDatabase/ArangoCollection)执行数据操作<br/>
+ * Adapter 负责生成 AQL 命令存储在 Run 中, Actuator 负责从 Run 中提取命令并调用驱动执行
  */
 @AnylineComponent("anyline.environment.data.driver.actuator.arango")
 public class ArangoActuator implements DriverActuator {
@@ -60,6 +65,10 @@ public class ArangoActuator implements DriverActuator {
         return ArangoAdapter.class;
     }
 
+    private ArangoDB client(DataRuntime runtime) {
+        return  ((ArangoRuntime)runtime).client();
+    }
+
     /**
      * 获取 ArangoDB 数据库连接对象
      * @param runtime 运行时环境，包含 ArangoDB 客户端信息
@@ -68,6 +77,20 @@ public class ArangoActuator implements DriverActuator {
     private ArangoDatabase database(DataRuntime runtime) {
         ArangoRuntime rt = (ArangoRuntime) runtime;
         return rt.getDatabase();
+    }
+    private ArangoDatabase database(DataRuntime runtime, String database) {
+        ArangoDatabase result = null;
+        ArangoRuntime rt = (ArangoRuntime) runtime;
+        ArangoDB client = client(runtime);
+        if(BasicUtil.isNotEmpty(database)) {
+            result = client.db(database);
+            if (!result.exists()) {
+                client.createDatabase(database);
+            }
+        }else{
+            result = rt.getDatabase();
+        }
+        return result;
     }
 
     /**
@@ -181,7 +204,7 @@ public class ArangoActuator implements DriverActuator {
      * @param <T> Database 类型
      * @return 数据库列表
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query) {
         List<T> list = new ArrayList<>();
         try {
@@ -237,10 +260,10 @@ public class ArangoActuator implements DriverActuator {
         return list;
     }
 
-    // ===== AQL 查询执行 =====
-
     /**
-     * 执行 AQL 查询，返回数据集
+     * 执行 AQL 查询, 返回数据集<br/>
+     * 从 Run(ArangoRun) 中提取 AQL 命令与绑定变量, 调用 ArangoDatabase.query() 执行<br/>
+     * 结果 BaseDocument 转换为 ArangoRow
      * @param adapter 驱动适配器
      * @param runtime 运行时环境
      * @param random 命令组标记
@@ -248,18 +271,40 @@ public class ArangoActuator implements DriverActuator {
      * @param action DML 操作类型
      * @param table 表对象
      * @param configs 配置存储
-     * @param run 运行对象
-     * @param cmd AQL 命令
-     * @param values 参数值列表
+     * @param run 运行对象 (ArangoRun 或 TextRun)
+     * @param cmd AQL 命令 (当 Run 中已有 cmd 时使用, 否则从 ArangoRun.cmd() 获取)
+     * @param values 参数值列表 (ArangoDB 使用命名绑定变量, 从 ArangoRun.vars() 获取)
      * @param columns 查询列
      * @return 数据集
      * @throws Exception 异常
      */
-    public DataSet<DataRow> query(DriverAdapter adapter, DataRuntime runtime, String random,
-                                  boolean system, ACTION.DML action, Table table,
-                                  ConfigStore configs, Run run, String cmd,
-                                  List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
-        return adapter.query(runtime, random, system, table, configs, run);
+    @Override
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
+        DataSet<DataRow> set = new DataSet<>();
+        try {
+            ArangoDatabase database = database(runtime);
+            String aql = resolveAql(run, cmd);
+            Map<String, Object> bindVars = resolveBindVars(run);
+            AqlQueryOptions options = new AqlQueryOptions();
+            options.count(true);
+            ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
+            for(BaseDocument row : cursor) {
+                ArangoRow arangoRow = new ArangoRow();
+                for(String key : row.getProperties().keySet()) {
+                    arangoRow.set(key, row.getAttribute(key));
+                }
+                arangoRow.set("_key", row.getKey());
+                arangoRow.set("_id", row.getId());
+                arangoRow.set("_rev", row.getRevision());
+                set.add(arangoRow);
+            }
+        } catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("selects 异常:", e);
+            }
+            throw e;
+        }
+        return set;
     }
 
     /**
@@ -272,24 +317,48 @@ public class ArangoActuator implements DriverActuator {
      * @return 空数据集
      * @throws Exception 异常
      */
-    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random,
-                                    Procedure procedure, PageNavi navi) throws Exception {
+    public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, PageNavi navi) throws Exception {
         return new DataSet<>();
     }
 
     /**
-     * 执行查询，返回 Map 列表
+     * 执行 AQL 查询, 返回 Map 列表<br/>
+     * 从 Run 中提取 AQL 命令与绑定变量, 调用 ArangoDatabase.query() 执行
      * @param adapter 驱动适配器
      * @param runtime 运行时环境
      * @param random 命令组标记
      * @param configs 配置存储
-     * @param run 运行对象
+     * @param run 运行对象 (ArangoRun 或 TextRun)
      * @return Map 列表
      * @throws Exception 异常
      */
-    public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random,
-                                          ConfigStore configs, Run run) throws Exception {
-        return adapter.maps(runtime, random, configs, run);
+    @Override
+    public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
+        List<Map<String, Object>> maps = new ArrayList<>();
+        try {
+            ArangoDatabase database = database(runtime);
+            String aql = resolveAql(run, null);
+            Map<String, Object> bindVars = resolveBindVars(run);
+            AqlQueryOptions options = new AqlQueryOptions();
+            options.count(true);
+            ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
+            for(BaseDocument row : cursor) {
+                Map<String, Object> map = new HashMap<>();
+                for(String key : row.getProperties().keySet()) {
+                    map.put(key, row.getAttribute(key));
+                }
+                map.put("_key", row.getKey());
+                map.put("_id", row.getId());
+                map.put("_rev", row.getRevision());
+                maps.add(map);
+            }
+        } catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("maps 异常:", e);
+            }
+            throw e;
+        }
+        return maps;
     }
 
     /**
@@ -302,8 +371,7 @@ public class ArangoActuator implements DriverActuator {
      * @return 单个 Map，无结果时返回空 Map
      * @throws Exception 异常
      */
-    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random,
-                                   ConfigStore configs, Run run) throws Exception {
+    public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         List<Map<String, Object>> maps = maps(adapter, runtime, random, configs, run);
         if(null != maps && !maps.isEmpty()) {
             return maps.get(0);
@@ -312,7 +380,8 @@ public class ArangoActuator implements DriverActuator {
     }
 
     /**
-     * 执行插入操作
+     * 执行插入操作<br/>
+     * 从 Run 中获取数据, 直接调用 ArangoCollection 原生 API 执行插入, 并回写 _key/_id
      * @param adapter 驱动适配器
      * @param runtime 运行时环境
      * @param random 命令组标记
@@ -324,14 +393,98 @@ public class ArangoActuator implements DriverActuator {
      * @return 影响行数
      * @throws Exception 异常
      */
-    public long insert(DriverAdapter adapter, DataRuntime runtime, String random,
-                       Object data, ConfigStore configs, Run run,
-                       String generatedKey, String[] pks) throws Exception {
-        return adapter.insert(runtime, random, data, configs, run, pks);
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
+        long cnt = 0;
+        Object value = run.getValue();
+        if(null == value) {
+            return -1;
+        }
+        ArangoDatabase database = database(runtime);
+        if(null == database) {
+            return -1;
+        }
+        ArangoCollection cons = database.collection(run.getTableName());
+        try {
+            if(value instanceof List) {
+                List list = (List) value;
+                cnt = list.size();
+                List<BaseDocument> docs = new ArrayList<>();
+                for(Object item : list) {
+                    docs.add(document(item));
+                }
+                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
+                int idx = 0;
+                for(Object item : list) {
+                    DocumentCreateEntity<Void> result = results.get(idx++);
+                    BeanUtil.setFieldValue(item, "_key", result.getKey());
+                    BeanUtil.setFieldValue(item, "_id", result.getId());
+                }
+            } else if(value instanceof DataSet) {
+                DataSet<DataRow> set = (DataSet) value;
+                cnt = set.size();
+                List<BaseDocument> docs = new ArrayList<>();
+                for(DataRow row : set) {
+                    docs.add(document(row));
+                }
+                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
+                int idx = 0;
+                for(DataRow row : set) {
+                    DocumentCreateEntity<Void> result = results.get(idx++);
+                    row.set("_key", result.getKey());
+                    row.set("_id", result.getId());
+                }
+            } else if(value instanceof EntitySet) {
+                List<Object> datas = ((EntitySet) value).getDatas();
+                cnt = datas.size();
+                List<BaseDocument> docs = new ArrayList<>();
+                for(Object item : datas) {
+                    docs.add(document(item));
+                }
+                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
+                int idx = 0;
+                for(Object item : datas) {
+                    DocumentCreateEntity<Void> result = results.get(idx++);
+                    BeanUtil.setFieldValue(item, "_key", result.getKey());
+                    BeanUtil.setFieldValue(item, "_id", result.getId());
+                }
+            } else if(value instanceof Collection) {
+                Collection items = (Collection) value;
+                List<Object> list = new ArrayList<>();
+                List<BaseDocument> docs = new ArrayList<>();
+                for(Object item : items) {
+                    list.add(item);
+                    docs.add(document(item));
+                    cnt++;
+                }
+                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
+                int idx = 0;
+                for(Object item : list) {
+                    DocumentCreateEntity<Void> result = results.get(idx++);
+                    BeanUtil.setFieldValue(item, "_key", result.getKey());
+                    BeanUtil.setFieldValue(item, "_id", result.getId());
+                }
+            } else {
+                BaseDocument doc = document(value);
+                DocumentCreateEntity<Void> result = cons.insertDocument(doc);
+                BeanUtil.setFieldValue(value, "_key", result.getKey());
+                BeanUtil.setFieldValue(value, "_id", result.getId());
+                cnt = 1;
+            }
+        } catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("insert 异常:", e);
+            }
+            throw e;
+        }
+        return cnt;
     }
 
     /**
-     * 执行更新操作
+     * 执行更新操作<br/>
+     * DDL 操作: 创建/删除数据库、创建/删除表<br/>
+     * DML 操作: key 匹配时直接调用 updateDocument, 否则执行 AQL
      * @param adapter 驱动适配器
      * @param runtime 运行时环境
      * @param random 命令组标记
@@ -342,9 +495,54 @@ public class ArangoActuator implements DriverActuator {
      * @return 影响行数
      * @throws Exception 异常
      */
-    public long update(DriverAdapter adapter, DataRuntime runtime, String random,
-                       Table dest, Object data, ConfigStore configs, Run run) throws Exception {
-        return adapter.update(runtime, random, dest, data, configs, run);
+    @Override
+    @SuppressWarnings("rawtypes")
+    public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
+        long result = 0;
+        if(null != run){
+            ACTION action = run.action();
+            if(action == ACTION.DDL.DATABASE_CREATE){
+                create(runtime, (Database) run.metadata());
+                result = 1;
+            }else if (action == ACTION.DDL.DATABASE_DROP){
+                drop(runtime, (Database) run.metadata());
+                result = 1;
+            }else if(action == ACTION.DDL.TABLE_CREATE){
+                create(runtime, (Table)run.metadata());
+            }else if(action == ACTION.DDL.TABLE_DROP){
+                drop(runtime, (Table)run.metadata());
+            }else{
+                // DML update: 从 ArangoRun 获取命令信息
+                ArangoDatabase database = database(runtime);
+                ArangoCollection cons = database.collection(run.getTableName());
+                if(run instanceof ArangoRun) {
+                    ArangoRun ar = (ArangoRun) run;
+                    Map<String, Object> updateData = ar.getUpdateData();
+                    Map<String, Object> filter = ar.getFilter();
+                    if(null != filter && !filter.isEmpty() && null != updateData && !updateData.isEmpty()) {
+                        BaseDocument doc = new BaseDocument();
+                        for(Map.Entry<String, Object> entry : updateData.entrySet()) {
+                            doc.addAttribute(entry.getKey(), entry.getValue());
+                        }
+                        String key = extractKey(filter);
+                        if(null != key) {
+                            doc.setKey(key);
+                            DocumentUpdateEntity<Void> updateResult = cons.updateDocument(key, doc);
+                            result = 1;
+                        } else {
+                            String aql = ar.cmd();
+                            Map<String, Object> bindVars = new HashMap<>();
+                            bindVars.putAll(filter);
+                            bindVars.putAll(updateData);
+                            AqlQueryOptions options = new AqlQueryOptions();
+                            ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
+                            result = 1;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -359,25 +557,65 @@ public class ArangoActuator implements DriverActuator {
      * @return 空列表
      * @throws Exception 异常
      */
-    public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random,
-                                Procedure procedure, String sql, List<Parameter> inputs,
-                                List<Parameter> outputs) throws Exception {
+    public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception {
         return new ArrayList<>();
     }
 
     /**
-     * 执行通用命令（ArangoDB 中由 Adapter 处理，返回 0）
+     * 执行通用命令<br/>
+     * 从 Run 中提取 AQL 命令并执行, 用于 delete 等 DML 操作
      * @param adapter 驱动适配器
      * @param runtime 运行时环境
      * @param random 命令组标记
      * @param configs 配置存储
-     * @param run 运行对象
-     * @return 0
+     * @param run 运行对象 (ArangoRun 或 TextRun)
+     * @return 影响行数 (默认 1)
      * @throws Exception 异常
      */
-    public long execute(DriverAdapter adapter, DataRuntime runtime, String random,
-                        ConfigStore configs, Run run) throws Exception {
-        return 0;
+    @Override
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
+        long result = 0;
+        try {
+            ArangoDatabase database = database(runtime);
+            String tableName = run.getTableName();
+            ArangoCollection cons = null;
+            if(BasicUtil.isNotEmpty(tableName)) {
+                cons = database.collection(tableName);
+            }
+            // 如果是 ArangoRun, 优先尝试 key 删除
+            if(run instanceof ArangoRun) {
+                ArangoRun ar = (ArangoRun) run;
+                Map<String, Object> filter = ar.getFilter();
+                if(null != filter && !filter.isEmpty() && null != cons) {
+                    String key = extractKey(filter);
+                    if(null != key) {
+                        cons.deleteDocument(key);
+                        result = 1;
+                        return result;
+                    }
+                }
+            }
+            // AQL 执行 (ArangoRun / TextRun / XMLRun 统一走这里)
+            String aql = resolveAql(run, null);
+            Map<String, Object> bindVars = resolveBindVars(run);
+            if(BasicUtil.isNotEmpty(aql)) {
+                AqlQueryOptions options = new AqlQueryOptions();
+                options.count(true);
+                ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
+                if(cursor != null && cursor.getStats() != null) {
+                    result = cursor.getStats().getWritesExecuted();
+                }
+                if(result <= 0) {
+                    result = 1; // fallback: 保守估算至少删除了 1 行
+                }
+            }
+        } catch(Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("execute 异常:", e);
+            }
+            throw e;
+        }
+        return result;
     }
 
     /**
@@ -390,8 +628,7 @@ public class ArangoActuator implements DriverActuator {
      * @return 0
      * @throws Exception 异常
      */
-    public long execute(DriverAdapter adapter, DataRuntime runtime, String random,
-                        ConfigStore configs, List<Run> run) throws Exception {
+    public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, List<Run> run) throws Exception {
         return 0;
     }
 
@@ -406,8 +643,7 @@ public class ArangoActuator implements DriverActuator {
      * @param comment 是否需要注释
      * @return 空 Map
      */
-    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime,
-                                                   String random, Run run, boolean comment) {
+    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         return new LinkedHashMap<>();
     }
 
@@ -424,9 +660,7 @@ public class ArangoActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @SuppressWarnings("unchecked")
-    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime,
-                                                                boolean create, LinkedHashMap<String, T> previous,
-                                                                Column query) throws Exception {
+    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
         if(null == previous){
             previous = new LinkedHashMap<>();
         }
@@ -465,7 +699,6 @@ public class ArangoActuator implements DriverActuator {
         return previous;
     }
 
-    // ===== tables / views =====
 
     /**
      * 获取表列表（ArangoDB 中表等同于 Collection）
@@ -480,9 +713,7 @@ public class ArangoActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @SuppressWarnings("unchecked")
-    public <T extends Table<T>> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime,
-                                                             boolean create, LinkedHashMap<String, T> previous,
-                                                             Table<T> query, int types) throws Exception {
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table<T> query, int types) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -528,9 +759,7 @@ public class ArangoActuator implements DriverActuator {
      * @return 表元数据列表
      * @throws Exception 异常
      */
-    public <T extends Table<T>> List<T> tables(DriverAdapter adapter, DataRuntime runtime,
-                                            boolean create, List<T> previous,
-                                            Table<T> query, int types) throws Exception {
+    public <T extends Table<T>> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table<T> query, int types) throws Exception {
         LinkedHashMap<String, T> map = new LinkedHashMap<>();
         if(null != previous) {
             for(T t : previous) {
@@ -554,9 +783,7 @@ public class ArangoActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @SuppressWarnings("unchecked")
-    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime,
-                                                           boolean create, LinkedHashMap<String, T> previous,
-                                                           View query, int types) throws Exception {
+    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime,  boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -593,9 +820,7 @@ public class ArangoActuator implements DriverActuator {
      * @return 视图元数据列表
      * @throws Exception 异常
      */
-    public <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime,
-                                          boolean create, List<T> previous,
-                                          View query, int types) throws Exception {
+    public <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous,  View query, int types) throws Exception {
         LinkedHashMap<String, T> map = new LinkedHashMap<>();
         if(null != previous) {
             for(T t : previous) {
@@ -620,9 +845,7 @@ public class ArangoActuator implements DriverActuator {
      * @return 列元数据 Map
      * @throws Exception 异常
      */
-    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime,
-                                                               boolean create, LinkedHashMap<String, T> previous,
-                                                               Table table, String cmd) throws Exception {
+    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime,  boolean create, LinkedHashMap<String, T> previous, Table table, String cmd) throws Exception {
         if(BasicUtil.isNotEmpty(table.getName())) {
             Column q = new Column();
             q.setTable(table.getName());
@@ -693,6 +916,134 @@ public class ArangoActuator implements DriverActuator {
         return "\"" + value.toString().replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 
+    // ===== AQL execution helpers =====
+
+    /**
+     * 从 Run 中解析出要执行的 AQL 命令<br/>
+     * ArangoRun: 取 cmd(), 若为空则从 getFinalSelect() 获取<br/>
+     * TextRun: 取 getFinalSelect()
+     */
+    private String resolveAql(Run run, String cmd) {
+        if(run instanceof ArangoRun) {
+            ArangoRun ar = (ArangoRun) run;
+            return BasicUtil.isNotEmpty(ar.cmd()) ? ar.cmd() : ar.getFinalSelect();
+        }
+        if(BasicUtil.isNotEmpty(cmd)) {
+            return cmd;
+        }
+        String aql = run.getFinalExecute();
+        if(BasicUtil.isNotEmpty(aql)) {
+            return aql;
+        }
+        return run.getFinalSelect();
+    }
+
+    /**
+     * 从 Run 中解析出 AQL 绑定变量<br/>
+     * ArangoRun: 取 filter 快照作为 bindVars<br/>
+     * TextRun: 返回空 Map
+     */
+    private Map<String, Object> resolveBindVars(Run run) {
+        if(run instanceof ArangoRun) {
+            ArangoRun ar = (ArangoRun) run;
+            Map<String, Object> filter = ar.getFilter();
+            return (null != filter) ? new HashMap<>(filter) : new HashMap<>();
+        }
+        return new HashMap<>();
+    }
+
+    /**
+     * 从 filter 中提取 _key (优先 _key, 其次 _id)
+     * @param filter 过滤器 Map
+     * @return key 字符串, 没有则返回 null
+     */
+    private String extractKey(Map<String, Object> filter) {
+        if(filter.containsKey("_key")) {
+            return filter.get("_key").toString();
+        } else if(filter.containsKey("_id")) {
+            String id = filter.get("_id").toString();
+            if(id.contains("/")) {
+                return id.substring(id.lastIndexOf("/") + 1);
+            } else {
+                return id;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 将 Java 对象转换为 ArangoDB BaseDocument<br/>
+     * 支持 DataRow / Map / 普通 POJO, 自动处理 _key 字段
+     * @param obj Java 对象
+     * @return BaseDocument
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private BaseDocument document(Object obj) {
+        BaseDocument doc = new BaseDocument();
+        if(obj instanceof DataRow) {
+            DataRow row = (DataRow) obj;
+            for(String key : row.keySet()) {
+                doc.addAttribute(key, row.get(key));
+            }
+        } else if(obj instanceof Map) {
+            Map<String, Object> map = (Map<String, Object>) obj;
+            for(String key : map.keySet()) {
+                doc.addAttribute(key, map.get(key));
+            }
+        } else {
+            Map<String, Object> map = BeanUtil.object2map(obj);
+            for(String key : map.keySet()) {
+                doc.addAttribute(key, map.get(key));
+            }
+        }
+        Object key = doc.getAttribute("_key");
+        if(null != key) {
+            doc.setKey(key.toString());
+            doc.removeAttribute("_key");
+        }
+        return doc;
+    }
+
+    /**
+     * 执行 count 查询<br/>
+     * 适配器生成 count AQL 后存储到 Run, 此方法执行并返回计数结果
+     * @param runtime 运行时环境
+     * @param run 运行对象 (ARUN 已在 ArangoRun.cmd() 中存储 count AQL)
+     * @return 数量
+     */
+    public long count(DataRuntime runtime, Run run) throws Exception {
+        ArangoDatabase database = database(runtime);
+        String aql = resolveAql(run, null);
+        Map<String, Object> bindVars = resolveBindVars(run);
+        AqlQueryOptions options = new AqlQueryOptions();
+        options.count(true);
+        ArangoCursor<Integer> cursor = database.query(aql, Integer.class, bindVars, options);
+        if(cursor.hasNext()) {
+            Integer cnt = cursor.next();
+            return cnt != null ? cnt.longValue() : 0;
+        }
+        return 0;
+    }
+
+    /**
+     * 直接执行 count AQL (供 TextRun 等无法回存 AQL 的场景使用)
+     * @param runtime 运行时环境
+     * @param aql count AQL 命令
+     * @param bindVars 绑定变量
+     * @return 数量
+     */
+    public long countDirect(DataRuntime runtime, String aql, Map<String, Object> bindVars) throws Exception {
+        ArangoDatabase database = database(runtime);
+        AqlQueryOptions options = new AqlQueryOptions();
+        options.count(true);
+        ArangoCursor<Integer> cursor = database.query(aql, Integer.class, bindVars, options);
+        if(cursor.hasNext()) {
+            Integer cnt = cursor.next();
+            return cnt != null ? cnt.longValue() : 0;
+        }
+        return 0;
+    }
+
     // ===== indexes =====
 
     /**
@@ -707,9 +1058,7 @@ public class ArangoActuator implements DriverActuator {
      * @throws Exception 异常
      */
     @SuppressWarnings("unchecked")
-    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime,
-                                                              boolean create, LinkedHashMap<String, T> previous,
-                                                              Index query) throws Exception {
+    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
         if(null == previous) {
             previous = new LinkedHashMap<>();
         }
@@ -743,4 +1092,71 @@ public class ArangoActuator implements DriverActuator {
         return previous;
     }
 
+    /* *****************************************************************************************************************
+     * 													database
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, Database meta) throws Exception
+     * boolean drop(DataRuntime runtime, Database meta) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * database[调用入口]<br/>
+     * 创建数据库
+     * @param meta 数据库
+     * @return boolean
+     */
+    public boolean create(DataRuntime runtime, Database meta) throws Exception {
+        client(runtime).createDatabase(meta.getName());
+        return true;
+    }
+
+    /**
+     * database[调用入口]<br/>
+     * 删除数据库
+     * @param meta 数据库
+     * @return boolean
+     */
+    public boolean drop(DataRuntime runtime, Database meta) throws Exception {
+        ArangoDatabase database = client(runtime).db(meta.getName());
+        if(database.exists()){
+            database.drop();
+        }
+        return true;
+    }
+
+    /* *****************************************************************************************************************
+     * 													table
+     * -----------------------------------------------------------------------------------------------------------------
+     * boolean create(DataRuntime runtime, Table meta) throws Exception
+     * boolean drop(DataRuntime runtime, Table meta) throws Exception
+     ******************************************************************************************************************/
+    /**
+     * database[调用入口]<br/>
+     * 创建Table
+     * @param meta Table
+     * @return boolean
+     */
+    public boolean create(DataRuntime runtime, Table meta) throws Exception {
+        ArangoDatabase database = database(runtime, meta.getDatabaseName());
+        if(meta instanceof org.anyline.metadata.graph.EdgeTable) {
+            database.createCollection(meta.getName(), new CollectionCreateOptions().type(CollectionType.EDGES));
+        } else {
+            database.createCollection(meta.getName());
+        }
+        return true;
+    }
+
+    /**
+     * database[调用入口]<br/>
+     * 删除Table
+     * @param meta Table
+     * @return boolean
+     */
+    public boolean drop(DataRuntime runtime, Table meta) throws Exception {
+        ArangoDatabase database = database(runtime, meta.getDatabaseName());
+        ArangoCollection collection = database.collection(meta.getName());
+        if(collection.exists()){
+            collection.drop();
+        }
+        return true;
+    }
 }

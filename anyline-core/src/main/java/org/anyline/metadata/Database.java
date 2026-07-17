@@ -19,7 +19,7 @@ package org.anyline.metadata;
 
 import java.io.Serializable;
 
-public class Database extends Metadata<Database> implements Serializable {
+public class Database<E extends Database<E>> extends Metadata<E> implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String keyword = "DATABASE"           ;
     protected String charset                      ; // 编码

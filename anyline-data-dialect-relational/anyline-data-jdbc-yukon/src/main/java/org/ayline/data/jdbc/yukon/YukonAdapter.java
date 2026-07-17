@@ -938,8 +938,8 @@ public class YukonAdapter extends PostgresGenusAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet<DataRow> query(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return super.query(runtime, random, system, table, configs, run);
+    public DataSet<DataRow> selects(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        return super.selects(runtime, random, system, table, configs, run);
     }
 
     /**
