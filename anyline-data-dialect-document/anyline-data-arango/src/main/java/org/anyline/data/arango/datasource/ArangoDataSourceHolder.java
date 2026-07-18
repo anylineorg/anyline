@@ -47,6 +47,7 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
         return instance;
     }
     public ArangoDataSourceHolder() {
+        DataSourceHolder.register(DatabaseType.ArangoDB, this);
         DataSourceHolder.register("arango", this);
         DataSourceHolder.register(ArangoDB.class, this);
         DataSourceHolder.register(ArangoDatabase.class, this);
@@ -70,16 +71,38 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
         return null;
     }
 
+    /**
+     * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
+     * @param key 切换数据源依据 默认key=datasource
+     * @param url url
+     * @param type 数据库类型
+     * @param user 用户名
+     * @param password 密码
+     * @return DataSource
+     * @throws Exception 异常 Exception
+     */
     @Override
-    public String create(String key, DatabaseType database, String url, String user, String password) throws Exception {
-        return null;
+    public String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
+        return super.create(key, type, url, user, password);
     }
 
+    /**
+     * 根据配置文件创建数据源
+     * @param key 数据源key
+     * @param prefix 配置文件前缀
+     * @return bean.id
+     */
     @Override
     public String create(String key, String prefix) {
         return reg(key, prefix);
     }
 
+    /**
+     * 验证数据源可用性 如果不可用抛出异常
+     * @param runtime 数据源
+     * @return boolean
+     * @throws Exception 不可用时抛出异常
+     */
     @Override
     public boolean validate(DataRuntime runtime) throws Exception {
         ArangoDatabase database = ((ArangoRuntime)runtime).getDatabase();
@@ -96,6 +119,14 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
         return "";
     }
 
+    /**
+     * 添加数据源，同时添加事务与service
+     * @param key 数据源名称
+     * @param datasource 数据源bean id
+     * @param override 是否覆盖同名数据源
+     * @return DataSource
+     * @throws Exception 异常 Exception
+     */
     @Override
     public String runtime(String key, String datasource, boolean override) throws Exception {
         return datasource;
@@ -172,7 +203,7 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
         String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         try {
             // ====== 1. 读取连接参数 ======
-            String host = value(prefix, params, "host,hosts", String.class, null);
+            String host = value(prefix, params, "host,hosts,url", String.class, null);
             int port = value(prefix, params, "port", Integer.class, 8529);
             String user = value(prefix, params, "user,user-name", String.class, null);
             String password = value(prefix, params, "password", String.class, "");
@@ -254,6 +285,9 @@ public class ArangoDataSourceHolder extends AbstractDataSourceHolder implements 
                     if(cleanHost.contains(":")) {
                         int lastColon = cleanHost.lastIndexOf(":");
                         try {
+                            if(cleanHost.contains("?")){
+                                cleanHost = cleanHost.split("\\?")[0];
+                            }
                             portVal = Integer.parseInt(cleanHost.substring(lastColon + 1).trim());
                             cleanHost = cleanHost.substring(0, lastColon).trim();
                         } catch(NumberFormatException e) {

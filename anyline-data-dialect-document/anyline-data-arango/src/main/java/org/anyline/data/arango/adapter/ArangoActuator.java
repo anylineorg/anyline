@@ -32,10 +32,10 @@ import org.anyline.data.arango.run.ArangoRun;
 import org.anyline.data.arango.runtime.ArangoRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
@@ -293,9 +293,18 @@ public class ArangoActuator implements DriverActuator {
                 for(String key : row.getProperties().keySet()) {
                     arangoRow.set(key, row.getAttribute(key));
                 }
-                arangoRow.set("_key", row.getKey());
-                arangoRow.set("_id", row.getId());
-                arangoRow.set("_rev", row.getRevision());
+                String key = row.getKey();
+                String id = row.getId();
+                String rev = row.getRevision();
+                if(null != key){
+                    arangoRow.put("_key", key);
+                }
+                if(null != id){
+                    arangoRow.put("_id", id);
+                }
+                if(null != rev){
+                    arangoRow.put("_rev", rev);
+                }
                 set.add(arangoRow);
             }
         } catch(Exception e) {
@@ -347,9 +356,18 @@ public class ArangoActuator implements DriverActuator {
                 for(String key : row.getProperties().keySet()) {
                     map.put(key, row.getAttribute(key));
                 }
-                map.put("_key", row.getKey());
-                map.put("_id", row.getId());
-                map.put("_rev", row.getRevision());
+                String key = row.getKey();
+                String id = row.getId();
+                String rev = row.getRevision();
+                if(null != key){
+                    map.put("_key", key);
+                }
+                if(null != id){
+                    map.put("_id", id);
+                }
+                if(null != rev){
+                    map.put("_rev", rev);
+                }
                 maps.add(map);
             }
         } catch(Exception e) {
@@ -381,13 +399,15 @@ public class ArangoActuator implements DriverActuator {
 
     /**
      * 执行插入操作<br/>
-     * 从 Run 中获取数据, 直接调用 ArangoCollection 原生 API 执行插入, 并回写 _key/_id
+     * 从 ArangoRun 中获取 Adapter 已封装好的 BaseDocument 列表,<br/>
+     * 直接调用 ArangoDB 原生 driver 执行插入, 并回写 _key/_id 到原始数据对象<br/>
+     * Actuator 不做任何数据转换, 只负责调用官方驱动
      * @param adapter 驱动适配器
      * @param runtime 运行时环境
      * @param random 命令组标记
      * @param data 待插入数据
      * @param configs 配置存储
-     * @param run 运行对象
+     * @param run 运行对象 (ArangoRun, 已由 Adapter 封装好 documents + sourceObjects)
      * @param generatedKey 自增主键 key
      * @param pks 主键列表
      * @return 影响行数
@@ -396,9 +416,13 @@ public class ArangoActuator implements DriverActuator {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
-        long cnt = 0;
-        Object value = run.getValue();
-        if(null == value) {
+        if(!(run instanceof ArangoRun)) {
+            return -1;
+        }
+        ArangoRun ar = (ArangoRun) run;
+        List<BaseDocument> docs = ar.getDocuments();
+        List<Object> sources = ar.getSourceObjects();
+        if(null == docs || docs.isEmpty()) {
             return -1;
         }
         ArangoDatabase database = database(runtime);
@@ -407,70 +431,17 @@ public class ArangoActuator implements DriverActuator {
         }
         ArangoCollection cons = database.collection(run.getTableName());
         try {
-            if(value instanceof List) {
-                List list = (List) value;
-                cnt = list.size();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(Object item : list) {
-                    docs.add(document(item));
+            List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
+            int idx = 0;
+            for(Object source : sources) {
+                DocumentCreateEntity<Void> result = results.get(idx++);
+                if(source instanceof DataRow) {
+                    ((DataRow) source).set("_key", result.getKey());
+                    ((DataRow) source).set("_id", result.getId());
+                } else {
+                    BeanUtil.setFieldValue(source, "_key", result.getKey());
+                    BeanUtil.setFieldValue(source, "_id", result.getId());
                 }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(Object item : list) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    BeanUtil.setFieldValue(item, "_key", result.getKey());
-                    BeanUtil.setFieldValue(item, "_id", result.getId());
-                }
-            } else if(value instanceof DataSet) {
-                DataSet<DataRow> set = (DataSet) value;
-                cnt = set.size();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(DataRow row : set) {
-                    docs.add(document(row));
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(DataRow row : set) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    row.set("_key", result.getKey());
-                    row.set("_id", result.getId());
-                }
-            } else if(value instanceof EntitySet) {
-                List<Object> datas = ((EntitySet) value).getDatas();
-                cnt = datas.size();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(Object item : datas) {
-                    docs.add(document(item));
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(Object item : datas) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    BeanUtil.setFieldValue(item, "_key", result.getKey());
-                    BeanUtil.setFieldValue(item, "_id", result.getId());
-                }
-            } else if(value instanceof Collection) {
-                Collection items = (Collection) value;
-                List<Object> list = new ArrayList<>();
-                List<BaseDocument> docs = new ArrayList<>();
-                for(Object item : items) {
-                    list.add(item);
-                    docs.add(document(item));
-                    cnt++;
-                }
-                List<DocumentCreateEntity<Void>> results = cons.insertDocuments(docs).getDocuments();
-                int idx = 0;
-                for(Object item : list) {
-                    DocumentCreateEntity<Void> result = results.get(idx++);
-                    BeanUtil.setFieldValue(item, "_key", result.getKey());
-                    BeanUtil.setFieldValue(item, "_id", result.getId());
-                }
-            } else {
-                BaseDocument doc = document(value);
-                DocumentCreateEntity<Void> result = cons.insertDocument(doc);
-                BeanUtil.setFieldValue(value, "_key", result.getKey());
-                BeanUtil.setFieldValue(value, "_id", result.getId());
-                cnt = 1;
             }
         } catch(Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -478,7 +449,7 @@ public class ArangoActuator implements DriverActuator {
             }
             throw e;
         }
-        return cnt;
+        return docs.size();
     }
 
     /**
@@ -512,13 +483,13 @@ public class ArangoActuator implements DriverActuator {
             }else if(action == ACTION.DDL.TABLE_DROP){
                 drop(runtime, (Table)run.metadata());
             }else{
-                // DML update: 从 ArangoRun 获取命令信息
+                // DML update: filter 从 conditionChain 构建, updateData 从 RunValues 构建
                 ArangoDatabase database = database(runtime);
                 ArangoCollection cons = database.collection(run.getTableName());
                 if(run instanceof ArangoRun) {
-                    ArangoRun ar = (ArangoRun) run;
-                    Map<String, Object> updateData = ar.getUpdateData();
-                    Map<String, Object> filter = ar.getFilter();
+                    ArangoAdapter aa = (ArangoAdapter) adapter;
+                    Map<String, Object> updateData = aa.buildBindVars(run.getRunValues());
+                    Map<String, Object> filter = aa.buildFilterMap(run.getConditionChain());
                     if(null != filter && !filter.isEmpty() && null != updateData && !updateData.isEmpty()) {
                         BaseDocument doc = new BaseDocument();
                         for(Map.Entry<String, Object> entry : updateData.entrySet()) {
@@ -530,10 +501,9 @@ public class ArangoActuator implements DriverActuator {
                             DocumentUpdateEntity<Void> updateResult = cons.updateDocument(key, doc);
                             result = 1;
                         } else {
-                            String aql = ar.cmd();
-                            Map<String, Object> bindVars = new HashMap<>();
-                            bindVars.putAll(filter);
-                            bindVars.putAll(updateData);
+                            // AQL 已由 Adapter 存入 builder, bindVars 已存入 values (updateData + filter 合并)
+                            String aql = run.getBuilder().toString();
+                            Map<String, Object> bindVars = resolveBindVars(run);
                             AqlQueryOptions options = new AqlQueryOptions();
                             ArangoCursor<BaseDocument> cursor = database.query(aql, BaseDocument.class, bindVars, options);
                             result = 1;
@@ -582,10 +552,9 @@ public class ArangoActuator implements DriverActuator {
             if(BasicUtil.isNotEmpty(tableName)) {
                 cons = database.collection(tableName);
             }
-            // 如果是 ArangoRun, 优先尝试 key 删除
+            // 如果是 ArangoRun, 优先尝试 key 删除 (filter 已由 fillDeleteRunContent 存入 values)
             if(run instanceof ArangoRun) {
-                ArangoRun ar = (ArangoRun) run;
-                Map<String, Object> filter = ar.getFilter();
+                Map<String, Object> filter = resolveBindVars(run);
                 if(null != filter && !filter.isEmpty() && null != cons) {
                     String key = extractKey(filter);
                     if(null != key) {
@@ -925,8 +894,11 @@ public class ArangoActuator implements DriverActuator {
      */
     private String resolveAql(Run run, String cmd) {
         if(run instanceof ArangoRun) {
-            ArangoRun ar = (ArangoRun) run;
-            return BasicUtil.isNotEmpty(ar.cmd()) ? ar.cmd() : ar.getFinalSelect();
+            String aql = run.getBuilder().toString();
+            if(BasicUtil.isNotEmpty(aql)) {
+                return aql;
+            }
+            return run.getFinalSelect();
         }
         if(BasicUtil.isNotEmpty(cmd)) {
             return cmd;
@@ -944,12 +916,16 @@ public class ArangoActuator implements DriverActuator {
      * TextRun: 返回空 Map
      */
     private Map<String, Object> resolveBindVars(Run run) {
-        if(run instanceof ArangoRun) {
-            ArangoRun ar = (ArangoRun) run;
-            Map<String, Object> filter = ar.getFilter();
-            return (null != filter) ? new HashMap<>(filter) : new HashMap<>();
+        Map<String, Object> vars = new HashMap<>();
+        List<RunValue> values = run.getRunValues();
+        if(null != values) {
+            for(RunValue rv : values) {
+                if(null != rv.getKey()) {
+                    vars.put(rv.getKey(), rv.getValue());
+                }
+            }
         }
-        return new HashMap<>();
+        return vars;
     }
 
     /**
@@ -971,71 +947,19 @@ public class ArangoActuator implements DriverActuator {
         return null;
     }
 
-    /**
-     * 将 Java 对象转换为 ArangoDB BaseDocument<br/>
-     * 支持 DataRow / Map / 普通 POJO, 自动处理 _key 字段
-     * @param obj Java 对象
-     * @return BaseDocument
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private BaseDocument document(Object obj) {
-        BaseDocument doc = new BaseDocument();
-        if(obj instanceof DataRow) {
-            DataRow row = (DataRow) obj;
-            for(String key : row.keySet()) {
-                doc.addAttribute(key, row.get(key));
-            }
-        } else if(obj instanceof Map) {
-            Map<String, Object> map = (Map<String, Object>) obj;
-            for(String key : map.keySet()) {
-                doc.addAttribute(key, map.get(key));
-            }
-        } else {
-            Map<String, Object> map = BeanUtil.object2map(obj);
-            for(String key : map.keySet()) {
-                doc.addAttribute(key, map.get(key));
-            }
-        }
-        Object key = doc.getAttribute("_key");
-        if(null != key) {
-            doc.setKey(key.toString());
-            doc.removeAttribute("_key");
-        }
-        return doc;
-    }
 
     /**
-     * 执行 count 查询<br/>
-     * 适配器生成 count AQL 后存储到 Run, 此方法执行并返回计数结果
+     * 直接执行 count AQL (供 ArangoRun/TextRun 使用)
+     * 注意: 调用方已将 AQL 变换为 COLLECT WITH COUNT INTO cnt RETURN cnt,
+     *       查询结果直接返回整数, 不需要 options.count(true)
      * @param runtime 运行时环境
-     * @param run 运行对象 (ARUN 已在 ArangoRun.cmd() 中存储 count AQL)
-     * @return 数量
-     */
-    public long count(DataRuntime runtime, Run run) throws Exception {
-        ArangoDatabase database = database(runtime);
-        String aql = resolveAql(run, null);
-        Map<String, Object> bindVars = resolveBindVars(run);
-        AqlQueryOptions options = new AqlQueryOptions();
-        options.count(true);
-        ArangoCursor<Integer> cursor = database.query(aql, Integer.class, bindVars, options);
-        if(cursor.hasNext()) {
-            Integer cnt = cursor.next();
-            return cnt != null ? cnt.longValue() : 0;
-        }
-        return 0;
-    }
-
-    /**
-     * 直接执行 count AQL (供 TextRun 等无法回存 AQL 的场景使用)
-     * @param runtime 运行时环境
-     * @param aql count AQL 命令
+     * @param aql count AQL 命令 (已包含 COLLECT WITH COUNT)
      * @param bindVars 绑定变量
      * @return 数量
      */
     public long countDirect(DataRuntime runtime, String aql, Map<String, Object> bindVars) throws Exception {
         ArangoDatabase database = database(runtime);
         AqlQueryOptions options = new AqlQueryOptions();
-        options.count(true);
         ArangoCursor<Integer> cursor = database.query(aql, Integer.class, bindVars, options);
         if(cursor.hasNext()) {
             Integer cnt = cursor.next();

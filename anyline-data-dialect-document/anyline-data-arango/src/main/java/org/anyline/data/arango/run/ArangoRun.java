@@ -17,28 +17,28 @@
 
 package org.anyline.data.arango.run;
 
+import com.arangodb.entity.BaseDocument;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Table;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * ArangoDB 执行命令封装<br/>
- * 承载 AQL 查询字符串与绑定参数, 以及更新数据/过滤条件等
+ * 承载 AQL 查询字符串与绑定参数, 以及更新数据/过滤条件等<br/>
+ * cmd/vars/updateData/filter 属性定义在父类 AbstractRun 中<br/><br/>
+ * Adapter 负责将数据转换为 ArangoDB 原生格式 (BaseDocument) 存入 documents,<br/>
+ * 同时保存原始数据引用 (sourceObjects) 用于写回 _key/_id<br/>
+ * Actuator 只需从 documents 取出 BaseDocument, 调用 driver 即可
  */
 public class ArangoRun extends TableRun implements Run {
 
-    /** AQL 查询字符串(完整 AQL 语句或 WHERE 子句片段) */
-    private String cmd;
-    /** AQL 绑定变量 key-value */
-    private Map<String, Object> vars;
-    /** 更新数据 Map(对应 AQL UPDATE ... WITH @update 中的 @update) */
-    private Map<String, Object> updateData;
-    /** 过滤器条件 Map(用于构建 AQL WHERE 子句) */
-    private Map<String, Object> filter;
+    /** Adapter 已转换好的 BaseDocument 列表, Actuator 直接用于调用 driver */
+    private List<BaseDocument> documents;
+    /** 原始数据对象引用 (与 documents 一一对应), Actuator 用于写回 _key/_id */
+    private List<Object> sourceObjects;
 
     public ArangoRun(DataRuntime runtime, String table) {
         super(runtime, table);
@@ -50,53 +50,39 @@ public class ArangoRun extends TableRun implements Run {
         super(runtime);
     }
 
-    // ===== AQL =====
-
-    public String cmd() {
-        return cmd;
+    public List<BaseDocument> getDocuments() {
+        return documents;
     }
-    public void cmd(String cmd) {
-        this.cmd = cmd;
+    public void setDocuments(List<BaseDocument> documents) {
+        this.documents = documents;
+    }
+    public List<Object> getSourceObjects() {
+        return sourceObjects;
+    }
+    public void setSourceObjects(List<Object> sourceObjects) {
+        this.sourceObjects = sourceObjects;
     }
 
-    // ===== bindVars =====
-
-    public Map<String, Object> vars() {
-        if(null == vars) {
-            vars = new HashMap<>();
+    /**
+     * ArangoDB INSERT 用 documents (BaseDocument), SELECT 用 builder (AQL)<br/>
+     * 覆写父类的默认 false, 根据实际情况判断
+     */
+    @Override
+    public boolean checkValid() {
+        if(null != documents && !documents.isEmpty()) {
+            return true;
         }
-        return vars;
-    }
-    public void vars(Map<String, Object> vars) {
-        this.vars = vars;
-    }
-    public void addVar(String key, Object value) {
-        if(null == vars) {
-            vars = new HashMap<>();
+        if(null != getBuilder() && getBuilder().length() > 0) {
+            return true;
         }
-        vars.put(key, value);
-    }
-
-    // ===== updateData =====
-
-    public Map<String, Object> getUpdateData() {
-        return updateData;
-    }
-    public void setUpdateData(Map<String, Object> updateData) {
-        this.updateData = updateData;
-    }
-
-    // ===== filter =====
-
-    public Map<String, Object> getFilter() {
-        return filter;
-    }
-    public void setFilter(Map<String, Object> filter) {
-        this.filter = filter;
+        return super.checkValid();
     }
 
     @Override
-    public boolean checkValid() {
-        return true;
+    public boolean isEmpty() {
+        if(null != documents && !documents.isEmpty()) {
+            return false;
+        }
+        return super.isEmpty();
     }
 }

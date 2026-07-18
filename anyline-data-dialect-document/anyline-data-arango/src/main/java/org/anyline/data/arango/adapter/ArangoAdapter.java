@@ -19,6 +19,10 @@ package org.anyline.data.arango.adapter;
 
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoDatabase;
+import com.arangodb.entity.BaseDocument;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
@@ -54,7 +58,10 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.*;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.LogUtil;
 
 import java.util.*;
 
@@ -179,7 +186,23 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
-        return createInsertRun(runtime, dest, obj, configs, placeholder, unicode, columns);
+        Run run = null;
+        if(null == obj) {
+            return null;
+        }
+        if(null == dest) {
+            dest = DataSourceUtil.parseDest(null, obj, configs);
+        }
+        if(obj instanceof Collection) {
+            Collection list = (Collection) obj;
+            if(null != list && !list.isEmpty()) {
+                run = createInsertRunFromCollection(runtime, batch, dest, list, configs, placeholder, unicode, columns);
+            }
+        }else {
+            run = createInsertRun(runtime, dest, obj, configs, placeholder, unicode, columns);
+        }
+        convert(runtime, configs, run);
+        return run;
     }
 
     /**
@@ -205,27 +228,9 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
-    @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet<DataRow> set, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
-        super.fillInsertContent(runtime, run, dest, set, configs, placeholder, unicode, columns);
-    }
-
-    /**
-     * insert [命令合成-子流程]<br/>
-     * 填充inset命令内容(创建批量INSERT RunPrepare)
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param list 需要插入的数据集合
-     * @param configs configs
-     * @param placeholder 占位符
-     * @param unicode 编码
-     * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
-     */
-    @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
-        super.fillInsertContent(runtime, run, dest, list, configs, placeholder, unicode, columns);
-    }
+    // ArangoDB insert 通过 ArangoActuator.insert() 使用原生 API 执行
+    // createInsertRun/createInsertRunFromCollection 已通过 run.setValue() 设置数据
+    // fillInsertContent 无需生成 SQL/AQL 命令, 使用父类空实现即可
 
     /**
      * 插入子表前 检测并创建子表
@@ -310,7 +315,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
-        Run run = new ArangoRun(runtime, dest);
+        ArangoRun run = new ArangoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             Object pv = BeanUtil.getFieldValue(obj, "_key", true);
@@ -324,6 +329,13 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
         run.setValue(obj);
+        // Adapter 负责将数据转换为 ArangoDB 原生格式, 存入 Run 供 Actuator 直接使用
+        List<BaseDocument> docs = new ArrayList<>();
+        docs.add(document(obj));
+        run.setDocuments(docs);
+        List<Object> sources = new ArrayList<>();
+        sources.add(obj);
+        run.setSourceObjects(sources);
         return run;
     }
 
@@ -338,7 +350,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, List<String> columns) {
-        Run run = new ArangoRun(runtime, dest);
+        ArangoRun run = new ArangoRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             List<String> pk = new ArrayList<>();
@@ -351,7 +363,50 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
         run.setValue(list);
+        // Adapter 负责将数据转换为 ArangoDB 原生格式, 存入 Run 供 Actuator 直接使用
+        List<BaseDocument> docs = new ArrayList<>();
+        List<Object> sources = new ArrayList<>();
+        for (Object item : list) {
+            docs.add(document(item));
+            sources.add(item);
+        }
+        run.setDocuments(docs);
+        run.setSourceObjects(sources);
         return run;
+    }
+
+    /**
+     * 将 Java 对象转换为 ArangoDB BaseDocument<br/>
+     * 支持 DataRow / Map / 普通 POJO, 自动处理 _key 字段<br/>
+     * Adapter 负责数据封装, Actuator 直接从 Run 取 BaseDocument 调 driver
+     * @param obj Java 对象
+     * @return BaseDocument
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private BaseDocument document(Object obj) {
+        BaseDocument doc = new BaseDocument();
+        if(obj instanceof DataRow) {
+            DataRow row = (DataRow) obj;
+            for(String key : row.keySet()) {
+                doc.addAttribute(key, row.get(key));
+            }
+        } else if(obj instanceof Map) {
+            Map<String, Object> map = (Map<String, Object>) obj;
+            for(String key : map.keySet()) {
+                doc.addAttribute(key, map.get(key));
+            }
+        } else {
+            Map<String, Object> map = BeanUtil.object2map(obj);
+            for(String key : map.keySet()) {
+                doc.addAttribute(key, map.get(key));
+            }
+        }
+        Object key = doc.getAttribute("_key");
+        if(null != key) {
+            doc.removeAttribute("_key");
+            doc.setKey(key.toString());
+        }
+        return doc;
     }
 
     /**
@@ -364,8 +419,8 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.generatedKey();
     }
 
-    // insert [命令执行] 由父类 AbstractDriverAdapter 委托给 actuator.insert()
-    // 无需覆盖, ArangoActuator.insert() 已实现完整的 ArangoDB 驱动执行逻辑
+    // insert [命令执行] 委托给 ArangoActuator.insert()
+    // Actuator 负责从 Run 中提取数据并调用 ArangoDB 原生 API 执行
 
     /**
      * 是否支持返回自增主键值
@@ -529,7 +584,8 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
 
-        Map<String, Object> updateData = new HashMap<>();
+        // 设置更新列
+        LinkedHashMap<String, Column> updateCols = new LinkedHashMap<>();
         for(Map.Entry<String, Column> entry : cols.entrySet()) {
             String key = entry.getKey().toLowerCase();
             Object value = BeanUtil.getFieldValue(obj, key, true);
@@ -537,23 +593,34 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
                 value = BeanUtil.getFieldValue(obj, key.toUpperCase(), true);
             }
             if(null != value) {
-                updateData.put(key, value);
+                updateCols.put(key.toUpperCase(), entry.getValue());
+            }
+        }
+        run.setUpdateColumns(updateCols);
+
+        // 将更新值存入 values (key=列名, value=值)
+        for(Map.Entry<String, Column> entry : updateCols.entrySet()) {
+            String key = entry.getKey().toLowerCase();
+            Object value = BeanUtil.getFieldValue(obj, key, true);
+            if(null == value) {
+                value = BeanUtil.getFieldValue(obj, key.toUpperCase(), true);
+            }
+            if(null != value) {
+                run.addValues(new RunValue(key, value));
             }
         }
 
-        Map<String, Object> filter = new HashMap<>();
+        // 主键条件加入 conditionChain
         for(String pk : primaryKeys) {
             Object value = BeanUtil.getFieldValue(obj, pk.toLowerCase(), true);
             if(null == value) {
                 value = BeanUtil.getFieldValue(obj, pk.toUpperCase(), true);
             }
             if(null != value) {
-                filter.put(pk.toLowerCase(), value);
+                run.addCondition(Compare.EMPTY_VALUE_SWITCH.IGNORE, Compare.EQUAL, null, pk.toLowerCase(), value, null);
             }
         }
 
-        run.setUpdateData(updateData);
-        run.setFilter(filter);
         return run;
     }
 
@@ -569,7 +636,76 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
-        return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, placeholder, unicode, columns);
+        ArangoRun run = new ArangoRun(runtime, dest);
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+        List<String> primaryKeys = new ArrayList<>();
+
+        // 确定需要更新的列
+        if(null != columns && !columns.isEmpty()) {
+            cols.putAll(columns);
+        } else {
+            // DataRow 无 entity 注解, 使用行中所有 key 作为列
+            for(String key : row.keySet()) {
+                cols.put(key.toUpperCase(), new Column(key));
+            }
+        }
+
+        // 确定主键
+        if(row.hasPrimaryKeys()) {
+            primaryKeys = row.getPrimaryKeys();
+        } else if(row.containsKey("_key")) {
+            primaryKeys.add("_key");
+        } else if(row.containsKey("_id")) {
+            primaryKeys.add("_id");
+        } else {
+            throw new CommandUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
+        }
+
+        // 不更新主键 除非显示指定
+        for(String pk : primaryKeys) {
+            if(!columns.containsKey(pk.toUpperCase())) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+
+        // 设置更新列
+        LinkedHashMap<String, Column> updateCols = new LinkedHashMap<>();
+        for(Map.Entry<String, Column> entry : cols.entrySet()) {
+            String key = entry.getKey().toLowerCase();
+            Object value = row.get(key);
+            if(null == value) {
+                value = row.get(key.toUpperCase());
+            }
+            if(null != value) {
+                updateCols.put(key.toUpperCase(), entry.getValue());
+            }
+        }
+        run.setUpdateColumns(updateCols);
+
+        // 将更新值存入 values (key=列名, value=值)
+        for(Map.Entry<String, Column> entry : updateCols.entrySet()) {
+            String key = entry.getKey().toLowerCase();
+            Object value = row.get(key);
+            if(null == value) {
+                value = row.get(key.toUpperCase());
+            }
+            if(null != value) {
+                run.addValues(new RunValue(key, value));
+            }
+        }
+
+        // 主键条件加入 conditionChain
+        for(String pk : primaryKeys) {
+            Object value = row.get(pk.toLowerCase());
+            if(null == value) {
+                value = row.get(pk.toUpperCase());
+            }
+            if(null != value) {
+                run.addCondition(Compare.EMPTY_VALUE_SWITCH.IGNORE, Compare.EQUAL, null, pk.toLowerCase(), value, null);
+            }
+        }
+
+        return run;
     }
 
     /**
@@ -657,16 +793,20 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         long fr = System.currentTimeMillis();
         try {
             ArangoRun mr = (ArangoRun) run;
-            Map<String, Object> updateData = mr.getUpdateData();
-            Map<String, Object> filter = mr.getFilter();
+            Map<String, Object> filter = buildFilterMap(mr.getConditionChain());
+            Map<String, Object> updateData = buildBindVars(mr.getRunValues());
             if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
                 log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTableName(), updateData, filter);
             }
             if(null != filter && !filter.isEmpty() && null != updateData && !updateData.isEmpty()) {
-                // AQL 命令生成 (Adapter 职责): 非 key 匹配时生成 AQL 并存入 Run
+                // AQL 命令生成 (Adapter 职责): 非 key 匹配时生成 AQL 并存入 builder
                 boolean keyBased = filter.containsKey("_key") || filter.containsKey("_id");
                 if(!keyBased) {
-                    mr.cmd(buildUpdateAQL(mr, updateData));  // 生成 AQL 存入 Run
+                    mr.getBuilder().append(buildUpdateAQL(run.getTableName(), filter, updateData));
+                    // bindVars: values 中已有 updateData, 追加 filter
+                    for(Map.Entry<String, Object> entry : filter.entrySet()) {
+                        mr.addValues(new RunValue(entry.getKey(), entry.getValue()));
+                    }
                 }
                 // 驱动执行 (Actuator 职责)
                 result = actuator.update(this, runtime, random, dest, data, configs, run);
@@ -702,11 +842,9 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         return result;
     }
 
-    private String buildUpdateAQL(ArangoRun run, Map<String, Object> updateData) {
+    private String buildUpdateAQL(String tableName, Map<String, Object> filter, Map<String, Object> updateData) {
         StringBuilder sb = new StringBuilder();
-        sb.append("FOR doc IN ").append(run.getTableName());
-
-        Map<String, Object> filter = run.getFilter();
+        sb.append("FOR doc IN ").append(tableName);
         if(null != filter && !filter.isEmpty()) {
             sb.append(" FILTER ");
             boolean first = true;
@@ -780,7 +918,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             sb.append(entry.getKey()).append(": @").append(entry.getKey());
             first = false;
         }
-        sb.append(" } IN ").append(run.getTableName());
+        sb.append(" } IN ").append(tableName);
         return sb.toString();
     }
 
@@ -1014,7 +1152,12 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public RunPrepare buildRunPrepare(DataRuntime runtime, String text) {
-        return new DefaultTextPrepare(text, false);
+        RunPrepare prepare = null;
+        if(null != text && text.toUpperCase().trim().startsWith("FOR")){
+            // FOR DOC IN USERS LIMIT 3, 10 RETURN { _KEY: DOC._KEY, _ID: DOC._ID, _REV: DOC._REV, USER_NAME: DOC.NAME }
+            prepare = new DefaultTextPrepare(text,false);
+        }
+        return prepare;
     }
 
     /**
@@ -1095,6 +1238,11 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public Run fillSelectContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
+        if(run instanceof TableRun) {
+            // ArangoRun: 设置 filter bindVars、列配置, 并合成完整 AQL 命令存入 builder
+            return fillSelectContent(runtime, (TableRun)run, placeholder, unicode);
+        }
+        // TextRun/XMLRun: 走父类流程
         return super.fillSelectContent(runtime, run, placeholder, unicode);
     }
 
@@ -1140,7 +1288,8 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     protected Run fillSelectContent(DataRuntime runtime, TextRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillSelectContent(runtime, run, placeholder, unicode);
+        super.fillSelectContent(runtime, run, placeholder, unicode);
+        return run;
     }
 
     /**
@@ -1163,10 +1312,12 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
     protected Run fillSelectContent(DataRuntime runtime, TableRun run, Boolean placeholder, Boolean unicode) {
         ArangoRun r = (ArangoRun) run;
         ConditionChain chain = r.getConditionChain();
-        Map<String, Object> filter = new HashMap<>();
-        buildFilter(filter, chain);
-        r.setFilter(filter);
 
+        // 1) 构建 filter 并存入 values 作为 bindVars
+        r.getRunValues().clear();
+        appendFilterVars(r, chain);
+
+        // 2) 处理 excludeColumns
         List<String> excludeColumns = r.getExcludeColumns();
         if(null == excludeColumns || excludeColumns.isEmpty()) {
             ConfigStore configs = r.getConfigs();
@@ -1178,6 +1329,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             r.setExcludeColumns(excludeColumns);
         }
 
+        // 3) 处理 selectColumns
         List<String> selectColumns = r.getSelectColumns();
         if(null == selectColumns || selectColumns.isEmpty()) {
             ConfigStore configs = r.getConfigs();
@@ -1192,11 +1344,99 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
                 selectColumns = Column.names(columns);
             }
         }
-
         if(null != selectColumns && !selectColumns.isEmpty()) {
             r.setSelectColumns(selectColumns);
         }
+
+        // 4) Adapter 负责合成完整 AQL 查询命令, 存入 builder 供 Actuator 直接使用
+        Map<String, Object> filter = buildBindVars(r.getRunValues());
+        r.getBuilder().setLength(0);
+        r.getBuilder().append(buildAQL(r, filter));
+
+        // 5) buildAQL 内 cleanBindKey 会修改 filter 的 key (如 NAME>= → NAME_gte_),
+        //    必须同步 runValues, 否则 resolveBindVars 拿到的 key 与 AQL 引用的 @XXX 不一致
+        r.getRunValues().clear();
+        for(Map.Entry<String, Object> entry : filter.entrySet()) {
+            r.addValues(new RunValue(entry.getKey(), entry.getValue()));
+        }
+
         return r;
+    }
+
+    // ===== fillUpdateContent / 辅助方法 =====
+
+    /**
+     * update [命令合成-子流程]<br/>
+     * 从 conditionChain + values 合成 AQL 并存入 builder
+     */
+    @Override
+    public void fillUpdateContent(DataRuntime runtime, TableRun run, DataRow data, ConfigStore configs, Boolean placeholder, Boolean unicode) {
+        ArangoRun r = (ArangoRun) run;
+        ConditionChain chain = r.getConditionChain();
+
+        // 清空并重建 bindVars (values)
+        r.getRunValues().clear();
+
+        // 1) filter bindVars from conditionChain
+        appendFilterVars(r, chain);
+
+        // 2) updateData bindVars from DataRow (合并到 values)
+        LinkedHashMap<String, Column> updateColumns = r.getUpdateColumns(true);
+        if(null != updateColumns) {
+            for(Map.Entry<String, Column> entry : updateColumns.entrySet()) {
+                String key = entry.getKey().toLowerCase();
+                Object value = data.get(key);
+                if(null != value) {
+                    r.addValues(new RunValue(key, value));
+                }
+            }
+        }
+
+        // 3) 构建 AQL 并存入 builder
+        Map<String, Object> filter = buildFilterMap(chain);
+        Map<String, Object> updateData = buildBindVars(r.getRunValues());
+        if(null != filter && !filter.isEmpty() && null != updateData && !updateData.isEmpty()) {
+            boolean keyBased = filter.containsKey("_key") || filter.containsKey("_id");
+            if(!keyBased) {
+                r.getBuilder().append(buildUpdateAQL(r.getTableName(), filter, updateData));
+            }
+        }
+    }
+
+    /**
+     * 将 ConditionChain 解析为 filter Map (带特殊 key 编码)
+     */
+    Map<String, Object> buildFilterMap(ConditionChain chain) {
+        Map<String, Object> filter = new HashMap<>();
+        buildFilter(filter, chain);
+        return filter;
+    }
+
+    /**
+     * 将 filter 条目以 RunValue 形式注入 values 列表 (key=bindVarName, value=值)
+     */
+    private void appendFilterVars(TableRun run, ConditionChain chain) {
+        Map<String, Object> filter = new HashMap<>();
+        buildFilter(filter, chain);
+        for(Map.Entry<String, Object> entry : filter.entrySet()) {
+            run.addValues(new RunValue(entry.getKey(), entry.getValue()));
+        }
+    }
+
+    /**
+     * 从 values (List&lt;RunValue&gt;) 构建 bindVars Map<br/>
+     * 跳过无 key 的条目(如位置参数)
+     */
+    Map<String, Object> buildBindVars(List<RunValue> values) {
+        Map<String, Object> vars = new HashMap<>();
+        if(null != values) {
+            for(RunValue rv : values) {
+                if(null != rv.getKey()) {
+                    vars.put(rv.getKey(), rv.getValue());
+                }
+            }
+        }
+        return vars;
     }
 
     private void buildFilter(Map<String, Object> filter, Condition condition) {
@@ -1298,14 +1538,15 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
     }
     /**
-     * 有些非JDBC环境也需要用到SQL
+     * ArangoDB 不走父类 SQL 生成, AQL 在 fillSelectContent(TableRun) 中合成
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder 有可能合个run合成一个 所以提供一个共用builder
      * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
      */
     @Override
     protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, TableRun run, Boolean placeholder, Boolean unicode) {
-        return super.fillSelectContent(runtime, builder, run, placeholder, unicode);
+        // 不调用 super 避免生成 SQL (ArangoDB 使用 AQL)
+        return fillSelectContent(runtime, run, placeholder, unicode);
     }
 
     /**
@@ -1393,16 +1634,10 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
         DataSet<DataRow> set = new DataSet();
         try {
-            // AQL 命令生成 (Adapter 职责)
+            // AQL 命令已在 fillSelectContent 中由 Adapter 合成, 此处仅日志 + 委托 actuator 执行
             if(run instanceof ArangoRun) {
-                ArangoRun r = (ArangoRun) run;
-                Map<String, Object> filter = r.getFilter();
-                if(BasicUtil.isEmpty(r.cmd())) {
-                    r.cmd(buildAQL(r));  // 生成 AQL 存入 Run
-                }
-                r.vars((null != filter) ? new HashMap<>(filter) : new HashMap<>());
                 if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                    log.info("{}[cmd:select][collection:{}][aql:{}][filter:{}]", random, run.getTableName(), r.cmd(), filter);
+                    log.info("{}[cmd:select][collection:{}][aql:{}]", random, run.getTableName(), run.getBuilder().toString());
                 }
             } else {
                 // TextRun: AQL 由 mergeFinalSelect 合成, 直接委托 actuator 执行
@@ -1455,11 +1690,9 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         return cleanKey;
     }
 
-    private String buildAQL(ArangoRun run) {
+    private String buildAQL(ArangoRun run, Map<String, Object> filter) {
         StringBuilder sb = new StringBuilder();
         sb.append("FOR doc IN ").append(run.getTableName());
-
-        Map<String, Object> filter = run.getFilter();
         if(null != filter && !filter.isEmpty()) {
             sb.append(" FILTER ");
             boolean first = true;
@@ -1553,10 +1786,19 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
 
+        // PageNavi 优先从 run 获取, 若 run 上未设置则从 configs 获取
         PageNavi navi = run.getPageNavi();
+        if(null == navi) {
+            ConfigStore configs = run.getConfigs();
+            if(null != configs) {
+                navi = configs.getPageNavi();
+            }
+        }
         if(null != navi) {
-            long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-            sb.append(" LIMIT ").append(navi.getFirstRow()).append(", ").append(limit);
+            long first = navi.getFirstRow();
+            long last = navi.getLastRow();
+            long limit = last - first + 1;
+            sb.append(" LIMIT ").append(first).append(", ").append(limit);
         }
 
         // RETURN 列投影：如果指定了列（如 table(name as user_name)），则生成 RETURN { alias: doc.origin, ... }
@@ -1621,16 +1863,10 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
         long fr = System.currentTimeMillis();
         try {
-            // AQL 命令生成 (Adapter 职责)
+            // AQL 命令已在 fillSelectContent 中由 Adapter 合成, 此处仅日志 + 委托 actuator 执行
             if(run instanceof ArangoRun) {
-                ArangoRun r = (ArangoRun) run;
-                Map<String, Object> filter = r.getFilter();
-                if(BasicUtil.isEmpty(r.cmd())) {
-                    r.cmd(buildAQL(r));  // 生成 AQL 存入 Run
-                }
-                r.vars((null != filter) ? new HashMap<>(filter) : new HashMap<>());
                 if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                    log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), filter);
+                    log.info("{}[cmd:select][collection:{}][aql:{}]", random, run.getTableName(), run.getBuilder().toString());
                 }
             } else {
                 // TextRun: AQL 由 mergeFinalSelect 合成
@@ -1743,28 +1979,38 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
         try {
-            // AQL 命令生成 (Adapter 职责)
             if(run instanceof ArangoRun) {
                 ArangoRun r = (ArangoRun) run;
-                Map<String, Object> filter = r.getFilter();
-                if(null == filter) {
-                    filter = new HashMap<>();
+                // AQL 已在 fillSelectContent 中合成, builder 存有完整 SELECT AQL
+                String selectAql = r.getBuilder().toString();
+                // 去掉 LIMIT (大小写不敏感), count 分页前的 SORT 保留无影响
+                String countAql = selectAql.replaceAll("(?i)LIMIT\\s+\\d+(\\s*,\\s*\\d+)?", "");
+                int returnIdx = lastReturnIdx(countAql);
+                if(returnIdx > 0) {
+                    // FOR ... FILTER ... [SORT ...] COLLECT WITH COUNT INTO cnt RETURN cnt
+                    countAql = countAql.substring(0, returnIdx) + "COLLECT WITH COUNT INTO cnt RETURN cnt";
                 }
                 if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-                    log.info("{}[cmd:count][collection:{}][filter:{}]", random, run.getTableName(), filter);
+                    log.info("{}[cmd:count][collection:{}][aql:{}]", random, run.getTableName(), countAql);
                 }
-                String selectAql = BasicUtil.isNotEmpty(r.cmd()) ? r.cmd() : buildAQL(r);
-                // 截掉末尾的 RETURN 子句，替换为 COUNT
-                int returnIdx = selectAql.lastIndexOf("RETURN");
-                r.cmd(selectAql.substring(0, returnIdx) + "COLLECT WITH COUNT INTO cnt RETURN cnt");
-                r.vars((null != filter && !filter.isEmpty()) ? new HashMap<>(filter) : new HashMap<>());
-                // 驱动执行 (Actuator 职责)
-                return ((ArangoActuator) actuator).count(runtime, run);
+                // 必须传递 bindVars, AQL 中的 @xxx 占位符需要实际值绑定
+                Map<String, Object> bindVars = new HashMap<>();
+                for(org.anyline.data.run.RunValue rv : r.getRunValues()) {
+                    if(null != rv.getKey()) {
+                        bindVars.put(rv.getKey(), rv.getValue());
+                    }
+                }
+                return ((ArangoActuator) actuator).countDirect(runtime, countAql, bindVars);
             } else {
                 // TextRun: AQL 由 mergeFinalSelect 合成, 无法通过 Run.setFinalSelect 回写, 沿用内联执行
                 String selectAql = run.getFinalSelect();
-                int returnIdx = selectAql.lastIndexOf("RETURN");
-                String countAql = selectAql.substring(0, returnIdx) + "COLLECT WITH COUNT INTO cnt RETURN cnt";
+                int returnIdx = lastReturnIdx(selectAql);
+                String countAql;
+                if(returnIdx > 0) {
+                    countAql = selectAql.substring(0, returnIdx) + "COLLECT WITH COUNT INTO cnt RETURN cnt";
+                } else {
+                    countAql = selectAql; // 无法变换时使用原始 AQL (可能结果不对, 但不至于崩)
+                }
                 if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
                     log.info("{}[cmd:count][aql:{}]", random, countAql);
                 }
@@ -1776,6 +2022,18 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
             return 0;
         }
+    }
+
+    /**
+     * 大小写不敏感地查找 AQL 中最后一个 RETURN 关键字的位置
+     */
+    private static int lastReturnIdx(String aql) {
+        Matcher m = Pattern.compile("(?i)\\breturn\\b").matcher(aql);
+        int idx = -1;
+        while (m.find()) {
+            idx = m.start();
+        }
+        return idx;
     }
 
     /* *****************************************************************************************************************
@@ -1946,11 +2204,6 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         run.getBuilder().append(text);
         run.appendCondition(run.getAdapter(), true, placeholder, unicode);
         run.appendGroup(runtime, placeholder, unicode);
-        // 将最终 AQL 写入 ArangoRun.cmd(), 确保 Actuator.resolveAql() 能正确获取
-        if(run instanceof ArangoRun) {
-            ArangoRun ar = (ArangoRun) run;
-            ar.cmd(run.getBuilder().toString());
-        }
         run.checkValid();
     }
 
@@ -2199,15 +2452,14 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(run instanceof ArangoRun) {
             ArangoRun r = (ArangoRun) run;
             ConditionChain chain = r.getConditionChain();
-            Map<String, Object> filter = new HashMap<>();
-            buildFilter(filter, chain);
-            r.setFilter(filter);
+            r.getRunValues().clear();
+            appendFilterVars(r, chain);
         }
     }
 
     /**
      * delete[命令执行]<br/>
-     * Adapter 负责 AQL 命令生成(key 匹配时无需生成 AQL), 委托父类 → Actuator 执行
+     * Adapter 负责 AQL 命令生成(key 匹配时可直接通过 Actuator 执行), 委托父类 → Actuator 执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param configs 查询条件及相关设置
@@ -2216,25 +2468,24 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-        // AQL 命令生成 (Adapter 职责): 非 key 匹配时生成 AQL 并存入 Run
+        // AQL 命令生成 (Adapter 职责): 非 key 匹配时生成 AQL 并存入 builder
         ArangoRun r = (ArangoRun) run;
-        Map<String, Object> filter = r.getFilter();
+        Map<String, Object> filter = buildFilterMap(r.getConditionChain());
         if(null != filter && !filter.isEmpty()) {
             boolean keyBased = filter.containsKey("_key") || filter.containsKey("_id");
             if(!keyBased) {
-                r.cmd(buildDeleteAQL(r));  // 生成 AQL 存入 Run
+                // 生成 AQL 存入 builder
+                r.getBuilder().append(buildDeleteAQL(r.getTableName(), filter));
             }
-            r.vars(new HashMap<>(filter));  // 存储 bindVars
+            // bindVars 已在 fillDeleteRunContent 中存入 values
         }
         // 驱动执行 (Actuator 职责): 父类 delete 内部调用 execute → actuator.execute
         return super.delete(runtime, random, configs, run);
     }
 
-    private String buildDeleteAQL(ArangoRun run) {
+    private String buildDeleteAQL(String tableName, Map<String, Object> filter) {
         StringBuilder sb = new StringBuilder();
-        sb.append("FOR doc IN ").append(run.getTableName());
-
-        Map<String, Object> filter = run.getFilter();
+        sb.append("FOR doc IN ").append(tableName);
         if(null != filter && !filter.isEmpty()) {
             sb.append(" FILTER ");
             boolean first = true;
@@ -2303,7 +2554,7 @@ public class ArangoAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
 
-        sb.append(" REMOVE doc IN ").append(run.getTableName());
+        sb.append(" REMOVE doc IN ").append(tableName);
         return sb.toString();
     }
 

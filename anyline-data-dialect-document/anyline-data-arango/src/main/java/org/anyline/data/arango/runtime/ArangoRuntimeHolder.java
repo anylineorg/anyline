@@ -155,8 +155,9 @@ public class ArangoRuntimeHolder extends AbstractRuntimeHolder implements Runtim
 
     public static void close(String key) {
         Object datasource = null;
-        if(ConfigTable.environment().containsBean(key)) {
-            datasource = ConfigTable.environment().getBean(key);
+        ArangoRuntime runtime = (ArangoRuntime)runtimes.get(key);
+        if(null != runtime) {
+            datasource = runtime.client();
             try {
                 closeConnection(datasource);
             }catch (Exception e) {
