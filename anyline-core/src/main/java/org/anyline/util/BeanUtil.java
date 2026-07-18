@@ -1399,7 +1399,7 @@ public class BeanUtil {
 		if(null != url) {
 			int index = url.indexOf("?");
 			if(index != -1) {
-				url = url.substring(index);
+				url = url.substring(index+1);
 			}
 			String[] kvs = url.split("&");
 			for(String kv:kvs) {

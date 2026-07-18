@@ -437,9 +437,11 @@ public interface DataSourceHolder {
 		params.put("url", url);
 		params.put("user", user);
 		params.put("password", password);
+		params.put("database_type", type);
 		if(null != type) {
 			params.put("adapter", type.name());
 		}
+		params.putAll(BeanUtil.param2map(url, false));
 		String ds = inject(key, params, true);
 		return runtime(key, ds, false);
 	}

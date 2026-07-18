@@ -28,6 +28,8 @@ import java.net.NetworkInterface;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BasicUtil {
 
@@ -1051,6 +1053,21 @@ public class BasicUtil {
 
 	public static int index(boolean ignoreNull, Collection<Object> objs, Object obj) {
 		return index(ignoreNull, objs, obj);
+	}
+
+	/**
+	 * 查找最后下标(不区分大小写)
+	 * @param string String
+	 * @param sub sub
+	 * @return index
+	 */
+	public static int lastIndex(String string, String sub){
+		Matcher m = Pattern.compile("(?i)\\b"+sub+"\\b").matcher(string);
+		int idx = -1;
+		while (m.find()) {
+			idx = m.start();
+		}
+		return idx;
 	}
 	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj) {
 		if(null == objs) {

@@ -104,7 +104,7 @@ public class DefaultTextPrepare extends AbstractRunPrepare implements TextPrepar
 			String var = null; 
 			Object value = ConfigParser.getValues(parser);//parser.getKey(); 
 			if(prefix.contains(".")) {
-				String[] keys = prefix.split(".");
+				String[] keys = prefix.split("\\.");
 				prefix = keys[0];
 				if(keys.length > 1) {
 					var = keys[1]; 

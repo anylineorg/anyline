@@ -45,6 +45,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
         return instance;
     }
     public MongoDataSourceHolder() {
+        DataSourceHolder.register(DatabaseType.MongoDB, this);
         DataSourceHolder.register("mongodb", this);
         DataSourceHolder.register(MongoClient.class, this);
         DataSourceHolder.register(MongoDatabase.class, this);
