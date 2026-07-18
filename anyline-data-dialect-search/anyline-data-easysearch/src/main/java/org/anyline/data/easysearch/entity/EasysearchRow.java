@@ -15,10 +15,25 @@
  */
 
 
-package org.anyline.data.easysearch;
+package org.anyline.data.easysearch.entity;
 
-import org.anyline.annotation.AnylineComponent;
+import org.anyline.entity.OriginRow;
 
-@AnylineComponent("anyline.environment.data.driver.actuator.easysearch")
-public class EasySearchAdapter {
+public class EasysearchRow extends OriginRow {
+    private double score;
+    public EasysearchRow() {
+        primaryKeys.clear();
+        primaryKeys.add("_id");
+        parseKeyCase(keyCase);
+        createTime = System.currentTimeMillis();
+        nanoTime = System.currentTimeMillis();
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
 }
