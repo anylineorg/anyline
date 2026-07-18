@@ -21,6 +21,7 @@ import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.chroma.run.ChromaRun;
+import org.anyline.data.chroma.runtime.ChromaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
@@ -81,6 +82,15 @@ public class ChromaActuator implements DriverActuator {
     @Override
     public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product) {
         return "Chroma";
+    }
+
+    /**
+     * 从DataRuntime中获取Chroma客户端
+     * @param runtime 运行环境
+     * @return Chroma客户端
+     */
+    private Object client(DataRuntime runtime) {
+        return runtime.getProcessor();
     }
 
     @Override
