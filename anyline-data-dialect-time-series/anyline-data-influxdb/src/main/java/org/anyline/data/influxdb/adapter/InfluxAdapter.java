@@ -41,7 +41,6 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.CommandSelectException;
-import org.anyline.exception.CommandUpdateException;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.refer.MetadataFieldRefer;
@@ -50,7 +49,6 @@ import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.net.HttpUtil;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.*;
 
@@ -545,98 +543,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     }
 
     /**
-     * update [命令执行]<br/>
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
-     * @param data 数据
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     * @return 影响行数
-     */
-    @Override
-    public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
-        long result = 0;
-        if(!run.isValid()) {
-            if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-                log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
-            }
-            return -1;
-        }
-        String cmd = run.getBuilder().toString();
-        if(BasicUtil.isEmpty(cmd)) {
-            log.warn("[不具备更新条件][dest:{}]", dest);
-            return -1;
-        }
-        if(null != configs) {
-            configs.add(run);
-        }
-        List<Object> values = run.getValues();
-        int batch = run.getBatch();
-        String action = "update";
-        if(batch > 1) {
-            action = "batch update";
-        }
-        long fr = System.currentTimeMillis();
-
-        /*执行SQL*/
-        if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-            if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
-                log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }else {
-                log.info("{}[action:update][table:{}]{}", random, run.getTable(), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-        }
-
-        boolean exe = true;
-        if(null != configs) {
-            exe = configs.execute();
-        }
-        if(!exe) {
-            return -1;
-        }
-        long millis = -1;
-        try{
-            result = actuator.update(this, runtime, random, dest, data, configs, run);
-
-            millis = System.currentTimeMillis() - fr;
-            boolean slow = false;
-            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-                if(millis > SLOW_SQL_MILLIS) {
-                    slow = true;
-                    log.warn("{}[{}][action:{}][table:{}][执行耗时:{}]{}", random, LogUtil.format("slow cmd", 33), action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                    if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
-                    }
-                }
-            }
-            if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-                String qty = result+"";
-                if(batch>1) {
-                    qty = "约"+result;
-                }
-                log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
-            }
-
-        }catch(Exception e) {
-            if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                log.error("update 异常:", e);
-            }
-            if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                CommandUpdateException ex = new CommandUpdateException("update异常:" + e, e);
-                ex.setCmd(cmd);
-                ex.setValues(values);
-                throw ex;
-            }
-            if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:update][table:{}]{}", random, run.getTable(), LogUtil.format("更新异常:", 33) + e, run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-
-        }
-        return result;
-    }
-
-    /**
      * save [调用入口]<br/>
      * <br/>
      * 根据是否有主键值确认insert | update<br/>
@@ -1011,7 +917,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         }
         String body = run.body();
         if(null == body) {
-            //没有提供body根据configs构造
             body = "from(bucket: \""+bucket+"\") ";
             if(BasicUtil.isNotEmpty(start) || BasicUtil.isNotEmpty(stop)) {
                 body += "|> range(";
@@ -1050,8 +955,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
             run.body(body);
         }
-        String api =  "/api/v2/query?org=" + org;
-        run.api(api);
         return run;
     }
     protected Run fillSelectContent(DataRuntime runtime, StringBuilder builder, InfluxSqlRun run, Boolean placeholder, Boolean unicode) {
@@ -1074,7 +977,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             }
         }
 
-        //注册数据源默认bucket
         if(BasicUtil.isEmpty(bucket)) {
             bucket = rt.bucket();
         }
@@ -1086,10 +988,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         run.org(org);
         run.measurement(measurement);
 
-        String api =  "/query?db=" + bucket;
-        String encode = HttpUtil.encode(run.sql(),false, true);
-        api += "&q=" + encode;
-        run.api(api);
         return result;
     }
 
@@ -1343,18 +1241,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         return super.mergeFinalTotal(runtime, run);
     }
 
-    /**
-     * count [命令执行]<br/>
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     * @return long
-     */
-    @Override
-    public long count(DataRuntime runtime, String random, Run run) {
-        return super.count(runtime, random, run);
-    }
-
     /* *****************************************************************************************************************
      *                                                     EXISTS
      * -----------------------------------------------------------------------------------------------------------------
@@ -1464,81 +1350,6 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public void fillExecuteContent(DataRuntime runtime, Run run, Boolean placeholder, Boolean unicode) {
         super.fillExecuteContent(runtime, run, placeholder, unicode);
-    }
-
-    /**
-     * execute [命令执行]<br/>
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param run 最终待执行的命令和参数(如JDBC环境中的SQL)
-     * @return 影响行数
-     */
-    @Override
-    public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-        long result = -1;
-        if(null == random) {
-            random = random(runtime);
-        }
-        String cmd = run.getFinalExecute();
-        List<Object> values = run.getValues();
-        long fr = System.currentTimeMillis();
-        int batch = run.getBatch();
-        String action = "execute";
-        if(batch > 1) {
-            action = "batch execute";
-        }
-        if(log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-            if(batch >1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
-                log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, cmd, values.size());
-            }else {
-                log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-        }
-        if(null != configs) {
-            configs.add(run);
-        }
-        boolean exe = true;
-        if(null != configs) {
-            exe = configs.execute();
-        }
-        if(!exe) {
-            return -1;
-        }
-        long millis = -1;
-        try{
-            result = actuator.execute(this, runtime, random, configs, run);
-            millis = System.currentTimeMillis() - fr;
-            boolean slow = false;
-            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-                if(millis > SLOW_SQL_MILLIS) {
-                    slow = true;
-                    log.warn("{}[{}][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("slow cmd", 33), action, DateUtil.format(millis), cmd, LogUtil.param(values));
-                    if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, cmd, values, null, true, result, millis);
-                    }
-                }
-            }
-            if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-                String qty = ""+result;
-                if(batch>1) {
-                    qty = "约"+result;
-                }
-                log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
-            }
-        }catch(Exception e) {
-            if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
-            }
-            if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-            if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-
-            }
-
-        }
-        return result;
     }
 
     /* *****************************************************************************************************************
@@ -1695,34 +1506,29 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
                 bucket = rt.bucket();
             }
             InfluxJsonRun run = new InfluxJsonRun(runtime);
-            String api = "/api/v2/delete?org=" + org + "&bucket=" + bucket;
-            DataRow body = new OriginRow();
             String start = cfg.start();
             String stop = cfg.stop();
-            if(BasicUtil.isNotEmpty(start)) {
-                body.put("start", start);
-            }
-            if(BasicUtil.isNotEmpty(stop)) {
-                body.put("stop", stop);
-            }
+            StringBuilder predicate = new StringBuilder();
+            
             if(BasicUtil.isNotEmpty(measurement)) {
-                configs.and("_measurement", measurement);
+                predicate.append("_measurement=\"").append(measurement).append("\"");
             }
-            String predicate = cfg.getRunText(runtime, false);
-            if(null!= predicate) {
-                predicate = SQLUtil.trim(predicate);
-                if (predicate.startsWith("(")) {
-                    predicate = predicate.substring(1, predicate.length() - 1);
+            
+            String cfgPredicate = cfg.getRunText(runtime, false);
+            if(null!= cfgPredicate) {
+                cfgPredicate = SQLUtil.trim(cfgPredicate);
+                if (cfgPredicate.startsWith("(")) {
+                    cfgPredicate = cfgPredicate.substring(1, cfgPredicate.length() - 1);
                 }
-                predicate = predicate.replace("'", "\"");
+                if(predicate.length() > 0) {
+                    predicate.append(" AND ");
+                }
+                predicate.append(cfgPredicate);
             }
 
-            body.put("predicate", predicate);
-            run.body(body.json());
+            run.body(predicate.toString());
             run.org(org);
             run.bucket(bucket);
-            run.api(api);
-            run.header("Content-type", "application/json");
             runs.add(run);
         }
         return runs;
@@ -1749,6 +1555,48 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
     @Override
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.delete(runtime, random, configs, run);
+    }
+
+    @Override
+    public long count(DataRuntime runtime, String random, Run run) {
+        InfluxRuntime rt = (InfluxRuntime)runtime;
+        InfluxRun r = (InfluxRun)run;
+        
+        String bucket = r.bucket();
+        if(BasicUtil.isEmpty(bucket)) {
+            bucket = rt.bucket();
+        }
+        
+        String measurement = r.measurement();
+        String fluxQuery = "from(bucket: \"" + bucket + "\") ";
+        
+        if(BasicUtil.isNotEmpty(measurement)) {
+            fluxQuery += "|> filter(fn: (r) => r._measurement == \"" + measurement + "\") ";
+        }
+        
+        fluxQuery += "|> count()";
+        
+        // 构建 Run 通过 actuator 执行，不直接调驱动方法
+        InfluxVndRun countRun = new InfluxVndRun(runtime);
+        countRun.body(fluxQuery);
+        countRun.bucket(bucket);
+        countRun.org(rt.org());
+        
+        try {
+            List<Map<String, Object>> maps = actuator.maps(this, runtime, random, null, countRun);
+            if (maps != null && !maps.isEmpty()) {
+                Object count = maps.get(0).get("_value");
+                if (count instanceof Number) {
+                    return ((Number) count).longValue();
+                }
+            }
+        } catch(Exception e) {
+            if(log.isWarnEnabled()) {
+                log.warn("[count][error]", e);
+            }
+        }
+        
+        return 0;
     }
 
     /* *****************************************************************************************************************
@@ -4684,7 +4532,7 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
         if(BasicUtil.isNotEmpty(cmd)) {
             if(meta.execute()) {
                 try {
-                    update(runtime, random, (Table) null, null, null, run);
+                    result = actuator.execute(this, runtime, random, null, run) >= 0;
                 }finally {
                     CacheProxy.clear();
                 }

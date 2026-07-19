@@ -18,9 +18,13 @@
 package org.anyline.data.influxdb.adapter;
 
 import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.QueryApi;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.Bucket;
+import com.influxdb.client.domain.DeletePredicateRequest;
 import com.influxdb.client.write.Point;
+import com.influxdb.query.FluxRecord;
+import com.influxdb.query.FluxTable;
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverActuator;
 import org.anyline.data.adapter.DriverAdapter;
@@ -28,18 +32,21 @@ import org.anyline.data.influxdb.entity.InfluxPoint;
 import org.anyline.data.influxdb.entity.InfluxSet;
 import org.anyline.data.influxdb.metadata.InfluxBucket;
 import org.anyline.data.influxdb.metadata.InfluxMeasurement;
+import org.anyline.data.influxdb.run.InfluxJsonRun;
 import org.anyline.data.influxdb.run.InfluxRun;
+import org.anyline.data.influxdb.run.InfluxSqlRun;
+import org.anyline.data.influxdb.run.InfluxVndRun;
 import org.anyline.data.influxdb.runtime.InfluxRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.authorize.Privilege;
+import org.anyline.entity.authorize.Role;
+import org.anyline.entity.authorize.User;
 import org.anyline.metadata.*;
-import org.anyline.net.HttpResponse;
-import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
-import org.apache.http.entity.StringEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -51,8 +58,9 @@ public class InfluxActuator implements DriverActuator {
     public Class<? extends DriverAdapter> supportAdapterType() {
         return InfluxAdapter.class;
     }
+
     protected InfluxDBClient client(DataRuntime runtime) {
-        return ((InfluxRuntime)runtime).client();
+        return ((InfluxRuntime) runtime).client();
     }
 
     @Override
@@ -67,27 +75,23 @@ public class InfluxActuator implements DriverActuator {
 
     @Override
     public void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource) {
-
     }
 
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, T meta) {
-
     }
 
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
-
     }
 
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
-
     }
 
     @Override
     public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product) {
-        return null;
+        return "InfluxDB";
     }
 
     @Override
@@ -95,102 +99,177 @@ public class InfluxActuator implements DriverActuator {
         return null;
     }
 
-    /**
-     * 数据库列表
-     * @param adapter adapter
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return List
-     */
+    @Override
     public <T extends Database> List<T> databases(DriverAdapter adapter, DataRuntime runtime, Database query) {
         List<T> databases = new ArrayList<>();
         InfluxDBClient client = client(runtime);
-        List<Bucket> list =  client.getBucketsApi().findBuckets();
+        List<Bucket> list = client.getBucketsApi().findBuckets();
         for (Bucket bucket : list) {
-            databases.add((T)new InfluxBucket(bucket.getName()));
+            databases.add((T) new InfluxBucket(bucket.getName()));
         }
         return databases;
     }
 
     @Override
+    public List<Catalog> catalogs(DriverAdapter adapter, DataRuntime runtime) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Schema> schemas(DriverAdapter adapter, DataRuntime runtime) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public DataSet<DataRow> selects(DriverAdapter adapter, DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values, LinkedHashMap<String, Column> columns) throws Exception {
         InfluxSet set = new InfluxSet();
-        InfluxRuntime rt = (InfluxRuntime)runtime;
-        InfluxRun r = (InfluxRun)run;
-        Map<String, String> header = r.headers();
-        header.put("Authorization","Token " + rt.token());
-        header.put("Accept", "application/csv");
-        String api = r.api();
-        String method = r.method();
-        String url = HttpUtil.createFullPath(rt.getUrl(), api);
-        HttpResponse response = null;
-        String result = null;
-        if("get".equalsIgnoreCase(method)) {
-            response = HttpUtil.get(header, url);
-        }else{
-            String body = r.body();
-            if(BasicUtil.isNotEmpty(body)) {
-                response = HttpUtil.post(header, url, new StringEntity(body));
-            }else{
-                response = HttpUtil.post(header, url);
-            }
-        }
-        result = response.getText();
-        String alt = result;
-        if(response.getStatus() == 200) {
-            alt = BasicUtil.ellipsis(200, alt);
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        InfluxRun r = (InfluxRun) run;
+
+        String fluxQuery = buildFluxQuery(r, rt);
+        if (BasicUtil.isEmpty(fluxQuery)) {
+            return set;
         }
 
-        log.info("[influx http api][action:{}][status:{}]{}", run.action(), response.getStatus(), alt);
-        String[] lines = result.split("\n");
-        int len = lines.length;
-        if(len > 1) {
-            String[] titles = lines[0].split(",");
-            int vol = titles.length;
-            Map<String, InfluxMeasurement> measurements = new HashMap<>();
-            for(int i=1; i<len; i++) {
-                String[] cols = lines[i].split(",");
-                String table_name = cols[0];
-                InfluxMeasurement measurement = measurements.get(table_name);
-                if(null == measurement) {
-                    measurement = new InfluxMeasurement(table_name);
-                    measurements.put(table_name, measurement);
+        QueryApi queryApi = client(runtime).getQueryApi();
+        List<FluxTable> tables = queryApi.query(fluxQuery, rt.org());
+
+        Map<String, InfluxMeasurement> measurements = new HashMap<>();
+        for (FluxTable fluxTable : tables) {
+            for (FluxRecord record : fluxTable.getRecords()) {
+                String tableName = record.getMeasurement();
+                if (BasicUtil.isEmpty(tableName)) {
+                    tableName = "_measurement";
                 }
+
+                InfluxMeasurement measurement = measurements.get(tableName);
+                if (measurement == null) {
+                    measurement = new InfluxMeasurement(tableName);
+                    measurements.put(tableName, measurement);
+                }
+
                 InfluxPoint point = new InfluxPoint(measurement);
-                for(int c=2; c<vol; c++) {
-                    String value = "";
-                    if(c < cols.length) {
-                        value =cols[c];
-                    }
-                    point.put(titles[c], value);
+                for (String key : record.getValues().keySet()) {
+                    Object value = record.getValueByKey(key);
+                    point.put(key, value);
                 }
                 set.add(point);
             }
         }
+
         return set;
+    }
+
+    private String buildFluxQuery(InfluxRun run, InfluxRuntime rt) {
+        if (run instanceof InfluxVndRun) {
+            return ((InfluxVndRun) run).body();
+        } else if (run instanceof InfluxSqlRun) {
+            return convertInfluxQLToFlux(((InfluxSqlRun) run).sql(), rt.bucket());
+        } else if (run instanceof InfluxJsonRun) {
+            return "";
+        }
+        return "";
+    }
+
+    private String convertInfluxQLToFlux(String influxQL, String bucket) {
+        if (BasicUtil.isEmpty(influxQL)) {
+            return "";
+        }
+        influxQL = influxQL.trim().toLowerCase();
+        String flux = "from(bucket: \"" + bucket + "\") ";
+
+        if (influxQL.startsWith("select")) {
+            String[] parts = influxQL.split("from", 2);
+            String selectPart = parts[0].replace("select", "").trim();
+            String fromPart = parts.length > 1 ? parts[1].trim() : "";
+
+            String[] tableParts = fromPart.split("\\s+", 2);
+            String measurement = tableParts[0];
+            String whereClause = tableParts.length > 1 ? tableParts[1] : "";
+
+            if (!"*".equals(selectPart)) {
+                flux += "|> filter(fn: (r) => exists r[\"" + selectPart + "\"]) ";
+            }
+
+            flux += "|> filter(fn: (r) => r._measurement == \"" + measurement + "\") ";
+
+            if (whereClause.startsWith("where")) {
+                whereClause = whereClause.substring(5).trim();
+                String[] conditions = whereClause.split("\\s+and\\s+");
+                for (String condition : conditions) {
+                    condition = condition.trim();
+                    String[] kv = condition.split("\\s*=\\s*", 2);
+                    if (kv.length == 2) {
+                        String key = kv[0].trim();
+                        String value = kv[1].trim();
+                        if (value.startsWith("'") && value.endsWith("'")) {
+                            value = value.substring(1, value.length() - 1);
+                        }
+                        flux += "|> filter(fn: (r) => r[\"" + key + "\"] == \"" + value + "\") ";
+                    }
+                }
+            }
+        }
+
+        return flux;
     }
 
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
-        return null;
+        List<Map<String, Object>> result = new ArrayList<>();
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        InfluxRun r = (InfluxRun) run;
+
+        String fluxQuery = buildFluxQuery(r, rt);
+        if (BasicUtil.isEmpty(fluxQuery)) {
+            return result;
+        }
+
+        QueryApi queryApi = client(runtime).getQueryApi();
+        List<FluxTable> tables = queryApi.query(fluxQuery, rt.org());
+
+        for (FluxTable fluxTable : tables) {
+            for (FluxRecord record : fluxTable.getRecords()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                for (String key : record.getValues().keySet()) {
+                    Object value = record.getValueByKey(key);
+                    row.put(key, value);
+                }
+                result.add(row);
+            }
+        }
+
+        return result;
     }
 
     @Override
     public Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
-        return null;
+        List<Map<String, Object>> maps = maps(adapter, runtime, random, configs, run);
+        if (maps != null && !maps.isEmpty()) {
+            return maps.get(0);
+        }
+        return new HashMap<>();
     }
 
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
-        long cnt = -1;
         InfluxDBClient client = client(runtime);
         WriteApiBlocking api = client.getWriteApiBlocking();
-        InfluxRun r = (InfluxRun)run;
+        InfluxRun r = (InfluxRun) run;
         List<Point> points = r.points();
         String bucket = r.bucket();
         String org = r.org();
+
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        if (BasicUtil.isEmpty(bucket)) {
+            bucket = rt.bucket();
+        }
+        if (BasicUtil.isEmpty(org)) {
+            org = rt.org();
+        }
+
         api.writePoints(bucket, org, points);
-        cnt = points.size();
-        return cnt;
+        return points.size();
     }
 
     @Override
@@ -200,26 +279,216 @@ public class InfluxActuator implements DriverActuator {
 
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
-        InfluxRuntime rt = (InfluxRuntime)runtime;
-        InfluxRun r = (InfluxRun)run;
-        Map<String, String> header = r.headers();
-        header.put("Authorization","Token " + rt.token());
-        String api = r.api();
-        String method = r.method();
-        String url = HttpUtil.createFullPath(rt.getUrl(), api);
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        InfluxRun r = (InfluxRun) run;
 
-        HttpResponse response = null;
-        if("get".equalsIgnoreCase(method)) {
-            response = HttpUtil.get(header, url);
-        }else{
+        if (r instanceof InfluxJsonRun) {
+            String bucket = r.bucket();
+            String org = r.org();
+
+            if (BasicUtil.isEmpty(bucket)) {
+                bucket = rt.bucket();
+            }
+            if (BasicUtil.isEmpty(org)) {
+                org = rt.org();
+            }
+
             String body = r.body();
-            if(BasicUtil.isNotEmpty(body)) {
-                response = HttpUtil.post(header, url, new StringEntity(body));
-            }else{
-                response = HttpUtil.post(header, url);
+            if (BasicUtil.isNotEmpty(body)) {
+                DeletePredicateRequest request = new DeletePredicateRequest();
+                request.setPredicate(body);
+                client(runtime).getDeleteApi().delete(request, bucket, org);
+                return 1;
             }
         }
-        log.info("[influx http api][action:{}][status:{}][response:{}]", run.action(), response.getStatus(), response.getText());
+
         return 0;
+    }
+
+    @Override
+    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
+        return new LinkedHashMap<>();
+    }
+
+    @Override
+    public <T extends Table<T>> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table<T> query, int types) throws Exception {
+        if (previous == null) {
+            previous = new LinkedHashMap<>();
+        }
+
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        String bucket = rt.bucket();
+
+        String fluxQuery = "from(bucket: \"" + bucket + "\") |> distinct(column: \"_measurement\")";
+
+        QueryApi queryApi = client(runtime).getQueryApi();
+        List<FluxTable> tables = queryApi.query(fluxQuery, rt.org());
+
+        for (FluxTable fluxTable : tables) {
+            for (FluxRecord record : fluxTable.getRecords()) {
+                String measurement = record.getValueByKey("_value").toString();
+                if (!previous.containsKey(measurement.toUpperCase())) {
+                    T table = (T) new Table();
+                    table.setName(measurement);
+                    previous.put(measurement.toUpperCase(), table);
+                }
+            }
+        }
+
+        return previous;
+    }
+
+    @Override
+    public <T extends Table<T>> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, Table<T> query, int types) throws Exception {
+        if (previous == null) {
+            previous = new ArrayList<>();
+        }
+
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        String bucket = rt.bucket();
+
+        String fluxQuery = "from(bucket: \"" + bucket + "\") |> distinct(column: \"_measurement\")";
+
+        QueryApi queryApi = client(runtime).getQueryApi();
+        List<FluxTable> tables = queryApi.query(fluxQuery, rt.org());
+
+        for (FluxTable fluxTable : tables) {
+            for (FluxRecord record : fluxTable.getRecords()) {
+                String measurement = record.getValueByKey("_value").toString();
+                boolean exists = false;
+                for (Table<T> table : previous) {
+                    if (measurement.equalsIgnoreCase(table.getName())) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    T table = (T) new Table();
+                    table.setName(measurement);
+                    previous.add(table);
+                }
+            }
+        }
+
+        return previous;
+    }
+
+    @Override
+    public <T extends View> LinkedHashMap<String, T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, View query, int types) throws Exception {
+        return previous;
+    }
+
+    @Override
+    public <T extends View> List<T> views(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> previous, View query, int types) throws Exception {
+        return previous;
+    }
+
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Table table, String cmd) throws Exception {
+        if (previous == null) {
+            previous = new LinkedHashMap<>();
+        }
+
+        InfluxRuntime rt = (InfluxRuntime) runtime;
+        String bucket = rt.bucket();
+        String measurement = table.getName();
+
+        String fluxQuery = "from(bucket: \"" + bucket + "\") " +
+                "|> filter(fn: (r) => r._measurement == \"" + measurement + "\") " +
+                "|> limit(n: 1) " +
+                "|> keys()";
+
+        QueryApi queryApi = client(runtime).getQueryApi();
+        List<FluxTable> tables = queryApi.query(fluxQuery, rt.org());
+
+        for (FluxTable fluxTable : tables) {
+            for (FluxRecord record : fluxTable.getRecords()) {
+                String key = record.getValueByKey("_value").toString();
+                if (!previous.containsKey(key.toUpperCase())) {
+                    Column column = new Column(key);
+                    previous.put(key.toUpperCase(), (T) column);
+                }
+            }
+        }
+
+        return previous;
+    }
+
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Column query) throws Exception {
+        return new LinkedHashMap<>();
+    }
+
+    @Override
+    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> previous, Index query) throws Exception {
+        return previous;
+    }
+
+    public boolean create(DataRuntime runtime, Role role) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, Role role) throws Exception {
+        return false;
+    }
+
+    public <T extends Role> List<T> roles(DataRuntime runtime, String random, boolean greedy, Role query) {
+        return new ArrayList<>();
+    }
+
+    public boolean create(DataRuntime runtime, User user) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, User user) throws Exception {
+        return false;
+    }
+
+    public <T extends User> List<T> users(DataRuntime runtime, String random, boolean greedy, User query) {
+        return new ArrayList<>();
+    }
+
+    public boolean create(DataRuntime runtime, Privilege privilege) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, Privilege privilege) throws Exception {
+        return false;
+    }
+
+    public <T extends Privilege> List<T> privileges(DataRuntime runtime, String random, boolean greedy, Privilege query) {
+        return new ArrayList<>();
+    }
+
+    public boolean create(DataRuntime runtime, Database database) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, Database database) throws Exception {
+        return false;
+    }
+
+    public boolean create(DataRuntime runtime, Table table) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, Table table) throws Exception {
+        return false;
+    }
+
+    public boolean create(DataRuntime runtime, View view) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, View view) throws Exception {
+        return false;
+    }
+
+    public boolean create(DataRuntime runtime, Index index) throws Exception {
+        return false;
+    }
+
+    public boolean drop(DataRuntime runtime, Index index) throws Exception {
+        return false;
     }
 }
