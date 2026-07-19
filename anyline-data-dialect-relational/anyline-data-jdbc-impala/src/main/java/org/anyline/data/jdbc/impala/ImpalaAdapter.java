@@ -18,17 +18,31 @@
 package org.anyline.data.jdbc.impala;
 
 import org.anyline.annotation.AnylineComponent;
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.init.ImpalaGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
 
 @AnylineComponent("anyline.data.jdbc.adapter.impala")
-public class ImpalaAdapter extends ImpalaGenusAdapter implements DriverAdapter {
+public class ImpalaAdapter extends ImpalaGenusAdapter {
     public DatabaseType type() {
         return DatabaseType.Impala;
     }
 
     public ImpalaAdapter() {
         super();
+        delimiterFr = "`";
+        delimiterTo = "`";
+        for(ImpalaTypeMetadataAlias alias : ImpalaTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for(ImpalaTypeMetadataAlias alias: ImpalaTypeMetadataAlias.values()) {
+            reg(alias);
+            alias(alias.name(), alias.standard());
+        }
+        for(ImpalaWriter writer: ImpalaWriter.values()) {
+            reg(writer.supports(), writer.writer());
+        }
+        for(ImpalaReader reader: ImpalaReader.values()) {
+            reg(reader.supports(), reader.reader());
+        }
     }
 }
