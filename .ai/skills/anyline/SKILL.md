@@ -34,6 +34,7 @@ AnyLine 是一个元数据驱动的动态数据管理框架，核心能力是通
 - [事务管理](references/transaction.md)：编程式事务、传播级别、隔离级别、保存点、跨线程事务
 - [拦截器](references/interceptor.md)：SQL执行拦截、参数修改、结果处理
 - [监听器](references/listener.md)：DDL/DML事件监听、数据源加载监听
+- [图数据库](references/graph.md)：Neo4j、Nebula Graph、TuGraph 图数据库操作
 
 ## 扩展数据源类型
 
@@ -137,7 +138,10 @@ Table table = service.metadata().table("sso_user"); //获取表结构
 table.execute(false);//不执行SQL
 service.ddl().create(table);
 List<Run> runs = table.runs(); //返回创建表的DDL
-String sql = run.getFinalUpdate()
+for (Run run : runs){
+    String sql = run.getFinalUpdate();
+    System.out.println(sql);
+}
 ```
 
 ## 常用配置项

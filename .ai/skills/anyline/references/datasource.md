@@ -80,7 +80,7 @@ DataSource ds1 = DataSourceUtil.build("com.zaxxer.hikari.HikariDataSource", "com
 service = ServiceProxy.temporary(ds1);
 tables = service.metadata().tables();
 for(String key:tables.keySet()){
-   ystem.out.println(key);
+   System.out.println(key);
 }
 //二、根据JdbcTemplate创建,对于spring项目一般都有一个JdbcTemplate
 service = ServiceProxy.temporary(template);

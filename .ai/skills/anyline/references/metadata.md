@@ -73,160 +73,160 @@ Milvus的表:class MilvusCollection extends Table<MilvusCollection>
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
  * @return tables
  */
-<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs);
-<T extends Table> LinkedHashMap<String, T> tables(Table query, int types, int struct, ConfigStore configs);
-default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    Table query = new Table(catalog, schema, name);
+<T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs);
+<T extends Table<T>> LinkedHashMap<String, T> tables(Table<T> query, int types, int struct, ConfigStore configs);
+default <T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    Table<T> query = new Table(catalog, schema, name);
     return tables(greedy, query, types, struct, configs);
 }
-default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
     return tables(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return tables(greedy, catalog, schema, name, types, structs, configs);
 }
-default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
     return tables(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, int struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Schema schema, String name, int types, int struct) {
     return tables(greedy, null, schema, name, types, struct);
 }
-default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, boolean struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Schema schema, String name, int types, boolean struct) {
     return tables(greedy, null, schema, name, types, struct);
 }
-default <T extends Table> List<T> tables(boolean greedy, String name, int types, boolean struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, String name, int types, boolean struct) {
     return tables(greedy, null, null, name, types, struct);
 }
-default <T extends Table> List<T> tables(boolean greedy, String name, int types, int struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, String name, int types, int struct) {
     return tables(greedy, null, null, name, types, struct);
 }
-default <T extends Table> List<T> tables(boolean greedy, int types, int struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, int types, int struct) {
     return tables(greedy, null, types, struct);
 }
-default <T extends Table> List<T> tables(boolean greedy, int types, boolean struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, int types, boolean struct) {
     return tables(greedy, null, types, struct);
 }
-default <T extends Table> List<T> tables(boolean greedy, boolean struct) {
+default <T extends Table<T>> List<T> tables(boolean greedy, boolean struct) {
     return tables(greedy, Table.TYPE.NORMAL.value, struct);
 }
 
-<T extends Table> LinkedHashMap<String, T> tables(Table query, int types, int struct, ConfigStore configs);
+<T extends Table<T>> LinkedHashMap<String, T> tables(Table<T> query, int types, int struct, ConfigStore configs);
 
-default <T extends Table> LinkedHashMap<String, T> tables(Table query) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Table<T> query) {
     return tables(query, Table.TYPE.NORMAL.value, 0, new DefaultConfigStore());
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Table query, boolean struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Table<T> query, boolean struct) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return tables(query, Table.TYPE.NORMAL.value, structs, new DefaultConfigStore());
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Table query, ConfigStore configs) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Table<T> query, ConfigStore configs) {
     return tables(query, Table.TYPE.NORMAL.value, 0, configs);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    Table query = new Table(catalog, schema, name);
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    Table<T> query = new Table(catalog, schema, name);
     return tables(query, types, struct, configs);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
     return tables(catalog, schema, name, types, struct, null);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return tables(catalog, schema, name, types, structs, configs);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
     return tables(catalog, schema, name, types, struct, null);
 }
 
-default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct) {
     return tables(null, schema, name, types, struct);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct) {
     return tables(null, schema, name, types, struct);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, int struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(String name, int types, int struct) {
     return tables(null, null, name, types, struct);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(String name, int types, boolean struct) {
     return tables(null, null, name, types, struct);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(String name) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(String name) {
     return tables(null, null, name, Table.TYPE.NORMAL.value, false);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(int types, int struct) {
     return tables(null, types, struct);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(int types, boolean struct) {
     return tables(null, types, struct);
 }
-default <T extends Table> LinkedHashMap<String, T> tables() {
+default <T extends Table<T>> LinkedHashMap<String, T> tables() {
     return tables(Table.TYPE.NORMAL.value, false);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(Schema schema) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Schema schema) {
     return tables(new Catalog(), schema, null, Table.TYPE.NORMAL.value, false);
 }
 
-default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct, ConfigStore configs) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(int types, int struct, ConfigStore configs) {
     return tables(null, null, null, types, struct, configs);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct, ConfigStore configs) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(int types, boolean struct, ConfigStore configs) {
     return tables(null, null, null,  types, struct, configs);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(ConfigStore configs) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(ConfigStore configs) {
     return tables(Table.TYPE.NORMAL.value, false, configs);
 }
 
-default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
     return tables(greedy, catalog, schema, name, types, false, configs);
 }
-default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
     return tables(greedy, catalog, schema, name, types, false);
 }
-default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types) {
+default <T extends Table<T>> List<T> tables(boolean greedy, Schema schema, String name, int types) {
     return tables(greedy, null, schema, name, types, false);
 }
-default <T extends Table> List<T> tables(boolean greedy, String name, int types) {
+default <T extends Table<T>> List<T> tables(boolean greedy, String name, int types) {
     return tables(greedy, null, null, name, types, false);
 }
-default <T extends Table> List<T> tables(boolean greedy, String name) {
+default <T extends Table<T>> List<T> tables(boolean greedy, String name) {
     return tables(greedy, null, null, name, Table.TYPE.NORMAL.value, false);
 }
-default <T extends Table> List<T> tables(boolean greedy, int types) {
+default <T extends Table<T>> List<T> tables(boolean greedy, int types) {
     return tables(greedy, null, types, false);
 }
-default <T extends Table> List<T> tables(boolean greedy) {
+default <T extends Table<T>> List<T> tables(boolean greedy) {
     return tables(greedy, Table.TYPE.NORMAL.value, false);
 }
-default <T extends Table> List<T> tables(boolean greedy, int types, ConfigStore configs) {
+default <T extends Table<T>> List<T> tables(boolean greedy, int types, ConfigStore configs) {
     return tables(greedy, null, null, null, types, configs);
 }
-default <T extends Table> List<T> tables(boolean greedy, ConfigStore configs) {
+default <T extends Table<T>> List<T> tables(boolean greedy, ConfigStore configs) {
     return tables(greedy, null, null, null, Table.TYPE.NORMAL.value, configs);
 }
 
-default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types) {
     return tables(catalog, schema, name, types, false);
 }
 
-default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(Schema schema, String name, int types) {
     return tables(null, schema, name, types, false);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(String name, int types) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(String name, int types) {
     return tables(null, null, name, types, false);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(int types) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(int types) {
     return tables(null, types, false);
 }
-default <T extends Table> LinkedHashMap<String, T> tables(int types, ConfigStore configs) {
+default <T extends Table<T>> LinkedHashMap<String, T> tables(int types, ConfigStore configs) {
     return tables(null,null,null, types, false, configs);
 }
 
@@ -236,10 +236,10 @@ default <T extends Table> LinkedHashMap<String, T> tables(int types, ConfigStore
 默认读取表的所有属性以及附加对象属性
 ```java
 
-Table table(boolean greedy, Table query, int struct);
+Table table(boolean greedy, Table<T> query, int struct);
 
 default Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
-    Table query = new Table(catalog, schema, name);
+    Table<T> query = new Table(catalog, schema, name);
     return table(greedy, query, struct);
 }
 default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
@@ -262,9 +262,9 @@ default Table table(boolean greedy, String name, boolean struct) {
     return table(greedy, null, null, name, struct);
 }
 
-Table table(Table query, int struct);
+Table table(Table<T> query, int struct);
 default Table table(Catalog catalog, Schema schema, String name, int struct) {
-    Table query = new Table(catalog, schema, name);
+    Table<T> query = new Table(catalog, schema, name);
     return table(query, struct);
 }
 default Table table(Catalog catalog, Schema schema, String name, boolean struct) {
@@ -473,7 +473,7 @@ default Column column(Catalog catalog, Schema schema, String table, String name)
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
  * @return masters
  */
-<T extends MasterTable> List<T> masters(boolean greedy, MasterTable query , int types, int struct, ConfigStore configs);
+<T extends MasterTable<T>> List<T> masters(boolean greedy, MasterTable<T> query , int types, int struct, ConfigStore configs);
 
 /**
  * masters
@@ -485,135 +485,135 @@ default Column column(Catalog catalog, Schema schema, String table, String name)
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
  * @return masters
  */
-default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    MasterTable query = new MasterTable(catalog, schema, name);
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    MasterTable<T> query = new MasterTable(catalog, schema, name);
     return masters(greedy, query, types, struct, configs);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
     return masters(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return masters(greedy, catalog, schema, name, types, structs, configs);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
     return masters(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Schema schema, String name, int types, int struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Schema schema, String name, int types, int struct) {
     return masters(greedy, null, schema, name, types, struct);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Schema schema, String name, int types, boolean struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Schema schema, String name, int types, boolean struct) {
     return masters(greedy, null, schema, name, types, struct);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, String name, int types, boolean struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, String name, int types, boolean struct) {
     return masters(greedy, null, null, name, types, struct);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, String name, int types, int struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, String name, int types, int struct) {
     return masters(greedy, null, null, name, types, struct);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, int types, int struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, int types, int struct) {
     return masters(greedy, null, types, struct);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, int types, boolean struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, int types, boolean struct) {
     return masters(greedy, null, types, struct);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, boolean struct) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, boolean struct) {
     return masters(greedy, MasterTable.TYPE.NORMAL.value, struct);
 }
 
-<T extends MasterTable> LinkedHashMap<String, T> masters(MasterTable query, int types, int struct, ConfigStore configs);
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    MasterTable query = new MasterTable(catalog, schema, name);
+<T extends MasterTable<T>> LinkedHashMap<String, T> masters(MasterTable<T> query, int types, int struct, ConfigStore configs);
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    MasterTable<T> query = new MasterTable(catalog, schema, name);
     return masters(query, types, struct, configs);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, int struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, int struct) {
     return masters(catalog, schema, name, types, struct, null);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return masters(catalog, schema, name, types, structs, configs);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, boolean struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types, boolean struct) {
     return masters(catalog, schema, name, types, struct, null);
 }
 
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Schema schema, String name, int types, int struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Schema schema, String name, int types, int struct) {
     return masters(null, schema, name, types, struct);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Schema schema, String name, int types, boolean struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Schema schema, String name, int types, boolean struct) {
     return masters(null, schema, name, types, struct);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(String name, int types, int struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(String name, int types, int struct) {
     return masters(null, null, name, types, struct);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(String name, int types, boolean struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(String name, int types, boolean struct) {
     return masters(null, null, name, types, struct);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(int types, int struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(int types, int struct) {
     return masters(null, types, struct);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(int types, boolean struct) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(int types, boolean struct) {
     return masters(null, types, struct);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters() {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters() {
     return masters( MasterTable.TYPE.NORMAL.value, false);
 }
 
-default <T extends MasterTable> LinkedHashMap<String, T> masters(int types, int struct, ConfigStore configs) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(int types, int struct, ConfigStore configs) {
     return masters(null, null, null, types, struct, configs);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(int types, boolean struct, ConfigStore configs) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(int types, boolean struct, ConfigStore configs) {
     return masters(null, null, null,  types, struct, configs);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(ConfigStore configs) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(ConfigStore configs) {
     return masters(MasterTable.TYPE.NORMAL.value, false, configs);
 }
 
-default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
     return masters(greedy, catalog, schema, name, types, false, configs);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
     return masters(greedy, catalog, schema, name, types, false);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, Schema schema, String name, int types) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, Schema schema, String name, int types) {
     return masters(greedy, null, schema, name, types, false);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, String name, int types) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, String name, int types) {
     return masters(greedy, null, null, name, types, false);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, int types) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, int types) {
     return masters(greedy, null, types, false);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy) {
     return masters(greedy, MasterTable.TYPE.NORMAL.value, false);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, int types, ConfigStore configs) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, int types, ConfigStore configs) {
     return masters(greedy, null, null, null, types, configs);
 }
-default <T extends MasterTable> List<T> masters(boolean greedy, ConfigStore configs) {
+default <T extends MasterTable<T>> List<T> masters(boolean greedy, ConfigStore configs) {
     return masters(greedy, null, null, null, MasterTable.TYPE.NORMAL.value, configs);
 }
 
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Catalog catalog, Schema schema, String name, int types) {
     return masters(catalog, schema, name, types, false);
 }
 
-default <T extends MasterTable> LinkedHashMap<String, T> masters(Schema schema, String name, int types) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(Schema schema, String name, int types) {
     return masters(null, schema, name, types, false);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(String name, int types) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(String name, int types) {
     return masters(null, null, name, types, false);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(int types) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(int types) {
     return masters(null, types, false);
 }
-default <T extends MasterTable> LinkedHashMap<String, T> masters(int types, ConfigStore configs) {
+default <T extends MasterTable<T>> LinkedHashMap<String, T> masters(int types, ConfigStore configs) {
     return masters(null,null,null, types, false, configs);
 }
 
@@ -623,7 +623,7 @@ default <T extends MasterTable> LinkedHashMap<String, T> masters(int types, Conf
  * @param struct 需要查询的表结构(参考Metadata.TYPE) true:表示查询全部 多个结构提供一个最终合计值
  * @return MasterTable
  */
-MasterTable master(boolean greedy, MasterTable query, int struct);
+MasterTable master(boolean greedy, MasterTable<T> query, int struct);
 /**
  * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
  * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -633,7 +633,7 @@ MasterTable master(boolean greedy, MasterTable query, int struct);
  * @return MasterTable
  */
 default MasterTable master(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
-    MasterTable query = new MasterTable(catalog, schema, name);
+    MasterTable<T> query = new MasterTable(catalog, schema, name);
     return master(greedy, query, struct);
 }
 default MasterTable master(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
@@ -656,9 +656,9 @@ default MasterTable master(boolean greedy, String name, boolean struct) {
     return master(greedy, null, null, name, struct);
 }
 
-MasterTable master(MasterTable query, int struct);
+MasterTable master(MasterTable<T> query, int struct);
 default MasterTable master(Catalog catalog, Schema schema, String name, int struct) {
-    MasterTable query = new MasterTable(catalog, schema, name);
+    MasterTable<T> query = new MasterTable(catalog, schema, name);
     return master(query, struct);
 }
 default MasterTable master(Catalog catalog, Schema schema, String name, boolean struct) {
@@ -733,7 +733,7 @@ default boolean exists(PartitionTable table) {
  * @param query 查询条件 根据metadata属性
  * @return PartitionTables
  */
-<T extends PartitionTable> LinkedHashMap<String, T> partitions(boolean greedy, PartitionTable query);
+<T extends PartitionTable> LinkedHashMap<String, T> partitions(boolean greedy, PartitionTable<T> query);
 /**
  * 根据主表与标签值查询分区表(子表)
  * @param master 主表
@@ -742,7 +742,7 @@ default boolean exists(PartitionTable table) {
  * @return PartitionTables
  */
 default <T extends PartitionTable> LinkedHashMap<String, T> partitions(boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
-    PartitionTable query = new PartitionTable();
+    PartitionTable<T> query = new PartitionTable();
     query.setMaster(master);
     if(null != tags) {
         for(String key:tags.keySet()) {
@@ -802,28 +802,28 @@ default <T extends PartitionTable> LinkedHashMap<String, T> partitions(MasterTab
     return partitions(false, master);
 }
 
-PartitionTable partition(boolean greedy, PartitionTable query);
-default PartitionTable partition(boolean greedy, MasterTable master, String name) {
-    PartitionTable query = new PartitionTable(name);
+<T extends PartitionTable<T>> PartitionTable partition(boolean greedy, PartitionTable<T> query);
+default <T extends PartitionTable<T>> PartitionTable partition(boolean greedy, MasterTable master, String name) {
+    PartitionTable<T> query = new PartitionTable(name);
     query.setMaster(master);
     return partition(greedy, query);
 }
-default PartitionTable partition(boolean greedy, Catalog catalog, Schema schema, String master, String name) {
+default <T extends PartitionTable<T>> PartitionTable partition(boolean greedy, Catalog catalog, Schema schema, String master, String name) {
     return partition(greedy, new MasterTable(catalog, schema, master), name);
 }
-default PartitionTable partition(boolean greedy, Schema schema, String master, String name) {
+default <T extends PartitionTable<T>> PartitionTable partition(boolean greedy, Schema schema, String master, String name) {
     return partition(greedy, new MasterTable(schema, master), name);
 }
-default PartitionTable partition(boolean greedy, String master, String name) {
+default <T extends PartitionTable<T>> PartitionTable partition(boolean greedy, String master, String name) {
     return partition(greedy, new MasterTable(master), name);
 }
-default PartitionTable partition(Catalog catalog, Schema schema, String master, String name) {
+default <T extends PartitionTable<T>> PartitionTable partition(Catalog catalog, Schema schema, String master, String name) {
     return partition(false, catalog, schema, master, name);
 }
-default PartitionTable partition(Schema schema, String master, String name) {
+default <T extends PartitionTable<T>> PartitionTable partition(Schema schema, String master, String name) {
     return partition(false, new MasterTable(schema, master), name);
 }
-default PartitionTable partition(String master, String name) {
+default <T extends PartitionTable<T>> PartitionTable partition(String master, String name) {
     return partition(false, new MasterTable(master), name);
 }
 
@@ -842,154 +842,154 @@ default boolean exists(VertexTable vertex) {
     return exists(false, vertex);
 }
 /**
- * vertexs
+ * vertexes
  * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
  * @param query 查询条件 根据metadata属性
  * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
- * @return vertexs
+ * @return vertexes
  */
-<T extends VertexTable> List<T> vertexs(boolean greedy, VertexTable query, int types, int struct, ConfigStore configs);
+<T extends VertexTable> List<T> vertexes(boolean greedy, VertexTable<T> query, int types, int struct, ConfigStore configs);
 /**
- * vertexs
+ * vertexes
  * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
  * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
  * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
  * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
  * @param types 查询的类型 参考 Table.TYPE 多个类型相加算出总和
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
- * @return vertexs
+ * @return vertexes
  */
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    VertexTable query = new VertexTable(catalog, schema, name);
-    return vertexs(greedy, query, types, struct, configs);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    VertexTable<T> query = new VertexTable(catalog, schema, name);
+    return vertexes(greedy, query, types, struct, configs);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
-    return vertexs(greedy, catalog, schema, name, types, struct, null);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+    return vertexes(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
-    return vertexs(greedy, catalog, schema, name, types, structs, configs);
+    return vertexes(greedy, catalog, schema, name, types, structs, configs);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-    return vertexs(greedy, catalog, schema, name, types, struct, null);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+    return vertexes(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Schema schema, String name, int types, int struct) {
-    return vertexs(greedy, null, schema, name, types, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Schema schema, String name, int types, int struct) {
+    return vertexes(greedy, null, schema, name, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Schema schema, String name, int types, boolean struct) {
-    return vertexs(greedy, null, schema, name, types, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Schema schema, String name, int types, boolean struct) {
+    return vertexes(greedy, null, schema, name, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, String name, int types, boolean struct) {
-    return vertexs(greedy, null, null, name, types, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, String name, int types, boolean struct) {
+    return vertexes(greedy, null, null, name, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, String name, int types, int struct) {
-    return vertexs(greedy, null, null, name, types, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, String name, int types, int struct) {
+    return vertexes(greedy, null, null, name, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, int types, int struct) {
-    return vertexs(greedy, null, types, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, int types, int struct) {
+    return vertexes(greedy, null, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, int types, boolean struct) {
-    return vertexs(greedy, null, types, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, int types, boolean struct) {
+    return vertexes(greedy, null, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, boolean struct) {
-    return vertexs(greedy, VertexTable.TYPE.NORMAL.value, struct);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, boolean struct) {
+    return vertexes(greedy, VertexTable.TYPE.NORMAL.value, struct);
 }
 
-<T extends VertexTable> LinkedHashMap<String, T> vertexs(VertexTable query, int types, int struct, ConfigStore configs);
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    VertexTable query = new VertexTable(catalog, schema, name);
-    return vertexs(query, types, struct, configs);
+<T extends VertexTable> LinkedHashMap<String, T> vertexes(VertexTable<T> query, int types, int struct, ConfigStore configs);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    VertexTable<T> query = new VertexTable(catalog, schema, name);
+    return vertexes(query, types, struct, configs);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, int struct) {
-    return vertexs(catalog, schema, name, types, struct, null);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, int struct) {
+    return vertexes(catalog, schema, name, types, struct, null);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
-    return vertexs(catalog, schema, name, types, structs, configs);
+    return vertexes(catalog, schema, name, types, structs, configs);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types, boolean struct) {
-    return vertexs(catalog, schema, name, types, struct, null);
-}
-
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Schema schema, String name, int types, int struct) {
-    return vertexs(null, schema, name, types, struct);
-}
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Schema schema, String name, int types, boolean struct) {
-    return vertexs(null, schema, name, types, struct);
-}
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(String name, int types, int struct) {
-    return vertexs(null, null, name, types, struct);
-}
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(String name, int types, boolean struct) {
-    return vertexs(null, null, name, types, struct);
-}
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, int struct) {
-    return vertexs(null, types, struct);
-}
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, boolean struct) {
-    return vertexs(null, types, struct);
-}
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs() {
-    return vertexs( VertexTable.TYPE.NORMAL.value, false);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types, boolean struct) {
+    return vertexes(catalog, schema, name, types, struct, null);
 }
 
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, int struct, ConfigStore configs) {
-    return vertexs(null, null, null, types, struct, configs);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Schema schema, String name, int types, int struct) {
+    return vertexes(null, schema, name, types, struct);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, boolean struct, ConfigStore configs) {
-    return vertexs(null, null, null,  types, struct, configs);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Schema schema, String name, int types, boolean struct) {
+    return vertexes(null, schema, name, types, struct);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(ConfigStore configs) {
-    return vertexs(VertexTable.TYPE.NORMAL.value, false, configs);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(String name, int types, int struct) {
+    return vertexes(null, null, name, types, struct);
 }
-
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
-    return vertexs(greedy, catalog, schema, name, types, false, configs);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(String name, int types, boolean struct) {
+    return vertexes(null, null, name, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
-    return vertexs(greedy, catalog, schema, name, types, false);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, int struct) {
+    return vertexes(null, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, Schema schema, String name, int types) {
-    return vertexs(greedy, null, schema, name, types, false);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, boolean struct) {
+    return vertexes(null, types, struct);
 }
-default <T extends VertexTable> List<T> vertexs(boolean greedy, String name, int types) {
-    return vertexs(greedy, null, null, name, types, false);
-}
-default <T extends VertexTable> List<T> vertexs(boolean greedy, int types) {
-    return vertexs(greedy, null, types, false);
-}
-default <T extends VertexTable> List<T> vertexs(boolean greedy) {
-    return vertexs(greedy, VertexTable.TYPE.NORMAL.value, false);
-}
-default <T extends VertexTable> List<T> vertexs(boolean greedy, int types, ConfigStore configs) {
-    return vertexs(greedy, null, null, null, types, configs);
-}
-default <T extends VertexTable> List<T> vertexs(boolean greedy, ConfigStore configs) {
-    return vertexs(greedy, null, null, null, VertexTable.TYPE.NORMAL.value, configs);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes() {
+    return vertexes( VertexTable.TYPE.NORMAL.value, false);
 }
 
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Catalog catalog, Schema schema, String name, int types) {
-    return vertexs(catalog, schema, name, types, false);
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, int struct, ConfigStore configs) {
+    return vertexes(null, null, null, types, struct, configs);
+}
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, boolean struct, ConfigStore configs) {
+    return vertexes(null, null, null,  types, struct, configs);
+}
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(ConfigStore configs) {
+    return vertexes(VertexTable.TYPE.NORMAL.value, false, configs);
 }
 
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(Schema schema, String name, int types) {
-    return vertexs(null, schema, name, types, false);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+    return vertexes(greedy, catalog, schema, name, types, false, configs);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(String name, int types) {
-    return vertexs(null, null, name, types, false);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+    return vertexes(greedy, catalog, schema, name, types, false);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types) {
-    return vertexs(null, types, false);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, Schema schema, String name, int types) {
+    return vertexes(greedy, null, schema, name, types, false);
 }
-default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, ConfigStore configs) {
-    return vertexs(null,null,null, types, false, configs);
+default <T extends VertexTable> List<T> vertexes(boolean greedy, String name, int types) {
+    return vertexes(greedy, null, null, name, types, false);
+}
+default <T extends VertexTable> List<T> vertexes(boolean greedy, int types) {
+    return vertexes(greedy, null, types, false);
+}
+default <T extends VertexTable> List<T> vertexes(boolean greedy) {
+    return vertexes(greedy, VertexTable.TYPE.NORMAL.value, false);
+}
+default <T extends VertexTable> List<T> vertexes(boolean greedy, int types, ConfigStore configs) {
+    return vertexes(greedy, null, null, null, types, configs);
+}
+default <T extends VertexTable> List<T> vertexes(boolean greedy, ConfigStore configs) {
+    return vertexes(greedy, null, null, null, VertexTable.TYPE.NORMAL.value, configs);
+}
+
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Catalog catalog, Schema schema, String name, int types) {
+    return vertexes(catalog, schema, name, types, false);
+}
+
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(Schema schema, String name, int types) {
+    return vertexes(null, schema, name, types, false);
+}
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(String name, int types) {
+    return vertexes(null, null, name, types, false);
+}
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types) {
+    return vertexes(null, types, false);
+}
+default <T extends VertexTable> LinkedHashMap<String, T> vertexes(int types, ConfigStore configs) {
+    return vertexes(null,null,null, types, false, configs);
 }
 
 /**
@@ -998,7 +998,7 @@ default <T extends VertexTable> LinkedHashMap<String, T> vertexs(int types, Conf
  * @param struct 需要查询的表结构(参考Metadata.TYPE) true:表示查询全部 多个结构提供一个最终合计值
  * @return VertexTable
  */
-VertexTable vertex(boolean greedy, VertexTable query, int struct);
+VertexTable vertex(boolean greedy, VertexTable<T> query, int struct);
 
 /**
  * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -1008,72 +1008,72 @@ VertexTable vertex(boolean greedy, VertexTable query, int struct);
  * @param struct 需要查询的表结构(参考Metadata.TYPE) true:表示查询全部 多个结构提供一个最终合计值
  * @return VertexTable
  */
-default VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
-    VertexTable query = new VertexTable(catalog, schema, name);
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
+    VertexTable<T> query = new VertexTable(catalog, schema, name);
     return vertex(greedy, query, struct);
 }
-default VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return vertex(greedy, catalog, schema, name, structs);
 }
-default VertexTable vertex(boolean greedy, Schema schema, String name, int struct) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, Schema schema, String name, int struct) {
     return vertex(greedy, null, schema, name, struct);
 }
-default VertexTable vertex(boolean greedy, Schema schema, String name, boolean struct) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, Schema schema, String name, boolean struct) {
     return vertex(greedy, null, schema, name, struct);
 }
-default VertexTable vertex(boolean greedy, String name, int struct) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, String name, int struct) {
     return vertex(greedy, null, null, name, struct);
 }
-default VertexTable vertex(boolean greedy, String name, boolean struct) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, String name, boolean struct) {
     return vertex(greedy, null, null, name, struct);
 }
 
-VertexTable vertex(VertexTable query, int struct);
+VertexTable vertex(VertexTable<T> query, int struct);
 
-default VertexTable vertex(Catalog catalog, Schema schema, String name, int struct) {
-    VertexTable query = new VertexTable(catalog, schema, name);
+default <T extends VertexTable<T>> VertexTable vertex(Catalog catalog, Schema schema, String name, int struct) {
+    VertexTable<T> query = new VertexTable(catalog, schema, name);
     return vertex(query, struct);
 }
-default VertexTable vertex(Catalog catalog, Schema schema, String name, boolean struct) {
+default <T extends VertexTable<T>> VertexTable vertex(Catalog catalog, Schema schema, String name, boolean struct) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return vertex(catalog, schema, name, structs);
 }
-default VertexTable vertex(Schema schema, String name, int struct) {
+default <T extends VertexTable<T>> VertexTable vertex(Schema schema, String name, int struct) {
     return vertex(false, null, schema, name, struct);
 }
-default VertexTable vertex(Schema schema, String name, boolean struct) {
+default <T extends VertexTable<T>> VertexTable vertex(Schema schema, String name, boolean struct) {
     return vertex(false, null, schema, name, struct);
 }
-default VertexTable vertex(String name, int struct) {
+default <T extends VertexTable<T>> VertexTable vertex(String name, int struct) {
     return vertex(false, null, null, name, struct);
 }
-default VertexTable vertex(String name, boolean struct) {
+default <T extends VertexTable<T>> VertexTable vertex(String name, boolean struct) {
     return vertex(false, null, null, name, struct);
 }
-default VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, Catalog catalog, Schema schema, String name) {
     return vertex(greedy, catalog, schema, name, true);
 }
-default VertexTable vertex(boolean greedy, Schema schema, String name) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, Schema schema, String name) {
     return vertex(greedy, null, schema, name, true);
 }
-default VertexTable vertex(boolean greedy, String name) {
+default <T extends VertexTable<T>> VertexTable vertex(boolean greedy, String name) {
     return vertex(greedy, null, null, name, true);
 }
 
-default VertexTable vertex(Catalog catalog, Schema schema, String name) {
+default <T extends VertexTable<T>> VertexTable vertex(Catalog catalog, Schema schema, String name) {
     return vertex( catalog, schema, name, true);
 }
-default VertexTable vertex(Schema schema, String name) {
+default <T extends VertexTable<T>> VertexTable vertex(Schema schema, String name) {
     return vertex(null, schema, name, true);
 }
-default VertexTable vertex(String name) {
+default <T extends VertexTable<T>> VertexTable vertex(String name) {
     return vertex(null, null, name, true);
 }
 
@@ -1109,7 +1109,7 @@ default boolean exists(EdgeTable edge) {
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
  * @return edges
  */
-<T extends EdgeTable> List<T> edges(boolean greedy, EdgeTable query, int types, int struct, ConfigStore configs);
+<T extends EdgeTable<T>> List<T> edges(boolean greedy, EdgeTable<T> query, int types, int struct, ConfigStore configs);
 /**
  * edges
  * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -1120,135 +1120,135 @@ default boolean exists(EdgeTable edge) {
  * @param struct 查询的属性 参考Metadata.TYPE 多个属性相加算出总和
  * @return edges
  */
-default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    EdgeTable query = new EdgeTable(catalog, schema, name);
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    EdgeTable<T> query = new EdgeTable(catalog, schema, name);
     return edges(greedy, query, types, struct, configs);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
     return edges(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return edges(greedy, catalog, schema, name, types, structs, configs);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
     return edges(greedy, catalog, schema, name, types, struct, null);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Schema schema, String name, int types, int struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Schema schema, String name, int types, int struct) {
     return edges(greedy, null, schema, name, types, struct);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Schema schema, String name, int types, boolean struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Schema schema, String name, int types, boolean struct) {
     return edges(greedy, null, schema, name, types, struct);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, String name, int types, boolean struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, String name, int types, boolean struct) {
     return edges(greedy, null, null, name, types, struct);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, String name, int types, int struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, String name, int types, int struct) {
     return edges(greedy, null, null, name, types, struct);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, int types, int struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, int types, int struct) {
     return edges(greedy, null, types, struct);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, int types, boolean struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, int types, boolean struct) {
     return edges(greedy, null, types, struct);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, boolean struct) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, boolean struct) {
     return edges(greedy, EdgeTable.TYPE.NORMAL.value, struct);
 }
 
-<T extends EdgeTable> LinkedHashMap<String, T> edges(EdgeTable query, int types, int struct, ConfigStore configs);
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
-    EdgeTable query = new EdgeTable();
+<T extends EdgeTable<T>> LinkedHashMap<String, T> edges(EdgeTable<T> query, int types, int struct, ConfigStore configs);
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+    EdgeTable<T> query = new EdgeTable();
     return edges(query, types, struct, configs);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, int struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, int struct) {
     return edges(catalog, schema, name, types, struct, null);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return edges(catalog, schema, name, types, structs, configs);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, boolean struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types, boolean struct) {
     return edges(catalog, schema, name, types, struct, null);
 }
 
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Schema schema, String name, int types, int struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Schema schema, String name, int types, int struct) {
     return edges(null, schema, name, types, struct);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Schema schema, String name, int types, boolean struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Schema schema, String name, int types, boolean struct) {
     return edges(null, schema, name, types, struct);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(String name, int types, int struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(String name, int types, int struct) {
     return edges(null, null, name, types, struct);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(String name, int types, boolean struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(String name, int types, boolean struct) {
     return edges(null, null, name, types, struct);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types, int struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(int types, int struct) {
     return edges(null, types, struct);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types, boolean struct) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(int types, boolean struct) {
     return edges(null, types, struct);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges() {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges() {
     return edges( EdgeTable.TYPE.NORMAL.value, false);
 }
 
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types, int struct, ConfigStore configs) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(int types, int struct, ConfigStore configs) {
     return edges(null, null, null, types, struct, configs);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types, boolean struct, ConfigStore configs) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(int types, boolean struct, ConfigStore configs) {
     return edges(null, null, null,  types, struct, configs);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(ConfigStore configs) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(ConfigStore configs) {
     return edges(EdgeTable.TYPE.NORMAL.value, false, configs);
 }
 
-default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
     return edges(greedy, catalog, schema, name, types, false, configs);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
     return edges(greedy, catalog, schema, name, types, false);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, Schema schema, String name, int types) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, Schema schema, String name, int types) {
     return edges(greedy, null, schema, name, types, false);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, String name, int types) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, String name, int types) {
     return edges(greedy, null, null, name, types, false);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, int types) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, int types) {
     return edges(greedy, null, types, false);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy) {
     return edges(greedy, EdgeTable.TYPE.NORMAL.value, false);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, int types, ConfigStore configs) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, int types, ConfigStore configs) {
     return edges(greedy, null, null, null, types, configs);
 }
-default <T extends EdgeTable> List<T> edges(boolean greedy, ConfigStore configs) {
+default <T extends EdgeTable<T>> List<T> edges(boolean greedy, ConfigStore configs) {
     return edges(greedy, null, null, null, EdgeTable.TYPE.NORMAL.value, configs);
 }
 
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Catalog catalog, Schema schema, String name, int types) {
     return edges(catalog, schema, name, types, false);
 }
 
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(Schema schema, String name, int types) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(Schema schema, String name, int types) {
     return edges(null, schema, name, types, false);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(String name, int types) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(String name, int types) {
     return edges(null, null, name, types, false);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(int types) {
     return edges(null, types, false);
 }
-default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types, ConfigStore configs) {
+default <T extends EdgeTable<T>> LinkedHashMap<String, T> edges(int types, ConfigStore configs) {
     return edges(null,null,null, types, false, configs);
 }
 
@@ -1258,7 +1258,7 @@ default <T extends EdgeTable> LinkedHashMap<String, T> edges(int types, ConfigSt
  * @param struct 需要查询的表结构(参考Metadata.TYPE) true:表示查询全部 多个结构提供一个最终合计值
  * @return EdgeTable
  */
-EdgeTable edge(boolean greedy, EdgeTable query, int struct);
+<T extends EdgeTable<T>> EdgeTable edge(boolean greedy, EdgeTable<T> query, int struct);
 
 /**
  * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -1268,71 +1268,71 @@ EdgeTable edge(boolean greedy, EdgeTable query, int struct);
  * @param struct 需要查询的表结构(参考Metadata.TYPE) true:表示查询全部 多个结构提供一个最终合计值
  * @return EdgeTable
  */
-default EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
-    EdgeTable query = new EdgeTable(catalog, schema, name);
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
+    EdgeTable<T> query = new EdgeTable(catalog, schema, name);
     return edge(greedy, query, struct);
 }
-default EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return edge(greedy, catalog, schema, name, structs);
 }
-default EdgeTable edge(boolean greedy, Schema schema, String name, int struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, Schema schema, String name, int struct) {
     return edge(greedy, null, schema, name, struct);
 }
-default EdgeTable edge(boolean greedy, Schema schema, String name, boolean struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, Schema schema, String name, boolean struct) {
     return edge(greedy, null, schema, name, struct);
 }
-default EdgeTable edge(boolean greedy, String name, int struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, String name, int struct) {
     return edge(greedy, null, null, name, struct);
 }
-default EdgeTable edge(boolean greedy, String name, boolean struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, String name, boolean struct) {
     return edge(greedy, null, null, name, struct);
 }
 
-EdgeTable edge(EdgeTable query, int struct);
-default EdgeTable edge(Catalog catalog, Schema schema, String name, int struct) {
-    EdgeTable query = new EdgeTable(catalog, schema, name);
+<T extends EdgeTable<T>> EdgeTable edge(EdgeTable<T> query, int struct);
+default <T extends EdgeTable<T>> EdgeTable edge(Catalog catalog, Schema schema, String name, int struct) {
+    EdgeTable<T> query = new EdgeTable(catalog, schema, name);
     return edge(query, struct);
 }
-default EdgeTable edge(Catalog catalog, Schema schema, String name, boolean struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(Catalog catalog, Schema schema, String name, boolean struct) {
     int structs = 0;
     if(struct) {
         structs = Metadata.TYPE.ALL.value();
     }
     return edge(catalog, schema, name, structs);
 }
-default EdgeTable edge(Schema schema, String name, int struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(Schema schema, String name, int struct) {
     return edge(false, null, schema, name, struct);
 }
-default EdgeTable edge(Schema schema, String name, boolean struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(Schema schema, String name, boolean struct) {
     return edge(false, null, schema, name, struct);
 }
-default EdgeTable edge(String name, int struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(String name, int struct) {
     return edge(false, null, null, name, struct);
 }
-default EdgeTable edge(String name, boolean struct) {
+default <T extends EdgeTable<T>> EdgeTable edge(String name, boolean struct) {
     return edge(false, null, null, name, struct);
 }
-default EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, Catalog catalog, Schema schema, String name) {
     return edge(greedy, catalog, schema, name, true);
 }
-default EdgeTable edge(boolean greedy, Schema schema, String name) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, Schema schema, String name) {
     return edge(greedy, null, schema, name, true);
 }
-default EdgeTable edge(boolean greedy, String name) {
+default <T extends EdgeTable<T>> EdgeTable edge(boolean greedy, String name) {
     return edge(greedy, null, null, name, true);
 }
 
-default EdgeTable edge(Catalog catalog, Schema schema, String name) {
+default <T extends EdgeTable<T>> EdgeTable edge(Catalog catalog, Schema schema, String name) {
     return edge( catalog, schema, name, true);
 }
-default EdgeTable edge(Schema schema, String name) {
+default <T extends EdgeTable<T>> EdgeTable edge(Schema schema, String name) {
     return edge(null, schema, name, true);
 }
-default EdgeTable edge(String name) {
+default <T extends EdgeTable<T>> EdgeTable edge(String name) {
     return edge(null, null, name, true);
 }
 
