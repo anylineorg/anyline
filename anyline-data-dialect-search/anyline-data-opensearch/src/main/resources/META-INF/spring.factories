@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.anyline.data.opensearch.adapter.OpenSearchAdapter,\
+  org.anyline.data.opensearch.adapter.OpenSearchActuator,\
+  org.anyline.data.opensearch.datasource.OpenSearchDataSourceHolder,\
+  org.anyline.data.opensearch.datasource.OpenSearchDataSourceLoader,\
+  org.anyline.data.opensearch.runtime.OpenSearchRuntimeHolder

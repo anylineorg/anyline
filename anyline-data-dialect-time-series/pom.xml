@@ -16,6 +16,7 @@
     <modules>
 		<module>anyline-data-influxdb</module>
 		<module>anyline-data-jdbc-tdengine</module>
+		<module>anyline-data-prometheus</module>				<!--Prometheus-->
     </modules>
 	<build>
 		<plugins>

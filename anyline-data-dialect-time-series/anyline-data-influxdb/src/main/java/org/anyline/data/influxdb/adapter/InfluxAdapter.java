@@ -4526,19 +4526,17 @@ public class InfluxAdapter extends AbstractDriverAdapter implements DriverAdapte
             return false;
         }
         boolean result = false;
-        String cmd = run.getBuilder().toString();
+        run.action(action);
         run.metadata(meta);
-        meta.addDdl(cmd);
-        if(BasicUtil.isNotEmpty(cmd)) {
-            if(meta.execute()) {
-                try {
-                    result = actuator.execute(this, runtime, random, null, run) >= 0;
-                }finally {
-                    CacheProxy.clear();
-                }
+        meta.addRun(run);
+        if(meta.execute()) {
+            try {
+                update(runtime, random, (Table) null, null, null, run);
+            }finally {
+                CacheProxy.clear();
             }
-            result = true;
         }
+        result = true;
         return result;
     }
     /* *****************************************************************************************************************

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-data-dialect-search</artifactId>
+        <version>8.7.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>anyline-data-opensearch</artifactId>
+    <version>8.7.5-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-net</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opensearch.client</groupId>
+            <artifactId>opensearch-rest-client</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opensearch.client</groupId>
+            <artifactId>opensearch-java</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

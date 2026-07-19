@@ -18,14 +18,17 @@
 		<module>anyline-data-jdbc-access</module>
 		<module>anyline-data-jdbc-arcadedb</module>
 		<module>anyline-data-jdbc-argodb</module>						<!--星环-->
+		<module>anyline-data-jdbc-bigquery</module>						<!--Google BigQuery-->
 		<module>anyline-data-jdbc-citus</module>
 		<module>anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-cloudera</module>
 		<module>anyline-data-jdbc-cockroachdb</module>
+		<module>anyline-data-jdbc-databricks</module>					<!--Databricks-->
 		<module>anyline-data-jdbc-db2</module>
 		<module>anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dm</module>
 		<module>anyline-data-jdbc-doris</module>						<!--Apache Doris-->
+		<module>anyline-data-jdbc-dremio</module>						<!--Dremio-->
 		<module>anyline-data-jdbc-druid</module>						<!--Apache druid-->
 		<module>anyline-data-jdbc-duckdb</module>
 		<module>anyline-data-jdbc-edb</module>
@@ -58,9 +61,11 @@
 		<module>anyline-data-jdbc-selectdb</module>                		<!--天翼数智-->
 		<module>anyline-data-jdbc-sequoiadb</module>					<!--巨杉-->
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
+		<module>anyline-data-jdbc-snowflake</module>					<!--Snowflake-->
 		<module>anyline-data-jdbc-sqlite</module>
 		<module>anyline-data-jdbc-starrocks</module>
 		<module>anyline-data-jdbc-sybase</module>
+		<module>anyline-data-jdbc-synapse</module>						<!--Azure Synapse-->
 		<module>anyline-data-jdbc-tidb</module>
 		<module>anyline-data-jdbc-vitess</module>
 		<module>anyline-data-jdbc-voltdb</module>

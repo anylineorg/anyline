@@ -69,7 +69,51 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
 
     @Override
     public String create(String key, DatabaseType database, String url, String user, String password) throws Exception {
-        return null;
+        String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
+        try {
+            if (BasicUtil.isEmpty(url)) {
+                return null;
+            }
+
+            // Build MongoDB connection URI: mongodb://[user:password@]host:port[/database]
+            if (!url.toLowerCase().startsWith("mongodb:") && !url.toLowerCase().startsWith("mongodb+srv:")) {
+                StringBuilder uri = new StringBuilder();
+                if (url.startsWith("://")) {
+                    uri.append("mongodb").append(url);
+                } else {
+                    uri.append("mongodb://");
+                    if (BasicUtil.isNotEmpty(user) && BasicUtil.isNotEmpty(password)) {
+                        uri.append(user).append(":").append(password).append("@");
+                    }
+                    uri.append(url);
+                }
+                url = uri.toString();
+            }
+
+            // Extract database name from URL path
+            String databaseName = database.name();
+            ConnectionString connection = new ConnectionString(url);
+            String connDb = connection.getDatabase();
+            if (BasicUtil.isNotEmpty(connDb)) {
+                databaseName = connDb;
+            }
+
+            DataSourceHolder.check(key, true);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("url", url);
+            params.put("database", databaseName);
+            DataSourceHolder.params.put(key, params);
+
+            MongoClient client = MongoClients.create(connection);
+            MongoDatabase db = client.getDatabase(databaseName);
+            MongoRuntimeHolder.instance().reg(key, client, db);
+
+            return datasource_id;
+        } catch (Exception e) {
+            log.error("[创建Mongo数据源失败][key:{}][msg:{}]", key, e.toString());
+            return null;
+        }
     }
 
     @Override

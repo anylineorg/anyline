@@ -16,6 +16,7 @@
     <modules>
 		<module>anyline-data-easysearch</module>
 		<module>anyline-data-elasticsearch</module>
+		<module>anyline-data-opensearch</module>
     </modules>
 	<build>
 		<plugins>

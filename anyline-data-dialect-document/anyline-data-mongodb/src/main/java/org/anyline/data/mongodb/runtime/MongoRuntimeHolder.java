@@ -32,8 +32,10 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntimeHolder;
 import org.anyline.service.init.DefaultService;
+import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 @AnylineComponent("anyline.environment.data.runtime.holder.mongo")
@@ -82,6 +84,14 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
      * @param datasource 数据源bean id
      */
     public DataRuntime reg(String key, String datasource) {
+        Object bean = ConfigTable.environment().getBean(datasource);
+        if (bean instanceof MongoDatabase) {
+            MongoDatabase db = (MongoDatabase) bean;
+            return reg(key, null, db, null);
+        } else if (bean instanceof MongoClient) {
+            MongoClient client = (MongoClient) bean;
+            return reg(key, client, client.getDatabase(key), null);
+        }
         return null;
     }
 
@@ -154,7 +164,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
     }
 
     public static void close(String key) {
-        /*Object datasource = null;
+        Object datasource = null;
         if(ConfigTable.environment().containsBean(key)) {
             datasource = ConfigTable.environment().getBean(key);
             try {
@@ -170,12 +180,12 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
             } catch (Exception e) {
                 log.error("close connection exception:", e);
             }
-        }*/
+        }
     }
     public static void closeConnection(Object datasource) throws Exception {
-        /*Method method = ClassUtil.getMethod(datasource.getClass(), "close");
+        Method method = ClassUtil.getMethod(datasource.getClass(), "close");
         if(null != method) {
             method.invoke(datasource);
-        }*/
+        }
     }
 }

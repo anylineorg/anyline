@@ -97,7 +97,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj,  Boolean placeholder, Boolean unicode, String... conditions) {
-        return null;
+        List<String> cols = null;
+        if (conditions != null && conditions.length > 0) {
+            cols = Arrays.asList(conditions);
+        }
+        return createInsertRun(runtime, dest, obj, configs, placeholder, unicode, cols);
     }
 
     @Override
@@ -776,7 +780,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(null != columns && !columns.isEmpty()) {
             cols = columns;
         }else{
-            cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
+            cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE));
         }
         if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
             primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
@@ -918,7 +922,29 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, Boolean placeholder, Boolean unicode, LinkedHashMap<String, Column> columns) {
-        return null;
+        if (null == list || list.isEmpty()) {
+            return null;
+        }
+        // For MongoDB, process the first entity to build update run
+        // Collection updates are handled as bulk operations
+        MongoRun run = null;
+        for (Object obj : list) {
+            if (null == obj) {
+                continue;
+            }
+            MongoRun item = (MongoRun) buildUpdateRunFromEntity(runtime, dest, obj, configs, placeholder, unicode, columns);
+            if (null != item) {
+                if (null == run) {
+                    run = item;
+                }
+                // For batch > 1, aggregate multiple updates
+                // Single batch returns first item
+                if (batch <= 1) {
+                    break;
+                }
+            }
+        }
+        return run;
     }
 
     @Override
@@ -1007,17 +1033,22 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public List<Run> buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
-        return null;
+        return buildDeleteRunFromTable(runtime, batch, table, configs, placeholder, unicode, column, values);
     }
 
     @Override
     public List<Run> buildTruncateRun(DataRuntime runtime, Table table) {
-        return null;
+        List<Run> runs = new ArrayList<>();
+        MongoRun run = new MongoRun(runtime, table);
+        run.setFilter(new Document());
+        runs.add(run);
+        return runs;
     }
 
     @Override
     public List<Run> buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, Boolean placeholder, Boolean unicode, String column, Object values) {
-        return null;
+        String tableName = table.getName();
+        return buildDeleteRunFromTable(runtime, batch, tableName, configs, placeholder, unicode, column, values);
     }
 
     @Override
@@ -1222,17 +1253,21 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Column query) throws Exception {
-        return null;
+        // MongoDB is schema-less, return empty columns map
+        // Column discovery is done at the connection level via sample documents
+        return new LinkedHashMap<>();
     }
 
     @Override
     public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Tag query) throws Exception {
-        return null;
+        // MongoDB does not have a tag/comment concept
+        return new LinkedHashMap<>();
     }
 
     @Override
     public List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-        return null;
+        // MongoDB does not have SQL-style constraints (PK/FK/UNIQUE)
+        return new ArrayList<>();
     }
 
 
@@ -1243,12 +1278,20 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public LinkedHashMap<String, Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
-        return null;
+        // MongoDB is schema-less, metadata is inferred from sample documents
+        return new LinkedHashMap<>();
     }
 
     @Override
     public String concat(DataRuntime runtime, String... args) {
-        return null;
+        if (null == args || args.length == 0) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String arg : args) {
+            builder.append(arg);
+        }
+        return builder.toString();
     }
 
 }

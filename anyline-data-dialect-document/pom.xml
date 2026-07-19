@@ -15,8 +15,9 @@
 
     <modules>
 		<module>anyline-data-arango</module>
-		<module>anyline-data-mongodb</module>
+		<module>anyline-data-couchbase</module>						<!--Couchbase-->
 		<module>anyline-data-couchdb</module>
+		<module>anyline-data-mongodb</module>
     </modules>
 	<build>
 		<plugins>

@@ -1,0 +1,4 @@
+org.anyline.data.couchbase.adapter.CouchbaseActuator
+org.anyline.data.couchbase.adapter.CouchbaseAdapter
+org.anyline.data.couchbase.datasource.CouchbaseDataSourceLoader
+org.anyline.data.couchbase.datasource.CouchbaseDataSourceHolder
