@@ -1,0 +1,4 @@
+org.anyline.data.lancedb.adapter.LanceDBActuator
+org.anyline.data.lancedb.adapter.LanceDBAdapter
+org.anyline.data.lancedb.datasource.LanceDBDataSourceLoader
+org.anyline.data.lancedb.datasource.LanceDBDataSourceHolder

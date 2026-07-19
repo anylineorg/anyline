@@ -47,7 +47,6 @@ public enum ConditionalFunction implements META {
 		LNNVL("逻辑条件取反", "condition", DatabaseType.Oracle),
 		MEMBER_OF("一个值是否存在于数组中", "expression,set"),
 		MERGE_ACTION("为当前行执行合并作命令"),
-		NVL("空值替换", "expression,replacement"),
 		PRESENTNNV("Present非空", "expression", DatabaseType.Oracle),
 		PRESENTV("Present值", "expression", DatabaseType.Oracle),
 		PREVIOUS("前一个值", "expression", DatabaseType.Oracle)		;

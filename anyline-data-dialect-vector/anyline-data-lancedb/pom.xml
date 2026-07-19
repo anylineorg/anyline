@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.7.5-SNAPSHOT</version>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
+    </parent>
+    <artifactId>anyline-data-lancedb</artifactId>
+    <packaging>jar</packaging>
+    <name>anyline data lancedb</name>
+    <url>http://www.anyline.org/lancedb</url>
+    <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lancedb</groupId>
+            <artifactId>lancedb-core</artifactId>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.arrow</groupId>
+            <artifactId>arrow-vector</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.arrow</groupId>
+            <artifactId>arrow-memory-netty</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

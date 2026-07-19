@@ -71,6 +71,8 @@
 		<milvus-client.version>2.5.7</milvus-client.version>
 		<weaviate-client.version>5.2.1</weaviate-client.version>
 		<pinecone-client.version>5.0.0</pinecone-client.version>
+		<lancedb.version>0.31.0-final.0</lancedb.version>
+		<arrow.version>15.0.0</arrow.version>
 		<hbase-client.version>2.6.0</hbase-client.version>
 		<jdbc-redshift.version>2.1.0.30</jdbc-redshift.version>
 		<jdbc-yashandb.version>1.6.1</jdbc-yashandb.version>
@@ -1076,6 +1078,21 @@
 				<groupId>io.pinecone</groupId>
 				<artifactId>pinecone-client</artifactId>
 				<version>${pinecone-client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.lancedb</groupId>
+				<artifactId>lancedb-core</artifactId>
+				<version>${lancedb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.arrow</groupId>
+				<artifactId>arrow-vector</artifactId>
+				<version>${arrow.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.arrow</groupId>
+				<artifactId>arrow-memory-netty</artifactId>
+				<version>${arrow.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.hbase</groupId>
