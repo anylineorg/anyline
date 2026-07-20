@@ -276,9 +276,10 @@ public class Column extends TableAffiliation<Column> implements Serializable {
     }
 
     @Override
-    public void setDatabaseType(DatabaseType databaseType) {
+    public Column setDatabaseType(DatabaseType databaseType) {
         this.databaseType = databaseType;
         this.type.setDatabase(databaseType);
+        return this;
     }
     public DataTypeDefine type(){
         return type;

@@ -36,7 +36,7 @@ public class TableAffiliation<E extends TableAffiliation<E>> extends Metadata<E>
         }
         return identity;
     }
-    public void addDdl(String ddl) {
+    public E addDdl(String ddl) {
         if(this.ddls == null) {
             this.ddls = new ArrayList<>();
         }
@@ -44,14 +44,15 @@ public class TableAffiliation<E extends TableAffiliation<E>> extends Metadata<E>
         if(null != this.table) {
             this.table.addDdl(ddl);
         }
+        return (E) this;
     }
-    public void addRun(Run run) {
+    public E addRun(Run run) {
         if(null != table) {
             table.addRun(run);
         }
         if(null != origin) {
             origin.addRun(run);
-            return;
+            return (E) this;
         }
         if(this.runs == null) {
             this.runs = new ArrayList<>();
@@ -59,6 +60,7 @@ public class TableAffiliation<E extends TableAffiliation<E>> extends Metadata<E>
         if(!runs.contains(run)) {
             runs.add(run);
         }
+        return (E) this;
     }
     public boolean execute() {
         if(null != table) {

@@ -664,7 +664,7 @@ public interface DriverAdapter {
             ColumnsDiffer df = (ColumnsDiffer) differ;
             LinkedHashMap<String, Column> adds = df.getAdds();
             LinkedHashMap<String, Column> drops = df.getDrops();
-            LinkedHashMap<String, Column> updates = df.getAlters();
+            LinkedHashMap<String, Column> alters = df.getAlters();
             Table direct = differ.getDirect();
             List<Run> slices = new ArrayList<>();
             for(Column add:adds.values()) {
@@ -677,12 +677,12 @@ public interface DriverAdapter {
                     log.error("build ddl exception:", e);
                 }
             }
-            for(Column update:updates.values()) {
+            for(Column alter:alters.values()) {
                 try {
                     if(null == direct) {
-                        direct = update.getTable();
+                        direct = alter.getTable();
                     }
-                    slices.addAll(buildAlterRun(runtime, update, slice));
+                    slices.addAll(buildAlterRun(runtime, alter, slice));
                 }catch (Exception e) {
                     log.error("build ddl exception:", e);
                 }

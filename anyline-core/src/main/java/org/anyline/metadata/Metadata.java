@@ -27,7 +27,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 import java.util.*;
 
-public class Metadata<T extends Metadata<T>> implements Serializable {
+public class Metadata<E extends Metadata<E>> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public enum TYPE implements Type{
@@ -119,8 +119,8 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
 
     protected String definition                   ; //view等创建SQL, column中 完整定义(不包含名称) 如果设置了define 生成SQL时 name define
 
-    protected T origin;
-    protected T update;
+    protected E origin;
+    protected E update;
     protected boolean setmap = false              ;  //执行了update()操作后set操作是否映射到update上(除了table, catalog, schema, name, drop, action)
     protected boolean getmap = false              ;  //执行了update()操作后get操作是否映射到update上(除了table, catalog, schema, name, drop, action)
 
@@ -140,8 +140,9 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return metadata;
     }
 
-    public void setMetadata(DataRow metadata) {
+    public E setMetadata(DataRow metadata) {
         this.metadata = metadata;
+        return (E) this;
     }
 
     public String getIdentity() {
@@ -163,13 +164,13 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return null;
     }
 
-    public T setDatabase(Database database) {
+    public E setDatabase(Database database) {
         this.database = database;
-        return (T)this;
+        return (E)this;
     }
-    public T setDatabase(String database) {
+    public E setDatabase(String database) {
         this.database = new Database(database);
-        return (T)this;
+        return (E)this;
     }
 
     public String getEngine() {
@@ -179,13 +180,13 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return engine;
     }
 
-    public T setEngine(String engine) {
+    public E setEngine(String engine) {
         if(setmap && null != update) {
             update.setEngine(engine);
-            return (T)this;
+            return (E)this;
         }
         this.engine = engine;
-        return (T)this;
+        return (E)this;
     }
 
     public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas) {
@@ -286,15 +287,17 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return databaseType;
     }
 
-    public void setDatabaseType(DatabaseType databaseType) {
+    public E setDatabaseType(DatabaseType databaseType) {
         this.databaseType = databaseType;
+        return (E) this;
     }
     public String getDataSource() {
         return datasource;
     }
 
-    public void setDataSource(String datasource) {
+    public E setDataSource(String datasource) {
         this.datasource = datasource;
+        return (E) this;
     }
 
     public Catalog getCatalog() {
@@ -307,22 +310,22 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         }
         return catalog.getName();
     }
-    public T removeCatalog(){
+    public E removeCatalog(){
         this.catalog = null;
-        return (T)this;
+        return (E)this;
     }
-    public T setCatalog(String catalog) {
+    public E setCatalog(String catalog) {
         if(BasicUtil.isEmpty(catalog)) {
             this.catalog = null;
         }else {
             this.catalog = new Catalog(catalog);
         }
-        return (T)this;
+        return (E)this;
     }
 
-    public T setCatalog(Catalog catalog) {
+    public E setCatalog(Catalog catalog) {
         this.catalog = catalog;
-        return (T)this;
+        return (E)this;
     }
 
     public Schema getSchema() {
@@ -337,21 +340,21 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return schema.getName();
     }
 
-    public T removeSchema(){
+    public E removeSchema(){
         this.schema = null;
-        return (T)this;
+        return (E)this;
     }
-    public T setSchema(String schema) {
+    public E setSchema(String schema) {
         if(null == schema) {
             this.schema = null;
         }else {
             this.schema = new Schema(schema);
         }
-        return (T)this;
+        return (E)this;
     }
-    public T setSchema(Schema schema) {
+    public E setSchema(Schema schema) {
         this.schema = schema;
-        return (T)this;
+        return (E)this;
     }
     public User getUser() {
         return user;
@@ -362,26 +365,26 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         }
         return null;
     }
-    public T setUser(User user) {
+    public E setUser(User user) {
         this.user = user;
-        return (T)this;
+        return (E)this;
     }
-    public T setUser(String user) {
+    public E setUser(String user) {
         this.user = new User(user);
-        return (T)this;
+        return (E)this;
     }
 
     public Date getCheckSchemaTime() {
         return checkSchemaTime;
     }
 
-    public T setCheckSchemaTime(Date checkSchemaTime) {
+    public E setCheckSchemaTime(Date checkSchemaTime) {
         if(setmap && null != update) {
             update.setCheckSchemaTime(checkSchemaTime);
-            return (T)this;
+            return (E)this;
         }
         this.checkSchemaTime = checkSchemaTime;
-        return (T)this;
+        return (E)this;
     }
     public String getName() {
         return name;
@@ -412,27 +415,27 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
 
     }
 
-    public T setName(String name) {
+    public E setName(String name) {
         this.name = name;
-        return (T)this;
+        return (E)this;
     }
 
     public String getAlias() {
         return alias;
     }
 
-    public T setAlias(String alias) {
+    public E setAlias(String alias) {
         this.alias = alias;
-        return (T)this;
+        return (E)this;
     }
 
-    public T setComment(String comment) {
+    public E setComment(String comment) {
         if(setmap && null != update) {
             update.comment = comment;
-            return (T)this;
+            return (E)this;
         }
         this.comment = comment;
-        return (T)this;
+        return (E)this;
     }
 
     public String getComment() {
@@ -442,7 +445,7 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return comment;
     }
 
-    public T delete() {
+    public E delete() {
         return drop();
     }
 
@@ -450,44 +453,44 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return drop;
     }
 
-    public T setDelete(boolean drop) {
+    public E setDelete(boolean drop) {
         this.drop = drop;
-        return (T)this;
+        return (E)this;
     }
 
     public ACTION.DDL getAction() {
         return action;
     }
 
-    public T setAction(ACTION.DDL action) {
+    public E setAction(ACTION.DDL action) {
         this.action = action;
-        return (T)this;
+        return (E)this;
     }
 
-    public T drop() {
+    public E drop() {
         this.drop = true;
-        return (T)this;
+        return (E)this;
     }
 
     public boolean isDrop() {
         return drop;
     }
 
-    public T setDrop(boolean drop) {
+    public E setDrop(boolean drop) {
         this.drop = drop;
-        return (T)this;
+        return (E)this;
     }
 
-    public T setNewName(String newName) {
+    public E setNewName(String newName) {
         return setNewName(newName, true, true);
     }
 
-    public T setNewName(String newName, boolean setmap, boolean getmap) {
+    public E setNewName(String newName, boolean setmap, boolean getmap) {
         if(null == update) {
             update(setmap, getmap);
         }
         update.setName(newName);
-        return (T)update;
+        return (E)update;
     }
     public List<String> options(){
         if(getmap && null != update) {
@@ -495,13 +498,13 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         }
         return options;
     }
-    public T addOption(String option){
+    public E addOption(String option){
         if(setmap && null != update) {
             addOption(option);
-            return (T)this;
+            return (E)this;
         }
         this.options.add(option);
-        return (T)this;
+        return (E)this;
     }
 
     public LinkedHashMap<String, Object> getProperty() {
@@ -519,22 +522,22 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return null;
     }
 
-    public T setProperty(String key, Object value) {
+    public E setProperty(String key, Object value) {
         if(getmap && null != update) {
-            return (T)update.setProperty(key, value);
+            return (E)update.setProperty(key, value);
         }
         if(null == this.property) {
             this.property = new LinkedHashMap<>();
         }
         this.property.put(key, value);
-        return (T)this;
+        return (E)this;
     }
-    public T setProperty(LinkedHashMap<String, Object> property) {
+    public E setProperty(LinkedHashMap<String, Object> property) {
         if(getmap && null != update) {
-            return (T)update.setProperty(property);
+            return (E)update.setProperty(property);
         }
         this.property = property;
-        return (T)this;
+        return (E)this;
     }
     public String getDefinition() {
         if(getmap && null != update) {
@@ -543,13 +546,13 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return definition;
     }
 
-    public T setDefinition(String definition) {
+    public E setDefinition(String definition) {
         if(setmap && null != update) {
             update.definition = definition;
-            return (T)this;
+            return (E)this;
         }
         this.definition = definition;
-        return (T)this;
+        return (E)this;
     }
 
     public boolean isRename() {
@@ -569,21 +572,24 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return ddls;
     }
 
-    public void setDdl(List<String> ddl) {
+    public E setDdl(List<String> ddl) {
         this.ddls = ddl;
+        return (E) this;
     }
-    public void addDdl(List<String> ddls) {
+    public E addDdl(List<String> ddls) {
         if(null != ddls) {
             for (String ddl : ddls) {
                 addDdl(ddl);
             }
         }
+        return (E) this;
     }
-    public void addDdl(String ddl) {
+    public E addDdl(String ddl) {
         if(this.ddls == null) {
             this.ddls = new ArrayList<>();
         }
         ddls.add(ddl);
+        return (E) this;
     }
     public List<String> ddls() {
         return ddls;
@@ -625,20 +631,22 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return runs;
     }
 
-    public void addRuns(List<Run> runs) {
+    public E addRuns(List<Run> runs) {
         if(null != runs) {
             for(Run run : runs) {
                 addRun(run);
             }
         }
+        return (E) this;
     }
-    public void setRuns(List<Run> runs) {
+    public E setRuns(List<Run> runs) {
         this.runs = runs;
+        return (E) this;
     }
-    public void addRun(Run run) {
+    public E addRun(Run run) {
         if(null != origin) {
             origin.addRun(run);
-            return;
+            return (E) this;
         }
         if(this.runs == null) {
             this.runs = new ArrayList<>();
@@ -646,6 +654,7 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         if(!runs.contains(run)) {
             runs.add(run);
         }
+        return (E) this;
     }
     public List<Run> runs() {
         return runs;
@@ -680,8 +689,9 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return extend;
     }
 
-    public void setExtend(Object extend) {
+    public E setExtend(Object extend) {
         this.extend = extend;
+        return (E) this;
     }
 
     public boolean execute() {
@@ -697,53 +707,55 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
      * DDL是否立即执行
      * @param execute  默认:true, false:只生成SQL不支持，可以通过ddls()返回生成的SQL
      */
-    public void execute(boolean execute) {
+    public E execute(boolean execute) {
         this.execute = execute;
+        return (E) this;
     }
 
     public Long getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(Long objectId) {
+    public E setObjectId(Long objectId) {
         this.objectId = objectId;
+        return (E) this;
     }
 
-    public T getUpdate() {
+    public E getUpdate() {
         return update;
     }
-    public T getOrigin() {
+    public E getOrigin() {
         return origin;
     }
-    public T setUpdate(T update, boolean setmap, boolean getmap) {
+    public E setUpdate(E update, boolean setmap, boolean getmap) {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
         if(null != update) {
             update.update = null;
-            update.origin = (T) this;
+            update.origin = (E) this;
         }
-        return (T)this;
+        return (E)this;
     }
-    public T update() {
+    public E update() {
         return update(true, true);
     }
-    public T update(boolean setmap, boolean getmap) {
+    public E update(boolean setmap, boolean getmap) {
         this.setmap = setmap;
         this.getmap = getmap;
         update = clone();
         update.update = null;
-        update.origin = (T) this;
+        update.origin = (E) this;
         return update;
     }
 
-    public T clone() {
-        T clone = null;
+    public E clone() {
+        E clone = null;
         try {
-            clone = (T)super.clone();
+            clone = (E)super.clone();
         } catch (Exception e) {
             try {
-                clone = (T)getClass().newInstance();
+                clone = (E)getClass().newInstance();
                 BeanUtil.copyFieldValue(clone, this);
                 clone.update = null;
                 clone.setmap = false;
@@ -814,19 +826,22 @@ public class Metadata<T extends Metadata<T>> implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public E setId(String id) {
         this.id = id;
+        return (E)this;
     }
 
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
+    public E setText(String text) {
         this.text = text;
+        return (E) this;
     }
-    public void swt(ACTION.SWITCH swt) {
+    public E swt(ACTION.SWITCH swt) {
         this.swt = swt;
+        return (E) this;
     }
     public ACTION.SWITCH swt() {
         return this.swt;
