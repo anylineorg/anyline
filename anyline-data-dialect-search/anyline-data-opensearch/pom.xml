@@ -10,7 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>anyline-data-opensearch</artifactId>
-    <version>8.7.5-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>anyline data opensearch</name>
+    <url>http://www.anyline.org/opensearch</url>
 
     <dependencies>
         <dependency>
