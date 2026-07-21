@@ -593,6 +593,7 @@ public interface DriverAdapter {
                 Table origin = dif.getOrigin();
                 Table update = origin.clone();
 
+
                 if(null != update) {
                     update.setUpdate(dest, false, false);
                 }
@@ -605,6 +606,9 @@ public interface DriverAdapter {
 
 
                 ColumnsDiffer columns_dif = dif.getColumnsDiffer();
+                if(update.isSort()) {
+                    sort(columns_dif.getAlters());
+                }
                 slices.addAll(ddl(runtime, random, columns_dif, false));
 
                 PrimaryKeyDiffer primary_dif = dif.getPrimaryKeyDiffer();
@@ -7736,6 +7740,12 @@ public interface DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	boolean alter(DataRuntime runtime, Table meta) throws Exception;
+
+    /**
+     * 列排序 根据position设置 FIRST AFTER等属性
+     * @param columns 列
+     */
+    default void sort(LinkedHashMap<String, Column> columns) {}
 	/**
 	 * table[调用入口]<br/>
 	 * 删除表,执行的命令通过meta.ddls()返回

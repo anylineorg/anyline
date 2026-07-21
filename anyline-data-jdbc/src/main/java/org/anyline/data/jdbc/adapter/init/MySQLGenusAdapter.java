@@ -5045,13 +5045,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         return super.alter(runtime, meta);
     }
-    protected void sort(LinkedHashMap<String, Column> columns) {
+    @Override
+    public void sort(LinkedHashMap<String, Column> columns) {
+        Column.sort(columns, true);
         String prefix = null;
         for(Column column:columns.values()) {
+            Column update = column.getUpdate();
             if(null == prefix) {
                 column.setPosition(0);
+                if(null != update){
+                    update.setPosition(0);
+                }
             }else{
                 column.setAfter(prefix);
+                if(null != update){
+                    update.setAfter(prefix);
+                }
             }
             if(!column.isDrop()) {
                 prefix = column.getName();

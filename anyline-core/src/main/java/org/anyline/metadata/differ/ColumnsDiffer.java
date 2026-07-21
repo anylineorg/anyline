@@ -58,7 +58,7 @@ public class ColumnsDiffer extends AbstractDiffer implements Serializable {
             }else {
                 //不比较 catalog schema
                 if(!origin.equals(dest)) {
-                    origin.setUpdate(dest, false, false);
+                    origin.setUpdate(dest, false, true);//排序时要用到dest的position
                     alters.put(key, origin);
                 }
             }
