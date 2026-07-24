@@ -6314,9 +6314,58 @@ public abstract class ImpalaGenusAdapter extends AbstractJDBCAdapter {
      * @return runs
      * @throws Exception 异常
      */
+    /**
+     * table[命令合成]<br/>
+     * 创建表<br/>
+     * Impala CREATE TABLE 语法:
+     * CREATE [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name
+     *   (col_name data_type [COMMENT 'col_comment'], ...)
+     *   [COMMENT 'table_comment']
+     *   [PARTITIONED BY (col_name data_type, ...)]
+     *   [SORT BY (col_name, ...)]
+     *   [ROW FORMAT row_format]
+     *   [WITH SERDEPROPERTIES ('key'='value', ...)]
+     *   [STORED AS file_format]
+     *   [LOCATION 'hdfs_path']
+     *   [TBLPROPERTIES ('key'='value', ...)]
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return runs
+     * @throws Exception 异常
+     */
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
-        return super.buildCreateRun(runtime, meta);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("CREATE ").append(keyword(meta)).append(" ");
+        checkTableExists(runtime, builder, false);
+        name(runtime, builder, meta);
+        //分区表
+        if(BasicUtil.isNotEmpty(meta.getMasterName())) {
+            partitionOf(runtime, builder, meta);
+        }
+        partitionFor(runtime, builder, meta);
+        //列,索引
+        body(runtime, builder, meta);
+        //Impala不支持表级索引
+        //注释(Impala支持行内注释)
+        comment(runtime, builder, meta);
+        //分表 PARTITIONED BY
+        partitionBy(runtime, builder, meta);
+        //存储格式 STORED AS / ROW FORMAT / STORED BY
+        store(runtime, builder, meta);
+        //HDFS路径 LOCATION
+        location(runtime, builder, meta);
+        //扩展属性 TBLPROPERTIES
+        property(runtime, builder, meta);
+
+        runs.addAll(buildAppendCommentRun(runtime, meta));
+        runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+        runs.addAll(buildAppendPrimaryRun(runtime, meta));
+        runs.addAll(buildAppendIndexRun(runtime, meta));
+        return runs;
     }
 
 
@@ -6580,6 +6629,79 @@ public abstract class ImpalaGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.property(runtime, builder, meta);
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 存储格式 STORED AS file_format<br/>
+     * Impala 支持的格式: PARQUET, TEXTFILE, RCFILE, SEQUENCEFILE, AVRO, ORC<br/>
+     * [ROW FORMAT row_format] [STORED AS file_format] | STORED BY 'handler' [WITH SERDEPROPERTIES (...)]<br/>
+     * 参考: https://impala.apache.org/docs/build/html/topics/impala_create_table.html
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    public StringBuilder store(DataRuntime runtime, StringBuilder builder, Table meta) {
+        /*[ROW FORMAT row_format]
+           [STORED AS file_format]
+             | STORED BY 'storage.handler.class.name' [WITH SERDEPROPERTIES (...)]
+          ]*/
+        Table.Store store = meta.getStore();
+        if(null != store){
+            // ROW FORMAT
+            String rowFormat = store.getRowFormat();
+            if(BasicUtil.isNotEmpty(rowFormat)){
+                builder.append("\nROW FORMAT ").append(rowFormat);
+            }
+            // STORED AS file_format
+            String fileFormat = store.getFileFormat();
+            if(BasicUtil.isNotEmpty(fileFormat)){
+                builder.append("\nSTORED AS ").append(fileFormat);
+            }
+            // STORED BY handler
+            String handler = store.getHandler();
+            if(BasicUtil.isNotEmpty(handler)){
+                builder.append("\nSTORED BY '").append(handler).append("'");
+                LinkedHashMap<String, Object> map = store.getProperty();
+                if(null != map && !map.isEmpty()){
+                    builder.append("\nWITH SERDEPROPERTIES (");
+                    boolean first = true;
+                    for(String key:map.keySet()) {
+                        Object value = map.get(key);
+                        if(BasicUtil.isEmpty(value)) {
+                            continue;
+                        }
+                        if(!first) {
+                            builder.append(", ");
+                        }
+                        first = false;
+                        builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
+                    }
+                    builder.append(")");
+                }
+            }
+        }
+        return builder;
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * HDFS路径 LOCATION 'hdfs_path'<br/>
+     * 文件路径: hdfs://namenode:port/path/to/table<br/>
+     * 非HDFS表下可指定本地路径或Kudu表<br/>
+     * 参考: https://impala.apache.org/docs/build/html/topics/impala_create_table.html
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    public StringBuilder location(DataRuntime runtime, StringBuilder builder, Table meta) {
+        String location = meta.getLocation();
+        if(BasicUtil.isNotEmpty(location)) {
+            builder.append("\nLOCATION '").append(location).append("'");
+        }
+        return builder;
     }
 
     /**
