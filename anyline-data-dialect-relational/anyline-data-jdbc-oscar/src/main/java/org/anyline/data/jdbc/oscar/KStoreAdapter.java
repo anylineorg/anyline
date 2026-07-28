@@ -1694,6 +1694,7 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	public <T extends Table<T>> List<Run> buildSelectTablesRun(DataRuntime runtime, boolean greedy, Table<T> query, int types, ConfigStore configs) throws Exception {
 		/*
         ALL_ALL_TABLES：当前登录用户可见的所有表
+        ALL_TAB_COMMENTS 注释表
         */
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime, configs);
@@ -1921,7 +1922,18 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectViewsRun(DataRuntime runtime, boolean greedy, View query, int types, ConfigStore configs) throws Exception {
-		return super.buildSelectViewsRun(runtime, greedy, query, types, configs);
+		/**
+		 * V_SYS_VIEWS视图表
+		 */
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//需要跨schema查询
+		builder.append("SELECT M.SCHEMANAME AS OWNER, M.VIEWNAME AS TABLE_NAME, '' AS TABLE_TYPE, NOW() AS CREATE_TIME, NOW() AS UPDATE_TIME, 'N' AS IS_TEMPORARY, M.VIEWNAME AS COMMENTS,'VALID' AS STATUS\n");
+		builder.append("FROM V_SYS_VIEWS M \n");
+		configs.and("M.SCHEMANAME", query.getSchemaName());
+		return runs;
 	}
 
 	/**
