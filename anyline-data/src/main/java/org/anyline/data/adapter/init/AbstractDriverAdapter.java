@@ -15585,8 +15585,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		onupdate(runtime, builder, meta);
 		// 备注
 		comment(runtime, builder, meta);
-		// 位置
-		position(runtime, builder, meta);
+		// 位置(修改时才需要 创建表时不需要)
+        if(action != ACTION.DDL.TABLE_CREATE) {
+            position(runtime, builder, meta);
+        }
 
 		return builder;
 	}

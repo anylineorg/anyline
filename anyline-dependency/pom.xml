@@ -63,8 +63,9 @@
 		<jdbc-iotdb.version>1.1.1</jdbc-iotdb.version>
 		<jdbc-voltdb.version>13.0.0</jdbc-voltdb.version>
 		<jdbc-odps.version>3.6.0</jdbc-odps.version>
-		<driver-neo4j.version>6.0</driver-neo4j.version>
+		<driver-neo4j.version>6.0.5</driver-neo4j.version>
 		<elasticsearch.version>8.7.0</elasticsearch.version>
+		<opensearch.version>2.12.0</opensearch.version>
 		<mongodb-client.version>5.1.0</mongodb-client.version>
 		<arangodb-client.version>7.26.0</arangodb-client.version>
 		<influxdb-client.version>5.0.0</influxdb-client.version>
@@ -83,6 +84,7 @@
 		<slf4j.version>2.0.0-alpha5</slf4j.version>
 		<json.version>2.4</json.version>
 		<jackson.version>2.10.0</jackson.version>
+		<jackson-annotations.version>2.10.0</jackson-annotations.version>
 		<org.dom4j.version>2.1.4</org.dom4j.version>
 		<commons.net.version>3.6</commons.net.version>
 		<commons.io.version>2.7</commons.io.version>
@@ -123,6 +125,7 @@
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
 		<jakarta.jsp.version>3.1.1</jakarta.jsp.version>
 		<jakarta.jstl.version>3.0.0</jakarta.jstl.version>
+		<glassfish.jstl.version>3.0.1</glassfish.jstl.version>
 
 		<!--maven-->
 		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
@@ -704,6 +707,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-opensearch</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-chroma</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -1060,6 +1068,16 @@
 				<version>${elasticsearch.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.opensearch.client</groupId>
+				<artifactId>opensearch-rest-client</artifactId>
+				<version>${opensearch.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.opensearch.client</groupId>
+				<artifactId>opensearch-java</artifactId>
+				<version>${opensearch.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.milvus</groupId>
 				<artifactId>milvus-sdk-java</artifactId>
 				<version>${milvus-client.version}</version>
@@ -1282,7 +1300,7 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
-				<version>${jackson.version}</version>
+				<version>${jackson-annotations.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -1384,6 +1402,13 @@
 				<groupId>jakarta.servlet.jsp.jstl</groupId>
 				<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
 				<version>${jakarta.jstl.version}</version>
+				<scope>provided</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.web</groupId>
+				<artifactId>jakarta.servlet.jsp.jstl</artifactId>
+				<version>${glassfish.jstl.version}</version>
 				<scope>provided</scope>
 				<optional>true</optional>
 			</dependency>
