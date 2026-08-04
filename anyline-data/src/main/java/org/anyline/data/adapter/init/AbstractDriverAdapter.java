@@ -63,6 +63,7 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.TypeMetadataAlias;
 import org.anyline.metadata.type.TypeMetadataHolder;
+import org.anyline.metadata.type.init.ConfigTypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.ConvertProxy;
@@ -72,8 +73,14 @@ import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -236,8 +243,84 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         reg(initUserFieldRefer());
         reg(initRoleFieldRefer());
         reg(initPrivilegeFieldRefer());
+        //动态补充
+        DatabaseType type = type();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sync(type);
+            }
+        }).start();
     }
 
+    /**
+     * 根据系统环境动态补充数据类型映射
+     * 解决中央库更新不及时的问题
+     *
+     * 如果不需要可以把ConfigTable.METADATA_CONFIG_SYNC_HOST置空
+     */
+    protected void sync(DatabaseType database){
+        if(null == ConfigTable.METADATA_CONFIG_SYNC_HOST){
+            return;
+        }
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(ConfigTable.METADATA_CONFIG_SYNC_HOST + "/sync/datatype");
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            Map<String, Object> params = new HashMap<>();
+            params.put("db", database.name());
+            params.put("version", ConfigTable.getVersion());
+            params.put("license", ConfigTable.LICENSE);
+            params.put("os", System.getProperty("os.name"));
+            params.put("ov", System.getProperty("os.version"));
+            params.put("arch", System.getProperty("os.arch"));
+            params.put("jdk", System.getProperty("java.version"));
+            String jsonBody = BeanUtil.map2json(params);
+            try (DataOutputStream os = new DataOutputStream(conn.getOutputStream())) {
+                os.write(jsonBody.getBytes(StandardCharsets.UTF_8));
+                os.flush();
+            }
+            int responseCode = conn.getResponseCode();
+            BufferedReader reader;
+            if (responseCode >= 200 && responseCode < 300) {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+            } else {
+                if (conn.getErrorStream() != null) {
+                    reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
+                } else {
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+                }
+            }
+
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+            String json = response.toString();
+            DataRow row = DataRow.parseJson(json);
+            DataSet<DataRow> configs = row.getSet("data");
+            if(null != configs){
+                for(DataRow config:configs){
+                    alias(config, true);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            conn.disconnect();
+        }
+    }
     @Override
     public MetadataFieldRefer refer(DataRuntime runtime, Class<?> type) {
         MetadataFieldRefer refer = refers.get(type);
@@ -297,6 +380,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             //this.alias.put(key, value);
             TypeMetadataHolder.reg(type(), key, value, override);
         }
+    }
+    protected void alias(DataRow config, boolean override){
+        TypeMetadataAlias alias = new ConfigTypeMetadataAlias(config);
+        reg(alias, override);
     }
     @Override
     public void clear(TypeMetadataAlias alias){
