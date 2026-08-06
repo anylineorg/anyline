@@ -83,10 +83,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-/**
- * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
- */
-
 public abstract class AbstractDriverAdapter implements DriverAdapter {
 
     protected DMListener dmListener;
@@ -315,8 +311,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
                 }
             }
 
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception ignore){
         }finally {
             conn.disconnect();
         }

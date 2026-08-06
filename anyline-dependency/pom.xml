@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.7.5-SNAPSHOT</version>
+	<version>8.7.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline dependency</name>
 	<description>anyline</description>
@@ -33,11 +33,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
-		<anyline.version>8.7.5-SNAPSHOT</anyline.version>
+		<anyline.version>8.7.6-SNAPSHOT</anyline.version>
 
 		<solon.version>4.0.3</solon.version>
 		<spring.version>5.3.23</spring.version>
-		<spring-boot.version>2.6.12</spring-boot.version>
+		<spring-boot.version> 2.6.12</spring-boot.version>
 		<vertx.version>4.5.21</vertx.version>
 
 

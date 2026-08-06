@@ -12,7 +12,7 @@
 
 
 </div>
-<img src="assets/index.png"/>  
+<img src="https://cdn.anyline.org/img/banner/anyline.png"/>  
 💡核心是一个面向运行时的 元数据动态映射库  
 适配100+关系/非关系型数据库(及各种国产小众数据库)  
 经常作为SQL解析引擎或适配器，用于解决高度动态化场景下异构数据库的统一操作与动态数据源管理问题    
