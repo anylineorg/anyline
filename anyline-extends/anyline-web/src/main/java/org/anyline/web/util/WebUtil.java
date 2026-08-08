@@ -111,7 +111,7 @@ public class WebUtil {
 			ip = request.getRemoteAddr();
 		}
 
-		if (ip.equals("127.0.0.1")) {
+		if ("127.0.0.1".equalsIgnoreCase(ip)) {
 			// 根据网卡取本机配置的IP
 			InetAddress inet = null;
 			try {

@@ -42,6 +42,9 @@ public class ParserFactory {
                 parser = parsers.get(origin);
             }
         }
+        if(null == parser){
+            log.error("当前版本未实现");
+        }
         return parser;
     }
 
