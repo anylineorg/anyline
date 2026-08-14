@@ -918,7 +918,7 @@ public class ConfigTable {
 				}
 				LICENSE_EXP = ks[3];
 			} catch (Exception ignore) {
-				LICENSE_VERSION_TYPE = "版本异常"	;
+				LICENSE_VERSION_TYPE = "读取授权码失败"	;
 				LICENSE_USER		 = null	;
 				LICENSE_EXP			 = null	;
 				LICENSE_SCOPE 		 = 1;
@@ -926,7 +926,7 @@ public class ConfigTable {
 				LICENSE_C2 		 	 = 0;
 			}
 		}else{
-			LICENSE_VERSION_TYPE = "版本异常"	;
+			LICENSE_VERSION_TYPE = "读取授权码失败"	;
 			LICENSE_USER		 = null	;
 			LICENSE_EXP			 = null	;
 			LICENSE_SCOPE 		 = 1;
@@ -990,7 +990,7 @@ public class ConfigTable {
 	}
 
 	protected static void license() {
-		if(version.startsWith("8")){
+		if(!version.contains("-e")){
 			System.out.println("【开源社区版】授权期限:长期");
 			return;
 		}

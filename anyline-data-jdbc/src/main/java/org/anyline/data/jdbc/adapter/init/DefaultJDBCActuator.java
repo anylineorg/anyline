@@ -301,104 +301,124 @@ public class DefaultJDBCActuator implements DriverActuator {
             return new DataSet();
         }
         Connection conn = getConnection(adapter, runtime, datasource);
-        String sql = "{call " +procedure.getName()+"(";
-        final int sizeIn = inputs.size();
-        final int sizeOut = outputs.size();
-        final int size = sizeIn + sizeOut;
-        for(int i=0; i<size; i++) {
-            sql += "?";
-            if(i < size-1) {
-                sql += ",";
+        CallableStatement cs = null;
+        ResultSet rs = null;
+        try {
+            String sql = "{call " +procedure.getName()+"(";
+            final int sizeIn = inputs.size();
+            final int sizeOut = outputs.size();
+            final int size = sizeIn + sizeOut;
+            for(int i=0; i<size; i++) {
+                sql += "?";
+                if(i < size-1) {
+                    sql += ",";
+                }
             }
-        }
-        sql += ")}";
+            sql += ")}";
 
-        CallableStatement cs = conn.prepareCall(sql);
-        for(int i=1; i<=sizeIn; i++) {
-            Parameter param = inputs.get(i-1);
-            Object value = param.getValue();
-            if(null == value || "NULL".equalsIgnoreCase(value.toString())) {
-                value = null;
+            cs = conn.prepareCall(sql);
+            for(int i=1; i<=sizeIn; i++) {
+                Parameter param = inputs.get(i-1);
+                Object value = param.getValue();
+                if(null == value || "NULL".equalsIgnoreCase(value.toString())) {
+                    value = null;
+                }
+                cs.setObject(i, value, param.getType());
             }
-            cs.setObject(i, value, param.getType());
-        }
-        for(int i=1; i<=sizeOut; i++) {
-            Parameter param = outputs.get(i-1);
-            if(null == param.getValue()) {
-                cs.registerOutParameter(i+sizeIn, param.getType());
-            }else{
-                cs.setObject(i, param.getValue(), param.getType());
-            }
+            for(int i=1; i<=sizeOut; i++) {
+                Parameter param = outputs.get(i-1);
+                if(null == param.getValue()) {
+                    cs.registerOutParameter(i+sizeIn, param.getType());
+                }else{
+                    cs.setObject(i, param.getValue(), param.getType());
+                }
 
+            }
+            JDBCUtil.queryTimeout(cs, null);
+            List<DataSet> sets = new ArrayList<>();
+            rs = cs.executeQuery();
+            DataSet<DataRow> rtn = null;
+            boolean more = false;
+            do {
+                DataSet<DataRow> set = new DataSet();
+                if(null == rtn){
+                    //有多个结果集的返回第一个
+                    rtn = set;
+                }
+                sets.add(set);
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int cols = rsmd.getColumnCount();
+                for (int i = 1; i <= cols; i++) {
+                    String name = rsmd.getColumnLabel(i);
+                    if (null == name) {
+                        name = rsmd.getColumnName(i);
+                    }
+                    set.addHead(name);
+                }
+                long mid = System.currentTimeMillis();
+                int index = 0;
+                long first = -1;
+                long last = -1;
+                if (null != navi) {
+                    first = navi.getFirstRow();
+                    last = navi.getLastRow();
+                }
+                while (rs.next()) {
+                    if (first == -1 || (index >= first && index <= last)) {
+                        DataRow row = new DataRow();
+                        for (int i = 1; i <= cols; i++) {
+                            row.put(false, rsmd.getColumnLabel(i), rs.getObject(i));
+                        }
+                        set.addRow(row);
+                    }
+                    index++;
+                    if (first != -1) {
+                        if (index > last) {
+                            break;
+                        }
+                        if (first == 0 && last == 0) {// 只取一行
+                            break;
+                        }
+                    }
+                }
+                if (null != navi) {
+                    navi.setTotalRow(index);
+                    set.setNavi(navi);
+                    navi.setDataSize(set.size());
+                }
+                set.setDatalink(runtime.datasource());
+                if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+                    log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid), set.size());
+                }
+                if (ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()) {
+                    log.info("{}[查询结果]{}", random, LogUtil.table(set));
+                }
+                rs.close();
+                //多个结果集
+                more = cs.getMoreResults();
+                if(more){
+                    rs = cs.getResultSet();
+                }
+            }while (more);
+            procedure.setResults(sets);
+            return rtn;
+        }finally {
+            if(null != rs && !rs.isClosed()) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error", e);
+                }
+            }
+            if(null != cs && !cs.isClosed()) {
+                try {
+                    cs.close();
+                } catch (SQLException e) {
+                    log.error("Close CallableStatement error", e);
+                }
+            }
+            releaseConnection(adapter, runtime, conn, datasource);
         }
-        JDBCUtil.queryTimeout(cs, null);
-        List<DataSet> sets = new ArrayList<>();
-        ResultSet rs = cs.executeQuery();
-        DataSet<DataRow> rtn = null;
-        boolean more = false;
-        do {
-            DataSet<DataRow> set = new DataSet();
-            if(null == rtn){
-                //有多个结果集的返回第一个
-                rtn = set;
-            }
-            sets.add(set);
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int cols = rsmd.getColumnCount();
-            for (int i = 1; i <= cols; i++) {
-                String name = rsmd.getColumnLabel(i);
-                if (null == name) {
-                    name = rsmd.getColumnName(i);
-                }
-                set.addHead(name);
-            }
-            long mid = System.currentTimeMillis();
-            int index = 0;
-            long first = -1;
-            long last = -1;
-            if (null != navi) {
-                first = navi.getFirstRow();
-                last = navi.getLastRow();
-            }
-            while (rs.next()) {
-                if (first == -1 || (index >= first && index <= last)) {
-                    DataRow row = new DataRow();
-                    for (int i = 1; i <= cols; i++) {
-                        row.put(false, rsmd.getColumnLabel(i), rs.getObject(i));
-                    }
-                    set.addRow(row);
-                }
-                index++;
-                if (first != -1) {
-                    if (index > last) {
-                        break;
-                    }
-                    if (first == 0 && last == 0) {// 只取一行
-                        break;
-                    }
-                }
-            }
-            if (null != navi) {
-                navi.setTotalRow(index);
-                set.setNavi(navi);
-                navi.setDataSize(set.size());
-            }
-            set.setDatalink(runtime.datasource());
-            if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid), set.size());
-            }
-            if (ConfigTable.IS_LOG_QUERY_RESULT && log.isInfoEnabled()) {
-                log.info("{}[查询结果]{}", random, LogUtil.table(set));
-            }
-            rs.close();
-            //多个结果集
-            more = cs.getMoreResults();
-            if(more){
-                rs = cs.getResultSet();
-            }
-        }while (more);
-        procedure.setResults(sets);
-        return rtn;
     }
 
     /**
@@ -478,6 +498,9 @@ public class DefaultJDBCActuator implements DriverActuator {
                 if(!keep) {//保持连接的由调用方关闭
                     if(null != rs && !rs.isClosed()) {
                         rs.close();
+                    }
+                    if(null != ps && !ps.isClosed()) {
+                        ps.close();
                     }
                     releaseConnection(adapter, runtime, con, datasource);
                 }
@@ -633,7 +656,8 @@ public class DefaultJDBCActuator implements DriverActuator {
         if(null == datasource) {
             return -1;
         }
-        Connection con = getConnection(adapter, runtime, datasource);
+        Connection con = null;
+        con = getConnection(adapter, runtime, datasource);
         String cmd = run.getFinalInsert();
         int batch = run.getBatch();
         List<Object> values = run.getValues();
@@ -647,37 +671,57 @@ public class DefaultJDBCActuator implements DriverActuator {
                 keyHolder = false;
             }
             PreparedStatement ps = null;
-            //是否支持返回自增值
-            if(keyHolder) {
-                //需要返回自增
-                if (null != pks && pks.length > 0) {
-                    //返回多个值
-                    ps = con.prepareStatement(cmd, pks);
-                } else {
-                    ps = con.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rs = null;
+            try{
+                //是否支持返回自增值
+                if(keyHolder) {
+                    //需要返回自增
+                    if (null != pks && pks.length > 0) {
+                        //返回多个值
+                        ps = con.prepareStatement(cmd, pks);
+                    } else {
+                        ps = con.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS);
+                    }
+
+                }else{
+                    ps = con.prepareStatement(cmd);
                 }
 
-            }else{
-                ps = con.prepareStatement(cmd);
+                int idx = 0;
+                if (null != values) {
+                    for (Object obj : values) {
+                        ps.setObject(++idx, obj);
+                    }
+                }
+                JDBCUtil.updateTimeout(ps, configs);
+
+                    cnt = ps.executeUpdate();
+                    if(keyHolder) {
+                        rs = ps.getGeneratedKeys();
+                        identity(adapter, runtime, random, data, configs, rs, generatedKey);
+                    }
+
+            }finally {
+                // 5. 严格遵循关闭顺序：先关 ResultSet，再关 PreparedStatement
+                if (rs != null) {
+                    try {
+                        rs.close();
+                    } catch (SQLException e) {
+                        log.error("Close ResultSet error", e);
+                    }
+                }
+                if (ps != null) {
+                    try {
+                        ps.close();
+                    } catch (SQLException e) {
+                        log.error("Close PreparedStatement error", e);
+                    }
+                }
+
+                // 6. 最后释放连接
+                releaseConnection(adapter, runtime, con, datasource);
             }
 
-            int idx = 0;
-            if (null != values) {
-                for (Object obj : values) {
-                    ps.setObject(++idx, obj);
-                }
-            }
-            JDBCUtil.updateTimeout(ps, configs);
-            cnt = ps.executeUpdate();
-            if(keyHolder) {
-                ResultSet rs = ps.getGeneratedKeys();
-                try {
-                    identity(adapter, runtime, random, data, configs, rs, generatedKey);
-                }finally {
-                    rs.close();
-                }
-            }
-            releaseConnection(adapter, runtime, con, datasource);
         }
 
         return cnt;
@@ -785,10 +829,12 @@ public class DefaultJDBCActuator implements DriverActuator {
         if(null == datasource) {
             return line;
         }
-        Connection con = getConnection(adapter, runtime, datasource);
+        Connection con = null;
         try {
+            con = getConnection(adapter, runtime, datasource);
             batch(adapter, runtime, con, sql, batch, vol, values);
         }catch (Exception e) {
+            line = -1;
             log.error("sql异常", e);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
@@ -797,6 +843,7 @@ public class DefaultJDBCActuator implements DriverActuator {
     }
 
     public long batch(DriverAdapter adapter, DataRuntime runtime, Connection con, String sql, int batch, int vol, List<Object> values) throws Exception{
+        //注意不需要close 上层会处理
         int size = values.size(); //一共多少参数
         int line = size/vol; //一共多少行
         PreparedStatement ps = null;
@@ -808,7 +855,6 @@ public class DefaultJDBCActuator implements DriverActuator {
                 ps.setObject(c, values.get(vol*r+c-1));
             }
             ps.addBatch();
-
             if (r % batch == 0) {
                 ps.executeBatch();
                 ps.clearBatch();
@@ -844,6 +890,9 @@ public class DefaultJDBCActuator implements DriverActuator {
                 }
                 result = ps.executeUpdate();
             }finally {
+                if(null != ps && !ps.isClosed()){
+                    ps.close();
+                }
                 releaseConnection(adapter, runtime, con, datasource);
             }
         }
@@ -864,45 +913,56 @@ public class DefaultJDBCActuator implements DriverActuator {
             return list;
         }
         Connection con = getConnection(adapter, runtime, datasource);
-        final int sizeIn = inputs.size();
-        final int sizeOut = outputs.size();
-        final int size = sizeIn + sizeOut;
-        CallableStatement cs = con.prepareCall(sql);
-        // 带有返回参数
-        int returnIndex = 0;
-        if (procedure.hasReturn()) {
-            returnIndex = 1;
-            cs.registerOutParameter(1, Types.VARCHAR);
-        }
-        for (int i = 1; i <= sizeIn; i++) {
-            Parameter param = inputs.get(i - 1);
-            Object value = param.getValue();
-            if (null == value || "NULL".equalsIgnoreCase(value.toString())) {
-                value = null;
+        CallableStatement cs = null;
+        try {
+            final int sizeIn = inputs.size();
+            final int sizeOut = outputs.size();
+            final int size = sizeIn + sizeOut;
+            cs = con.prepareCall(sql);
+            // 带有返回参数
+            int returnIndex = 0;
+            if (procedure.hasReturn()) {
+                returnIndex = 1;
+                cs.registerOutParameter(1, Types.VARCHAR);
             }
-            cs.setObject(i + returnIndex, value, param.getType());
-        }
-        for (int i = 1; i <= sizeOut; i++) {
-            Parameter param = outputs.get(i - 1);
-            if (null == param.getValue()) {
-                cs.registerOutParameter(i + sizeIn + returnIndex, param.getType());
-            } else {
-                cs.setObject(i + sizeIn + returnIndex, param.getValue(), param.getType());
+            for (int i = 1; i <= sizeIn; i++) {
+                Parameter param = inputs.get(i - 1);
+                Object value = param.getValue();
+                if (null == value || "NULL".equalsIgnoreCase(value.toString())) {
+                    value = null;
+                }
+                cs.setObject(i + returnIndex, value, param.getType());
             }
-        }
-        cs.execute();
-        if (procedure.hasReturn()) {
-            list.add(cs.getObject(1));
-        }
-        if (sizeOut > 0) {
-            // 注册输出参数
             for (int i = 1; i <= sizeOut; i++) {
-                Object output = cs.getObject(sizeIn + returnIndex + i);
-                list.add(output);
+                Parameter param = outputs.get(i - 1);
+                if (null == param.getValue()) {
+                    cs.registerOutParameter(i + sizeIn + returnIndex, param.getType());
+                } else {
+                    cs.setObject(i + sizeIn + returnIndex, param.getValue(), param.getType());
+                }
             }
+            cs.execute();
+            if (procedure.hasReturn()) {
+                list.add(cs.getObject(1));
+            }
+            if (sizeOut > 0) {
+                // 注册输出参数
+                for (int i = 1; i <= sizeOut; i++) {
+                    Object output = cs.getObject(sizeIn + returnIndex + i);
+                    list.add(output);
+                }
+            }
+            return list;
+        }finally {
+            if(null != cs && !cs.isClosed()) {
+                try {
+                    cs.close();
+                } catch (SQLException e) {
+                    log.error("Close CallableStatement error", e);
+                }
+            }
+            releaseConnection(adapter, runtime, con, datasource);
         }
-
-        return list;
     }
 
     /**
@@ -936,6 +996,9 @@ public class DefaultJDBCActuator implements DriverActuator {
                 }
                 result = ps.executeUpdate();
             }finally {
+                if(null != ps && !ps.isClosed()){
+                    ps.close();
+                }
                 releaseConnection(adapter, runtime, con, datasource);
             }
         }
@@ -965,14 +1028,15 @@ public class DefaultJDBCActuator implements DriverActuator {
                 if (batch > 1) {
                     result = batch(adapter, runtime, con, sql, batch, run.getVol(), values);
                 } else {
-                    PreparedStatement ps = con.prepareStatement(sql);
-                    int idx = 0;
-                    if (null != values) {
-                        for (Object obj : values) {
-                            ps.setObject(++idx, obj);
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        int idx = 0;
+                        if (null != values) {
+                            for (Object obj : values) {
+                                ps.setObject(++idx, obj);
+                            }
                         }
+                        result = ps.executeUpdate();
                     }
-                    result = ps.executeUpdate();
                 }
             }
         } finally {
@@ -1000,13 +1064,23 @@ public class DefaultJDBCActuator implements DriverActuator {
         }
         Connection con = getConnection(adapter, runtime, datasource);
         PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();/*
+            rs = ps.executeQuery();
+            /*
             columns = adapter.columns(adapter, runtime, true, null, null, rs);*/
         }catch (Exception e) {
             log.error("metadata 异常:", e);
         }finally {
+            try {
+                if (null != rs && !rs.isClosed()) {
+                    rs.close();
+                }
+                if (null != ps && !ps.isClosed()) {
+                    ps.close();
+                }
+            }catch (Exception ignore){}
             releaseConnection(adapter, runtime, con, datasource);
         }
         return columns;
@@ -1341,6 +1415,8 @@ public class DefaultJDBCActuator implements DriverActuator {
                 column.setOrder(order);
                 column.setPosition(JDBCUtil.integer(keys,"ORDINAL_POSITION", set, null));
                 columns.put(column.getName().toUpperCase(), column);
+
+                set.close();
             }
         }finally{
             releaseConnection(adapter, runtime, con, ds);
