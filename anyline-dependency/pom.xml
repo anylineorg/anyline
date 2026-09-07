@@ -41,7 +41,7 @@
 		<vertx.version>4.5.21</vertx.version>
 
 
-		<jdbc-access.version>5.0.1</jdbc-access.version>
+		<jdbc-access.version>5.1.7</jdbc-access.version>
 		<jdbc-mssql.version>7.2.2.jre8</jdbc-mssql.version>
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
@@ -967,7 +967,7 @@
 				<version>${jdbc-mssql.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>net.sf.ucanaccess</groupId>
+				<groupId>io.github.spannm</groupId>
 				<artifactId>ucanaccess</artifactId>
 				<version>${jdbc-access.version}</version>
 			</dependency>
