@@ -422,7 +422,7 @@ public enum DateTimeFunction implements META {
 	}
 
 	public Category category() {
-		return Category.CONDITIONAL;
+		return Category.DATE_TIME;
 	}
 
 	public DatabaseType database() {

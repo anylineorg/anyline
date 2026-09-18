@@ -1824,6 +1824,16 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public long maxLong(String key) {
         return maxLong(size(), key);
     }
+    public long minLong(int top, String key) {
+        BigDecimal result = minDecimal(top, key);
+        if (null == result) {
+            return 0;
+        }
+        return result.longValue();
+    }
+    public long minLong(String key) {
+        return minLong(size(), key);
+    }
     public double maxFloat(int top, String key) {
         BigDecimal result = maxDecimal(top, key);
         if (null == result) {
@@ -2154,6 +2164,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> sum(String result, String items, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2165,6 +2179,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> avg(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2176,6 +2194,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> var(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2186,6 +2208,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> min(String result, String items, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2196,6 +2222,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> max(String result, String items, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2206,6 +2236,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> count(String result, String items, boolean empty, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2216,6 +2250,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> vara(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2227,6 +2265,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> varp(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2238,6 +2280,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> varpa(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2248,6 +2294,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> stdev(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2259,6 +2309,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> stdeva(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2270,6 +2324,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> stdevp(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2281,6 +2339,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> stdevpa(String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -2292,6 +2354,10 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
     public DataSet<E> agg(Aggregation agg, String result, String items, int scale, int round, String field, Compare compare, String ... conditions) {
         for(DataRow row:rows) {
             DataSet<DataRow> set = row.getSet(items);
+            if(null == set) {
+                //该行没有items子集 跳过 避免NPE
+                continue;
+            }
             if(null != conditions && conditions.length>0) {
                 set = set.getRows(compare, conditions);
             }
@@ -4147,7 +4213,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         return group(true, agg, fields);
     }
     public Object agg(String type, String field) {
-        Aggregation agg = Aggregation.valueOf(field);
+        Aggregation agg = Aggregation.valueOf(type);
         return agg(agg, field);
     }
 
@@ -4180,6 +4246,9 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
             case COUNT:
                 result = count(false, field);
                 break;
+            case COUNTA:
+                result = count(true, field);
+                break;
             case SUM:
                 result = sum(field);
                 break;
@@ -4190,8 +4259,29 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                 result = avg(true, scale, round, field);
                 break;
             case MEDIAN:
+            case MEDIAN_DECIMAL:
                 result = median(field);
                 break;
+            case MEDIAN_DOUBLE: {
+                BigDecimal medianValue = median(field);
+                result = null == medianValue ? null : medianValue.doubleValue();
+                break;
+            }
+            case MEDIAN_FLOAT: {
+                BigDecimal medianValue = median(field);
+                result = null == medianValue ? null : medianValue.floatValue();
+                break;
+            }
+            case MEDIAN_LONG: {
+                BigDecimal medianValue = median(field);
+                result = null == medianValue ? null : medianValue.longValue();
+                break;
+            }
+            case MEDIAN_INT: {
+                BigDecimal medianValue = median(field);
+                result = null == medianValue ? null : medianValue.intValue();
+                break;
+            }
             case MAX:
                 result = max(field);
                 break;
@@ -4207,6 +4297,9 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
             case MAX_INT:
                 result = maxInt(field);
                 break;
+            case MAX_LONG:
+                result = maxLong(field);
+                break;
             case MIN:
                 result = min(field);
                 break;
@@ -4221,6 +4314,9 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                 break;
             case MIN_INT:
                 result = minInt(field);
+                break;
+            case MIN_LONG:
+                result = minLong(field);
                 break;
             case STDEV:
                 result = stdev(scale, round, field);
@@ -5198,7 +5294,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
                 list.add(item);
             }
         }
-        return pivot(extract, pks, classKeys, valueKeys);
+        return pivot(extract, pks, classKeys, list);
     }
     public DataSet<E> pivot(List<String> pks, List<String> classKeys, String ... valueKeys) {
         return pivot(true, pks, classKeys, valueKeys);

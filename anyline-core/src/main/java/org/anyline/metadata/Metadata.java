@@ -109,7 +109,8 @@ public class Metadata<E extends Metadata<E>> implements Serializable {
     protected Schema schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
     protected String name                         ; // 名称
     protected String alias                        ; // 别名
-    protected String comment                      ; // 备注
+    protected String comment                      ; // 备注(完整原文)
+    protected String title                        ; // 标题(自动从comment解析 取冒号前的部分 无冒号时取整个comment)
     protected boolean execute = true              ; // DDL是否立即执行, false:只创建SQL不执行可以通过ddls()返回生成的SQL
     protected String text                         ;
     protected String id                           ;
@@ -432,9 +433,11 @@ public class Metadata<E extends Metadata<E>> implements Serializable {
     public E setComment(String comment) {
         if(setmap && null != update) {
             update.comment = comment;
+            update.title = parseTitle(comment);
             return (E)this;
         }
         this.comment = comment;
+        this.title = parseTitle(comment);
         return (E)this;
     }
 
@@ -443,6 +446,50 @@ public class Metadata<E extends Metadata<E>> implements Serializable {
             return update.comment;
         }
         return comment;
+    }
+
+    /**
+     * 从comment中解析title 取冒号(:或：)或括号((或（)前的部分 都没有时取整个comment
+     * @param comment comment
+     * @return String
+     */
+    protected String parseTitle(String comment) {
+        if(BasicUtil.isEmpty(comment)) {
+            return null;
+        }
+        int idx = -1;
+        char[] separators = {':', '：', '(', '（'};
+        for(char separator : separators) {
+            int tmp = comment.indexOf(separator);
+            /* 多种分隔符同时出现时取最先出现的一个 如: 名称(name):备注 / 名称:备注(name) 均取"名称" */
+            if(tmp >= 0 && (idx < 0 || tmp < idx)) {
+                idx = tmp;
+            }
+        }
+        String title = null;
+        if(idx > 0) {
+            title = comment.substring(0, idx).trim();
+        }
+        if(BasicUtil.isEmpty(title)) {
+            title = comment.trim();
+        }
+        return title;
+    }
+
+    public String getTitle() {
+        if(getmap && null != update) {
+            return update.title;
+        }
+        return title;
+    }
+
+    public E setTitle(String title) {
+        if(setmap && null != update) {
+            update.setTitle(title);
+            return (E)this;
+        }
+        this.title = title;
+        return (E)this;
     }
 
     public E delete() {
@@ -861,6 +908,7 @@ public class Metadata<E extends Metadata<E>> implements Serializable {
     public static final String FIELD_SCHEMA                        = "SCHEMA";
     public static final String FIELD_NAME                          = "NAME";
     public static final String FIELD_ALIAS                         = "ALIAS";
+    public static final String FIELD_TITLE                         = "TITLE";
     public static final String FIELD_COMMENT                       = "COMMENT";
     public static final String FIELD_EXECUTE                       = "EXECUTE";
     public static final String FIELD_EXECUTE_CHECK                 = "EXECUTE_CHECK";

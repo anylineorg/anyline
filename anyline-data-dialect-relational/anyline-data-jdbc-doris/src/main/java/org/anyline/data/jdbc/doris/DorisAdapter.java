@@ -5892,7 +5892,7 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta) {
 		Column.Aggregation type = meta.getAggregation();
 		if(null != type) {
-			builder.append(" ").append(type.getName());
+			builder.append(" ").append(type.getCode());
 		}
 		return builder;
 	}

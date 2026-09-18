@@ -42,6 +42,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -723,6 +725,17 @@ public class AnylineController extends AbstractController {
                 }
             }
             page = parseVariable(request, page);
+
+            //检测文件是否存在
+            String file_dir = ConfigTable.JSP_DIR; //本地开发环境可能检测不到 需要配置
+            if(BasicUtil.isEmpty(file_dir)){
+                file_dir = ConfigTable.getWebRoot();
+            }
+            File file = new File(file_dir, page);
+            if(!file.exists()){
+                page = page.replace("/wap/", "/web/");
+                log.warn("[内容文件检测][file:{}][replace:{}]", file.getAbsolutePath(), page);
+            }
         }
         Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
         return success(map);
