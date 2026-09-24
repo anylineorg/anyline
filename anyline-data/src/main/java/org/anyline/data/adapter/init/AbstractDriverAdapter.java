@@ -710,6 +710,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         LinkedHashMap<String, Column> mastKeys = new LinkedHashMap<>();        // 必须插入列
         List<String> ignores = new ArrayList<>();        // 必须不插入列
         List<String> factKeys = new ArrayList<>();        // 根据是否空值
+        List<String> pks = new ArrayList<>();
+        if(obj instanceof DataRow){
+            DataRow row = (DataRow) obj;
+            pks = row.getPrimaryKeys();
+        }
+        if(pks.isEmpty()){
+            pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
+        }
 
         boolean each = true;//是否需要从row中查找列
         if(null != columns && !columns.isEmpty()) {
@@ -743,8 +751,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             if(obj instanceof DataRow) {
                 row = (DataRow)obj;
                 mastKeys.putAll(row.getUpdateColumns(true));
-
                 ignores.addAll(row.getIgnoreUpdateColumns());
+                for(String pk:pks){
+                    //主键值为空时，忽略插入
+                    Object pv = row.get(pk);
+                    if(BasicUtil.isEmpty(pv)){
+                        ignores.add(pk);
+                    }
+                }
                 cols = row.getColumns();
 
                 isInsertNullColumn = row.isInsertNullColumn();
