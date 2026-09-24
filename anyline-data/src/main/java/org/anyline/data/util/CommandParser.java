@@ -156,16 +156,22 @@ public class CommandParser {
         if(null == text) {
             return vars;
         }
+        if(!text.contains("{") && !text.contains(":") && !text.contains("?")){
+            return vars;
+        }
         try{
             //${ID = :ID}
             int type = 0;
             // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
             //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-            List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
+            List<List<String>> keys = new ArrayList<>();
+            if (text.contains("{") && text.contains("}")) {
+                keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
+            }
             type = Variable.KEY_TYPE_SIGN_V2 ;
 
             //::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
-            if(keys.isEmpty() && supportSqlVarPlaceholderRegexExt) {
+            if(keys.isEmpty() && supportSqlVarPlaceholderRegexExt && text.contains(":")) {
                 // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
                 keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
                 type = Variable.KEY_TYPE_SIGN_V1 ;
