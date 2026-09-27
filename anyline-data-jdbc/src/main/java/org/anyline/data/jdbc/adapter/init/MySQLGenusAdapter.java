@@ -75,6 +75,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
     }
 
+    /**
+     * 是否支持修改单列位置
+     * @return boolean
+     */
+    @Override
+    public boolean supportAlterColumnPosition() {
+        return true;
+    }
     @Override
     public boolean supportCatalog() {
         return false;
@@ -5192,6 +5200,18 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, meta, columns, slice);
+    }
+
+    /**
+     * 统一更新列顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @param columns 列
+     * @return List
+     */
+    @Override
+    public List<Run> buildAlterPositions(DataRuntime runtime, Table meta) {
+        return super.buildAlterPositions(runtime, meta);
     }
 
     /**

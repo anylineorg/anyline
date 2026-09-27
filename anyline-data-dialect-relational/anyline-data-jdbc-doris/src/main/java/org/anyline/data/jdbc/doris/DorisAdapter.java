@@ -71,6 +71,23 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
     public boolean match(String feature, List<String> keywords, boolean compensate) {
         return super.match(feature, keywords, compensate);
     }
+
+    /**
+     * 是否支持修改单列位置
+     * @return boolean
+     */
+    @Override
+    public boolean supportAlterColumnPosition() {
+        return false;
+    }
+    /**
+     * 是否支持统一修改多列位置
+     * @return boolean
+     */
+    @Override
+    public boolean supportAlterColumnPositions() {
+        return true;
+    }
     /* *****************************************************************************************************************
      *
      *                                                     DML
@@ -3881,6 +3898,13 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
      ******************************************************************************************************************/
 
     /**
+     * 是否支持DDL合并
+     * @return boolean
+     */
+    public boolean slice() {
+        return false;
+    }
+    /**
      * ddl [执行命令]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
@@ -4505,6 +4529,66 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Table update) throws Exception {
 		return super.buildAlterRun(runtime, meta, update);
 	}
+
+    /**
+     * table[命令合成]<br/>
+     * 修改列
+     * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @param columns 列
+     * @return List
+     */
+    @Override
+    public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception {
+        return super.buildAlterRun(runtime, meta, columns, slice);
+    }
+
+    /**
+     * 统一更新列顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return List
+     */
+    @Override
+    public List<Run> buildAlterPositions(DataRuntime runtime, Table meta) {
+        List<Run> runs = new ArrayList<>();
+        LinkedHashMap<String, Column> columns = meta.getColumns();
+        Table ut = (Table)meta.getUpdate();
+        if(null != ut){
+            boolean alter = false;
+            LinkedHashMap<String, Column> updates = ut.getColumns();
+            for (String key:columns.keySet()){
+                Column column = columns.get(key);
+                Column update = updates.get(key);
+                if(!BasicUtil.equals(column.getPosition(), update.getPosition())){
+                    alter = true;
+                    break;
+                }
+            }
+            if(alter) {
+                //ALTER TABLE example_db.my_table ORDER BY (k_2,k_1,v_3,v_2,v_1);
+                Run run = new SimpleRun(runtime);
+                runs.add(run);
+                StringBuilder builder = run.getBuilder();
+                builder.append("ALTER ").append(keyword(meta)).append(" ");
+                name(runtime, builder, meta);
+                builder.append(" ORDER BY (");
+                Column.sort(columns);
+                boolean first = true;
+                for(Column column:updates.values()){
+                    if(!first){
+                        builder.append(", ");
+                    }
+                    builder.append(column.getName());
+                    first = false;
+                }
+                builder.append(")");
+
+            }
+        }
+        return runs;
+    }
 
     /**
      * table[命令合成]<br/>

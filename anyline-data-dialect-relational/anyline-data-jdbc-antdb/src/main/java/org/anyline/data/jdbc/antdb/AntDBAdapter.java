@@ -6213,6 +6213,17 @@ public class AntDBAdapter extends PostgresGenusAdapter {
     }
 
     /**
+     * 统一更新列顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return List
+     */
+    @Override
+    public List<Run> buildAlterPositions(DataRuntime runtime, Table meta) {
+        return super.buildAlterPositions(runtime, meta);
+    }
+
+    /**
      * table[命令合成]<br/>
      * 重命名
      * 子类实现

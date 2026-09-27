@@ -140,6 +140,21 @@ public interface DriverAdapter {
     boolean supportSchema();
 
     /**
+     * 是否支持修改单列位置
+     * @return boolean
+     */
+    default boolean supportAlterColumnPosition() {
+        return false;
+    }
+    /**
+     * 是否支持统一修改多列位置
+     * @return boolean
+     */
+    default boolean supportAlterColumnPositions() {
+        return false;
+    }
+
+    /**
      * 是否支持空表(没有列)
      * @return false
      */
@@ -7827,6 +7842,14 @@ public interface DriverAdapter {
 	default List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
 		return buildAlterRun(runtime, meta, columns, false);
 	}
+
+    /**
+     * 统一更新列顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return List
+     */
+    List<Run> buildAlterPositions(DataRuntime runtime, Table meta);
 
 	/**
 	 * table[命令合成]<br/>

@@ -1515,10 +1515,10 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         return this;
     }
     public boolean equals(Column column) {
-        return equals(column, true);
+        return equals(column, true, false);
     }
     
-    public boolean equals(Column column, boolean ignoreCase) {
+    public boolean equals(Column column, boolean ignoreCase, boolean ignorePosition) {
         if(null == column) {
             return false;
         }
@@ -1606,7 +1606,7 @@ public class Column extends TableAffiliation<Column> implements Serializable {
         if(!BasicUtil.equals(getPrimaryKey(), column.getPrimaryKey())) {
             return false;
         }
-        if(sameDataBase) {
+        if(sameDataBase && !ignorePosition) {
             if (null != table && table.isSort()) {
                 if (!BasicUtil.equals(getPosition(), column.getPosition())) {
                     return false;

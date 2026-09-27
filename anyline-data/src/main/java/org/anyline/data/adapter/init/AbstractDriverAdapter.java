@@ -13635,6 +13635,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		Table update = (Table)meta.getUpdate();
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
+        boolean ignorePosition = !supportAlterColumnPosition();
 		for(Column col:columns.values()) {
 			typeMetadata(runtime, col);
 		}
@@ -13652,7 +13653,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			if (null != column) {
 				// 修改列
-				if (!column.equals(ucolumn)) {
+				if (!column.equals(ucolumn, true, ignorePosition)) {
 					column.setTable(update);
 					column.setUpdate(ucolumn, false, false);
 					column.setAction(ACTION.DDL.COLUMN_ALTER);
@@ -13922,6 +13923,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
+        //统一更新列顺序
+        if(supportAlterColumnPositions()){
+            List<Run> postions = buildAlterPositions(runtime, meta);
+            if(null != postions && !postions.isEmpty()) {
+                result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, postions) && result;
+                if(meta.swt() == ACTION.SWITCH.BREAK) {
+                    return result;
+                }
+            }
+        }
 
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
 		if(null != cur_primary) {//复合主键的单独添加
@@ -14093,6 +14104,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
+
+    /**
+     * 统一更新列顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return List
+     */
+    @Override
+    public List<Run> buildAlterPositions(DataRuntime runtime, Table meta) {
+        return new ArrayList<>();
+    }
 
 	/**
 	 * table[命令合成]<br/>

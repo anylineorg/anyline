@@ -37,10 +37,7 @@ import org.anyline.metadata.type.TypeMetadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AnylineComponent("anyline.data.jdbc.adapter.access")
 public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
@@ -6214,6 +6211,17 @@ public class AccessAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, meta, columns, slice);
+    }
+
+    /**
+     * 统一更新列顺序
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return List
+     */
+    @Override
+    public List<Run> buildAlterPositions(DataRuntime runtime, Table meta) {
+        return super.buildAlterPositions(runtime, meta);
     }
 
     /**
