@@ -17,6 +17,7 @@
 
 package org.anyline.web.util;
 
+import javax.servlet.http.*;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
@@ -30,10 +31,7 @@ import org.anyline.log.LogProxy;
 import org.springframework.core.env.Environment;
 
 import javax.servlet.*;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.URLDecoder;
@@ -571,6 +569,9 @@ public class WebUtil {
 		return result;
 	}
 
+	public static void isWap(HttpServletRequest request, Boolean bol) {
+		request.getSession().setAttribute("anyline-is-wap", bol);
+	}
 	/**
 	 * 是否是移动终端
 	 * @param request request
@@ -579,6 +580,11 @@ public class WebUtil {
 	public static boolean isWap(HttpServletRequest request) {
 		boolean result = false;
 		try{
+			HttpSession session = request.getSession();
+			Boolean is_wap = (Boolean) session.getAttribute("anyline-is-wap");
+			if(null != is_wap){
+				return is_wap;
+			}
 			String agent = request.getHeader("user-agent");
 			if(null == agent) {
 				return false;
