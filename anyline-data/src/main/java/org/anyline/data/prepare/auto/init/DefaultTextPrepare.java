@@ -18,6 +18,7 @@
 package org.anyline.data.prepare.auto.init;
 
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
@@ -133,6 +134,36 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		having = split("HAVING");
 		group = split("GROUP BY");
 		where = split("WHERE");
+		if(null != where && isPlaceholder(where)){
+			// ${KEY} ::KEY是占位符,需要整体替换成参数值,不能拆分成查询条件(拆分后会与${原生SQL}混淆,被当成原生SQL原样拼接或k:v查询条件解析)
+			text = text + " WHERE " + where;
+			up = up + " WHERE " + where.toUpperCase();
+			where = null;
+		}
+	}
+	/**
+	 * 是否是 ${KEY} ::KEY 形式的占位符(而不是${原生SQL})
+	 * ${KEY} ::KEY:整体替换成参数值   ${ID > :ID}:把内容原样拼接到SQL
+	 * @param txt txt
+	 * @return boolean
+	 */
+	private boolean isPlaceholder(String txt){
+		if(null == txt){
+			return false;
+		}
+		String body = null;
+		if(BasicUtil.checkEl(txt)){
+			// ${KEY}
+			body = txt.substring(2, txt.length()-1).trim();
+		}else if(txt.startsWith("::")){
+			// ::KEY 与 ${KEY} 一样是整体替换
+			body = txt.substring(2).trim();
+		}
+		if(null != body && body.matches("\\w+")){
+			//排除 '2023-01-01'::date 这种类型转换
+			return !SyntaxHelper.checkType(body);
+		}
+		return false;
 	}
 	private String split(String type){
 		String key = null;
