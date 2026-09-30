@@ -134,34 +134,34 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		having = split("HAVING");
 		group = split("GROUP BY");
 		where = split("WHERE");
-		if(null != where && isPlaceholder(where)){
-			// ${KEY} ::KEY是占位符,需要整体替换成参数值,不能拆分成查询条件(拆分后会与${原生SQL}混淆,被当成原生SQL原样拼接或k:v查询条件解析)
-			text = text + " WHERE " + where;
-			up = up + " WHERE " + where.toUpperCase();
-			where = null;
-		}
 	}
 	/**
-	 * 是否是 ${KEY} ::KEY 形式的占位符(而不是${原生SQL})
+	 * 是否包含 ${KEY} ::KEY 形式的占位符(而不是${原生SQL})
 	 * ${KEY} ::KEY:整体替换成参数值   ${ID > :ID}:把内容原样拼接到SQL
 	 * @param txt txt
 	 * @return boolean
 	 */
-	private boolean isPlaceholder(String txt){
+	private boolean hasPlaceholder(String txt){
 		if(null == txt){
 			return false;
 		}
-		String body = null;
-		if(BasicUtil.checkEl(txt)){
+		try {
 			// ${KEY}
-			body = txt.substring(2, txt.length()-1).trim();
-		}else if(txt.startsWith("::")){
+			List<String> els = RegularUtil.fetch(txt, "\\$\\{\\w+\\}");
+			if(BasicUtil.isNotEmpty(true, els)){
+				return true;
+			}
 			// ::KEY 与 ${KEY} 一样是整体替换
-			body = txt.substring(2).trim();
-		}
-		if(null != body && body.matches("\\w+")){
-			//排除 '2023-01-01'::date 这种类型转换
-			return !SyntaxHelper.checkType(body);
+			List<String> keys = RegularUtil.fetch(txt, "(\\s|\\(|\\)|,|'|;)::\\w+");
+			for(String key:keys){
+				String body = key.substring(key.indexOf("::")+2);
+				//排除 '2023-01-01'::date 这种类型转换
+				if(!SyntaxHelper.checkType(body)){
+					return true;
+				}
+			}
+		}catch (Exception e){
+			return false;
 		}
 		return false;
 	}
@@ -183,8 +183,14 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 			String chk = up.substring(idx);
 			if (BasicUtil.charCount(chk, "(") == BasicUtil.charCount(chk, ")")) {
 				if (BasicUtil.charCount(chk, "'")%2 == 0) {
-					up = up.substring(0, idx);
 					String result = text.substring(idx + key.length());
+					if(hasPlaceholder(result)){
+						// ${KEY} ::KEY是占位符,需要整体替换成参数值,不能从SQL主体中拆分出来
+						// 拆分后会与${原生SQL}混淆,被当成原生SQL原样拼接或k:v查询条件解析
+						// 并且同一段中可能有多个占位符,拆分后只能给其中一个赋值
+						return null;
+					}
+					up = up.substring(0, idx);
 					text = text.substring(0, idx);
 					return result;
 				}
