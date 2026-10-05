@@ -39,12 +39,17 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import org.anyline.util.FileUtil;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -219,7 +224,7 @@ public class AnylineController extends AbstractController {
         return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, fixs, params);
     }
     public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-        return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
+        return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, fixs.toArray(new String[0]), params);
     }
 
 
@@ -797,38 +802,39 @@ public class AnylineController extends AbstractController {
      * @throws IllegalStateException IllegalStateException
      * @throws IOException  IOException
      */
-    /*public List<File> upload(File dir) throws IllegalStateException, IOException {
+    public List<File> upload(File dir) throws IllegalStateException, IOException {
         List<File> result = new ArrayList<File>();
         HttpServletRequest request = getRequest();
-        // 创建一个通用的多部分解析器
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        // 判断 request 是否有文件上传,即多部分请求
-        if (multipartResolver.isMultipart(request)) {
-            // 转换成多部分request
-            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-            // 取得request中的所有文件名
-            Iterator<String> iter = multiRequest.getFileNames();
-            while (iter.hasNext()) {
-                // 取得上传文件
-                MultipartFile file = multiRequest.getFile(iter.next());
-                if (file != null) {
-                    // 取得当前上传文件的文件名称
-                    String fileName = file.getOriginalFilename();
-                    // 如果名称不为"",说明该文件存在,否则说明该文件不存在
-                    if (BasicUtil.isNotEmpty(fileName)) {
-                        // 重命名上传后的文件名
-                        String sufName = FileUtil.getSuffixFileName(fileName);
-                        // 定义上传路径
-                        File localFile = new File(dir,BasicUtil.getRandomLowerString(10)+"."+sufName);
-                        file.transferTo(localFile);
-                        result.add(localFile);
-                    }
-                }
+        if(null == request || null == dir) {
+            return result;
+        }
+        String contentType = request.getContentType();
+        if(null == contentType || !contentType.toLowerCase().startsWith("multipart/")) {
+            return result;
+        }
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+        Collection<Part> parts;
+        try {
+            parts = request.getParts();
+        } catch (ServletException e) {
+            throw new IOException(e);
+        }
+        if(null == parts) {
+            return result;
+        }
+        for(Part part:parts) {
+            String fileName = part.getSubmittedFileName();
+            if(BasicUtil.isNotEmpty(fileName)) {
+                String sufName = FileUtil.getSuffixFileName(fileName);
+                File localFile = new File(dir, BasicUtil.getRandomLowerString(10)+"."+sufName);
+                part.write(localFile.getAbsolutePath());
+                result.add(localFile);
             }
-
         }
         return result;
-    }*/
+    }
     /**
      * 根据dir构造文件目录(super.dir+this.dir)
      * @return String

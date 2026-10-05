@@ -16,4 +16,11 @@
     <name>anyline data couchdb</name>
     <url>http://www.anyline.org/couchdb</url>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

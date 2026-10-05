@@ -44,6 +44,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 import java.util.*;
 
@@ -817,16 +818,14 @@ public class LanceDBAdapter extends AbstractDriverAdapter {
      * @return Run 最终执行命令 如JDBC环境中的 SQL 与 参数值
      */
     @Override
-    public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+    public Run initSelectRun(DataRuntime runtime, RunPrepare prepare) {
+        //参考图数据库(neo4j/nebula)的方式: 不覆盖buildSelectRun
+        //由父类AbstractDriverAdapter.buildSelectRun统一执行 init(占位符解析/configs/unions/元数据校验) 与 fillSelectContent
+        //这里只负责决定Run的类型, 用来承载LanceDB特有的查询参数(过滤条件/向量/topK)
         LanceDBRun run = new LanceDBRun(runtime, prepare.getTableName());
         run.setRuntime(runtime);
-        run.setConfigStore(configs);
         run.setPrepare(prepare);
-        run.addCondition(conditions);
-        if(run.checkValid()) {
-            run.init();
-            fillSelectContent(runtime, run, placeholder, unicode);
-        }
+        run.action(ACTION.DML.SELECT);
         return run;
     }
 
@@ -1126,7 +1125,18 @@ public class LanceDBAdapter extends AbstractDriverAdapter {
      */
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
-        return super.count(runtime, random, run);
+        //原来只调super(恒返回-1), actuator里已经实现了countTableRows, 这里连通到actuator
+        try {
+            return ((LanceDBActuator) actuator).count(this, runtime, random, null, run);
+        } catch (Exception e) {
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                log.error("count 异常:", e);
+            }
+            if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
+                log.error("[count 异常][table:{}][msg:{}]", run.getTableName(), e.toString());
+            }
+            return -1;
+        }
     }
 
     /* *****************************************************************************************************************

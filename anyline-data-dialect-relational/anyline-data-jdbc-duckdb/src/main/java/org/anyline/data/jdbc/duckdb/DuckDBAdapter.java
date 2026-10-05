@@ -65,6 +65,23 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		}
 	}
 
+	/**
+	 * DuckDB不支持的元数据查询<br/>
+	 * 不直接返回空集合, 而是输出日志, 避免调用方把"不支持"误判为"查询成功但结果为空"
+	 * @return 空集合
+	 */
+	private List<Run> notSupport() {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		String method = null;
+		if(stack.length > 2) {
+			method = stack[2].getMethodName();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug("[DuckDB 不支持的元数据查询][method:" + method + "]");
+		}
+		return new ArrayList<>();
+	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -611,8 +628,23 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		if(null != names) {
+			for(String name:names) {
+				if(null == name) {
+					continue;
+				}
+				Run run = new SimpleRun(runtime);
+				runs.add(run);
+				StringBuilder builder = run.getBuilder();
+				if(next) {
+					builder.append("SELECT nextval('").append(name).append("') AS SEQ_VALUE");
+				}else{
+					builder.append("SELECT currval('").append(name).append("') AS SEQ_VALUE");
+				}
+			}
+		}
+		return runs;
 	}
 
 	/**
@@ -1204,8 +1236,12 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectProductRun(DataRuntime runtime) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT 'DuckDB' AS PRODUCT_NAME, version() AS PRODUCT_VERSION");
+		return runs;
 	}
 
 	/**
@@ -1217,8 +1253,8 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectVersionRun(DataRuntime runtime) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//version()入口实际执行的是buildSelectProductRun, 这里保持同样结构避免取不到值
+		return buildSelectProductRun(runtime);
 	}
 
 	/**
@@ -1232,8 +1268,15 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT database_name AS NAME FROM duckdb_databases()");
+		if(null != query && null != query.getName()) {
+			builder.append(" WHERE database_name = '").append(query.getName()).append("'");
+		}
+		return runs;
 	}
 	/**
 	 * database[结果集封装]<br/>
@@ -1305,7 +1348,20 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set) {
-		return super.product(runtime, index, create, product, set);
+		if(null != set) {
+			for(DataRow row:set) {
+				String name = row.getString("PRODUCT_NAME");
+				String ver = row.getString("PRODUCT_VERSION");
+				if(null != name) {
+					product = name;
+					if(null != ver) {
+						product = name + " " + ver;
+					}
+				}
+				break;
+			}
+		}
+		return product;
 	}
 
 	/**
@@ -1332,7 +1388,22 @@ public class DuckDBAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set) {
-		return super.version(runtime, index, create, version, set);
+		if(null != set) {
+			for(DataRow row:set) {
+				//version()入口执行的是buildSelectProductRun, 取其中的版本号列
+				String ver = row.getString("PRODUCT_VERSION");
+				if(null != ver) {
+					version = ver;
+				}else{
+					ver = row.getString("VERSION");
+					if(null != ver) {
+						version = ver;
+					}
+				}
+				break;
+			}
+		}
+		return version;
 	}
 
 	/**
@@ -1715,8 +1786,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public <T extends Table<T>> List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table<T> query, int types) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//DuckDB 的表注释通过 COMMENT ON TABLE 设置, 保存在 duckdb_tables().comment
+		builder.append("SELECT table_name AS NAME, table_name AS TABLE_NAME, comment AS COMMENT, comment AS TABLE_COMMENT FROM duckdb_tables() WHERE 1=1");
+		if(null != query && null != query.getName()) {
+			builder.append(" AND table_name = '").append(query.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -1842,8 +1921,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Table table) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//与buildSelectViewsRun保持一致, 走duckdb的sqlite兼容视图
+		builder.append("SELECT sql FROM sqlite_master WHERE type='table'");
+		if(null != table && null != table.getName()) {
+			builder.append(" AND name = '").append(table.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -1857,7 +1944,18 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set) {
-		return super.ddl(runtime, index, table, ddls, set);
+		if(null == ddls) {
+			ddls = new ArrayList<>();
+		}
+		if(null != set) {
+			for(DataRow row:set) {
+				String ddl = row.getString("SQL");
+				if(null != ddl) {
+					ddls.add(ddl);
+				}
+			}
+		}
+		return ddls;
 	}
 
 	/* *****************************************************************************************************************
@@ -1976,8 +2074,15 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, View view) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT sql FROM sqlite_master WHERE type='view'");
+		if(null != view && null != view.getName()) {
+			builder.append(" AND name = '").append(view.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -1991,7 +2096,18 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set) {
-		return super.ddl(runtime, index, view, ddls, set);
+		if(null == ddls) {
+			ddls = new ArrayList<>();
+		}
+		if(null != set) {
+			for(DataRow row:set) {
+				String ddl = row.getString("SQL");
+				if(null != ddl) {
+					ddls.add(ddl);
+				}
+			}
+		}
+		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 * 													master table
@@ -2037,8 +2153,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public <T extends MasterTable<T>> List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable<T> query, int types, ConfigStore configs) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//DuckDB 没有主表/子表之分, 所有普通表都视为可承载分区的主表
+		builder.append("SELECT table_name AS NAME, table_name AS TABLE_NAME, comment AS COMMENT, sql AS DEFINITION FROM duckdb_tables() WHERE 1=1");
+		if(null != query && null != query.getName()) {
+			builder.append(" AND table_name = '").append(query.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -2103,8 +2227,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable table) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//duckdb_tables().sql 中保存建表 SQL
+		builder.append("SELECT table_name AS NAME, sql AS SQL FROM duckdb_tables() WHERE 1=1");
+		if(null != table && null != table.getName()) {
+			builder.append(" AND table_name = '").append(table.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -2164,8 +2296,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable<T> query, int types) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -2222,8 +2355,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -2326,8 +2460,32 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		if(null == tables || tables.isEmpty()) {
+			return runs;
+		}
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT table_name AS TABLE_NAME, table_name AS \"TABLE\", column_name AS COLUMN_NAME, column_name AS NAME, data_type AS COLUMN_TYPE, data_type AS TYPE, is_nullable AS \"NULL\", is_nullable AS IS_NULLABLE, column_default AS \"DEFAULT\", column_default AS DFLT_VALUE FROM information_schema.columns WHERE table_name IN (");
+		boolean first = true;
+		for(Table table:tables) {
+			if(null == table || null == table.getName()) {
+				continue;
+			}
+			if(first) {
+				first = false;
+			}else{
+				builder.append(",");
+			}
+			builder.append("'").append(table.getName().replace("'", "''")).append("'");
+		}
+		if(first) {
+			//没有有效的表名, 不生成 SQL
+			return runs;
+		}
+		builder.append(")");
+		runs.add(run);
+		return runs;
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -2504,8 +2662,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -2965,8 +3124,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 * @return runs
 	 */
 	public List<Run> buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3043,8 +3203,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3113,8 +3274,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3189,8 +3351,15 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT function_name AS NAME FROM duckdb_functions()");
+		if(null != query && null != query.getName()) {
+			builder.append(" WHERE function_name = '").append(query.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -3200,7 +3369,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public MetadataFieldRefer initFunctionFieldRefer() {
-		return super.initFunctionFieldRefer();
+		MetadataFieldRefer refer = new MetadataFieldRefer(Function.class);
+		refer.map(Function.FIELD_NAME, "NAME,FUNCTION_NAME");
+		return refer;
 	}
 	/**
 	 * function[结果集封装]<br/>
@@ -3270,8 +3441,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Function meta) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//DuckDB 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3346,8 +3518,27 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT sequence_name AS NAME FROM duckdb_sequences()");
+		if(null != query && null != query.getName()) {
+			builder.append(" WHERE sequence_name = '").append(query.getName()).append("'");
+		}
+		return runs;
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * Sequence 属性与结果集对应关系
+	 * @return MetadataFieldRefer
+	 */
+	@Override
+	public MetadataFieldRefer initSequenceFieldRefer() {
+		MetadataFieldRefer refer = new MetadataFieldRefer(Sequence.class);
+		refer.map(Sequence.FIELD_NAME, "NAME,SEQUENCE_NAME");
+		return refer;
 	}
 
 	/**
@@ -3418,8 +3609,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//DuckDB 的序列定义保存在 duckdb_sequences() 中(sql 列)
+		builder.append("SELECT sequence_name AS NAME, * FROM duckdb_sequences() WHERE 1=1");
+		if(null != meta && null != meta.getName()) {
+			builder.append(" AND sequence_name = '").append(meta.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**

@@ -116,8 +116,6 @@ public class BeanUtil {
 	public static boolean setFieldValue(Object obj, Field field, Object value, boolean alert) {
 		return setFieldValue(obj, field, null, value, alert);
 	}
-	private static List<String> arr = new ArrayList<>();
-
 	/**
 	 * 根据field集合条目泛型类转换
 	 * @param field field
@@ -201,11 +199,14 @@ public class BeanUtil {
 
 	public static Collection convertList(Object v, Class component) {
 		Collection result = new ArrayList();
+		if(null == v) {
+			return result;
+		}
 		if(v instanceof String) {
 			if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
 				String[] tmps = v.toString().split(",");
 				for(String tmp:tmps) {
-					result.add(tmp);
+					result.add(ConvertProxy.convert(tmp, component, false));
 				}
  			}else if("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
 				try {
@@ -1954,7 +1955,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static String concat(long[] list, String split) {
-		return concat(list, split);
+		return concat(list, split, false);
 	}
 	public static String concat(long[] list, boolean required) {
 		return concat(list, ",", required);
@@ -2103,6 +2104,7 @@ public class BeanUtil {
 				result.add(value);
 			}
 		}else{
+			result = list;
 			int size = list.size();
 			for(int i=0; i<size; i++) {
 				String value = list.get(i);
@@ -2110,7 +2112,6 @@ public class BeanUtil {
 					result.set(i, value.toUpperCase());
 				}
 			}
-			result = list;
 		}
 
 		return result;
@@ -2148,10 +2149,16 @@ public class BeanUtil {
 		if(null == con) {
 			return con;
 		}
-		for(Object obj :con) {
-			obj = toUpperCaseKey(obj, keys);
+		Collection result = con;
+		try {
+			result = (Collection) con.getClass().newInstance();
+		}catch (Exception e) {
+			result = new ArrayList();
 		}
-		return con;
+		for(Object obj :con) {
+			result.add(toUpperCaseKey(obj, keys));
+		}
+		return result;
 	}
 	public static Map<String, Object> toUpperCaseKey(Map<String, Object> map, String ... keys) {
 		if(null == map) {
@@ -2970,10 +2977,10 @@ public class BeanUtil {
 		String key1 = src;
 		String key2 = src;
 		if(src.contains(":")) {
-			String tmp[] = src.split(":");
+			String tmp[] = src.split(":", -1);
 			len = NumberUtil.max(len, tmp.length);
 			result = new String[len];
-			key1 = tmp[0];
+			key1 = (tmp.length > 0 ? tmp[0] : "");
 			if(tmp.length>1) {
 				key2 = tmp[1];
 			}else{

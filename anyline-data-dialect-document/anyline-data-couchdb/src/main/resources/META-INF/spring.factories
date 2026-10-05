@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.couchdb.adapter.CouchDBActuator,\
+org.anyline.data.couchdb.adapter.CouchDBAdapter,\
+org.anyline.data.couchdb.datasource.CouchDBDataSourceLoader,\
+org.anyline.data.couchdb.datasource.CouchDBDataSourceHolder,\
+org.anyline.data.couchdb.runtime.CouchDBRuntimeHolder

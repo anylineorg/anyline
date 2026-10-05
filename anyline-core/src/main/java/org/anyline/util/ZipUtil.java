@@ -73,6 +73,10 @@ public class ZipUtil {
 		try {
 			_zip = new ZipFile(zip);
 			ZipEntry _item = _zip.getEntry(item);
+			if(null == _item) {
+				log.error("[压缩文件中不存在该条目][zip:{}][item:{}]", zip.getAbsolutePath(), item);
+				return null;
+			}
 			in = _zip.getInputStream(_item);
 			String str = FileUtil.read(in, charset).toString();
 			return str;

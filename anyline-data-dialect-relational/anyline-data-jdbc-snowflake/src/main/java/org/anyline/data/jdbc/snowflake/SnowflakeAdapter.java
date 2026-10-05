@@ -18,19 +18,56 @@
 package org.anyline.data.jdbc.snowflake;
 
 import org.anyline.annotation.AnylineComponent;
+import org.anyline.data.adapter.function.SystemFunctionFactory;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
+import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.type.DatabaseType;
 
+/**
+ * Snowflake<br/>
+ * 参考 https://docs.snowflake.com/en/sql-reference/<br/>
+ * 层级: database.schema.table(catalog=database), 标识符用双引号(不区分大小写时标识符会被转成大写), 分页 LIMIT n OFFSET m
+ */
 @AnylineComponent("anyline.data.jdbc.adapter.snowflake")
 public class SnowflakeAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     public DatabaseType type() {
         return DatabaseType.Snowflake;
     }
+
     public SnowflakeAdapter() {
         super();
-        for(SnowflakeTypeMetadataAlias alias: SnowflakeTypeMetadataAlias.values()) {
-            reg(alias);
+        //Snowflake 标识符用双引号(不加引号时会被转成大写)
+        delimiterFr = "\"";
+        delimiterTo = "\"";
+        for(SnowflakeTypeMetadataAlias alias : SnowflakeTypeMetadataAlias.values()) {
+            clear(alias);
         }
+        for(SnowflakeTypeMetadataAlias alias : SnowflakeTypeMetadataAlias.values()) {
+            reg(alias);
+            alias(alias.name(), alias.standard());
+        }
+        for(SnowflakeFunction fn : SnowflakeFunction.values()) {
+            SystemFunctionFactory.reg(type(), fn);
+        }
+    }
+
+    @Override
+    public boolean supportCatalog() {
+        return true;
+    }
+
+    @Override
+    public boolean supportSchema() {
+        return true;
+    }
+
+    /**
+     * LIMIT n OFFSET m
+     */
+    @Override
+    public String mergeFinalSelect(DataRuntime runtime, Run run) {
+        return pageLimitOffset(runtime, run);
     }
 }

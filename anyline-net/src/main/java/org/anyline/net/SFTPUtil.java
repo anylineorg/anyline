@@ -42,7 +42,7 @@ public class SFTPUtil {
 	public SFTPUtil() throws Exception {
 	} 
 	public SFTPUtil(String host, int port, String user, String password) throws Exception {
-		this(host, user, password, 22);
+		this(host, user, password, port);
 	} 
 	public SFTPUtil(String host, String user, String password) throws Exception {
 		this(host, user, password, 22);
@@ -72,6 +72,9 @@ public class SFTPUtil {
     	if(null == util) {
     		try {
 				util = new SFTPUtil(host, account, password, port);
+							if(null != util) {
+					instances.put(key, util);
+				}
 			} catch (Exception e) {
 				log.error("create instance exception:", e);
 			} 
@@ -116,7 +119,9 @@ public class SFTPUtil {
         } catch (Exception e) {
             throw e;   
         } finally {
-            os.close();   
+            if(null != os) {
+            	os.close();
+            }
         }   
     }   
     /** 
@@ -358,7 +363,7 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	} 
 	@Override 
 	public boolean count(long count) {
-		double curRate = (transfered+count)/length * 100; 
+		double curRate = (double)(transfered+count)/length * 100; 
 		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5 || curRate == 100) {
 			displayRate = curRate;  
 			displayTime = System.currentTimeMillis(); 

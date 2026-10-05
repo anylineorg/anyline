@@ -1349,6 +1349,7 @@ public class DefaultJDBCActuator implements DriverActuator {
         boolean approximate = query.isApproximate();
         DataSource ds = null;
         Connection con = null;
+        ResultSet set = null;
         if(null == indexes) {
             indexes = new LinkedHashMap<>();
         }
@@ -1358,7 +1359,7 @@ public class DefaultJDBCActuator implements DriverActuator {
             DatabaseMetaData dbmd = con.getMetaData();
             adapter.checkName(runtime, null, table);
             String[] tmp = adapter.correctSchemaFromJDBC(table.getCatalogName(), table.getSchemaName());
-            ResultSet set = dbmd.getIndexInfo(tmp[0], tmp[1], table.getName(), unique, approximate);
+            set = dbmd.getIndexInfo(tmp[0], tmp[1], table.getName(), unique, approximate);
             Map<String, Integer> keys = JDBCUtil.keys(set);
             LinkedHashMap<String, Column> columns = null;
             while (set.next()) {
@@ -1366,38 +1367,54 @@ public class DefaultJDBCActuator implements DriverActuator {
                 if(null == name) {
                     continue;
                 }
+                // TYPE: 0=统计信息(不是索引) 1=聚簇索引 2=哈希索引 3=其他
+                int type = JDBCUtil.integer(keys, "TYPE", set, -1);
+                if(type == DatabaseMetaData.tableIndexStatistic) {
+                    // SQL Server 等驱动会把统计信息一起返回,统计信息不是索引
+                    continue;
+                }
                 T index = indexes.get(name.toUpperCase());
                 if(null == index) {
-                    if(create) {
-                        index = (T)new Index();
-                        indexes.put(name.toUpperCase(), index);
-                    }else{
+                    if(!create) {
                         continue;
                     }
-                    index.setName(JDBCUtil.string(keys, "INDEX_NAME", set));
-                    //index.setType(integer(keys, "TYPE", set, null));
+                    index = (T)new Index();
+                    index.setName(name);
                     index.setUnique(!JDBCUtil.bool(keys, "NON_UNIQUE", set, false));
+                    if(type == DatabaseMetaData.tableIndexClustered) {
+                        index.setCluster(true);
+                    }
                     String catalog = BasicUtil.evl(JDBCUtil.string(keys, "TABLE_CATALOG", set), JDBCUtil.string(keys, "TABLE_CAT", set));
                     String schema = BasicUtil.evl(JDBCUtil.string(keys, "TABLE_SCHEMA", set), JDBCUtil.string(keys, "TABLE_SCHEM", set));
                     adapter.correctSchemaFromJDBC(runtime, index, catalog, schema);
                     if(!adapter.equals(table.getCatalog(), index.getCatalog()) || !adapter.equals(table.getSchema(), index.getSchema())) {
+                        // 不属于当前表的索引,校验通过前不能 put,否则会留下只有名称没有列的空索引
                         continue;
                     }
                     index.setTable(JDBCUtil.string(keys, "TABLE_NAME", set));
-                    indexes.put(name.toUpperCase(), index);
                     columns = new LinkedHashMap<>();
                     index.setColumns(columns);
-                    if(name.equalsIgnoreCase("PRIMARY")) {
+                    indexes.put(name.toUpperCase(), index);
+                    if(name.equalsIgnoreCase("PRIMARY") || name.equalsIgnoreCase("PK_"+table.getName())) {
                         index.setCluster(true);
                         index.setPrimary(true);
-                    }else if(name.equalsIgnoreCase("PK_"+table.getName())) {
+                    }else if(name.toUpperCase().startsWith("PK__")) {
+                        // SQL Server 默认主键索引名格式: PK__表名__hash
                         index.setCluster(true);
                         index.setPrimary(true);
                     }
                 }else {
                     columns = index.getColumns();
+                    if(null == columns) {
+                        columns = new LinkedHashMap<>();
+                        index.setColumns(columns);
+                    }
                 }
                 String columnName = JDBCUtil.string(keys, "COLUMN_NAME", set);
+                if(null == columnName) {
+                    // 统计信息行没有列名
+                    continue;
+                }
                 Column col = table.getColumn(columnName.toUpperCase());
                 Column column = null;
                 if(null != col) {
@@ -1415,10 +1432,15 @@ public class DefaultJDBCActuator implements DriverActuator {
                 column.setOrder(order);
                 column.setPosition(JDBCUtil.integer(keys,"ORDINAL_POSITION", set, null));
                 columns.put(column.getName().toUpperCase(), column);
-
-                set.close();
             }
         }finally{
+            if(null != set) {
+                try {
+                    set.close();
+                }catch (Exception e) {
+                    //ignore
+                }
+            }
             releaseConnection(adapter, runtime, con, ds);
         }
         return indexes;

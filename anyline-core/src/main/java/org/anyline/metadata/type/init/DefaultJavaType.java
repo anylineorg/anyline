@@ -18,6 +18,7 @@
 package org.anyline.metadata.type.init;
 
 import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.entity.VariableValue;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.ConvertException;
@@ -112,7 +113,7 @@ public enum DefaultJavaType implements DataType {
                 return ((VariableValue)value).value();
             }
             Integer result = BasicUtil.parseInt(value, null);
-            if(null == value) {
+            if(null != def && null == result) {
                 result = BasicUtil.parseInt(def, null);
             }
             return result;
@@ -235,7 +236,7 @@ public enum DefaultJavaType implements DataType {
             Date date = DateUtil.parse(value);
             if(null != date) {
                 if(placeholder) {
-                    value = new java.sql.Timestamp(date.getTime());
+                    value = new java.sql.Time(date.getTime());
                 }else{
                     value = "'" + DateUtil.format(date, "HH:mm:ss") + "'";
                 }
@@ -261,9 +262,9 @@ public enum DefaultJavaType implements DataType {
                 Date date = DateUtil.parse(value);
                 if(null != date) {
                     if(placeholder) {
-                        value = new java.sql.Timestamp(date.getTime());
+                        value = new java.sql.Date(date.getTime());
                     }else{
-                        value = "'" + DateUtil.format(date, "yyyy-MM-dd HH:mm:ss") + "'";
+                        value = "'" + DateUtil.format(date, "yyyy-MM-dd") + "'";
                     }
                 }
             }
@@ -387,7 +388,7 @@ public enum DefaultJavaType implements DataType {
         public Object write(Object value, Object def, Boolean placeholder) {return value;}
     }
 
-   , ANYLINE_DATASET("", DataRow.class, 1, 1, 1) {
+   , ANYLINE_DATASET("", DataSet.class, 1, 1, 1) {
         public Object read(Object value, Object def, Class clazz) {
             if(null == value) {
                 return null;

@@ -26,6 +26,7 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class DriverAdapterHolder {
@@ -225,6 +226,15 @@ public class DriverAdapterHolder {
 						}
 					}
 				}
+				// 同一个数据库类型注册了多个adapter(如SQL Server 2000与2005+各自一个adapter)时
+				// 不建立连接只能识别出数据库类型,识别不出具体版本,需要建立连接取到版本号后才能确定adapter
+				if(null != adapter && requireVersion(adapter)) {
+					feature = runtime.getFeature(true);
+					DriverAdapter version_adapter = matchByVersion(runtime, feature, adapter_key);
+					if(null != version_adapter) {
+						adapter = version_adapter;
+					}
+				}
 			} catch (Exception e) {
 				log.error("检测适配器 异常:", e);
 			}
@@ -241,6 +251,117 @@ public class DriverAdapterHolder {
 			throw new NotFoundAdapterException(title);
 		}
 		return adapter;
+	}
+
+	/**
+	 * 同一个数据库类型下是否注册了多个不同版本的adapter(如SQL Server 2000与2005+)<br/>
+	 * 这种情况只根据url driver识别不出具体版本,需要用版本号才能确定具体的adapter
+	 * @param adapter 当前匹配到的adapter
+	 * @return boolean
+	 */
+	private static boolean requireVersion(DriverAdapter adapter) {
+		if(null == adapter) {
+			return false;
+		}
+		DatabaseType type = adapter.type();
+		if(null == type) {
+			return false;
+		}
+		String version = adapter.version();
+		for(DriverAdapter item:adapters) {
+			if(type == item.type() && !same(version, item.version())) {
+				return true;
+			}
+		}
+		for(DriverAdapter item:user_adapters.values()) {
+			if(type == item.type() && !same(version, item.version())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 是否已经取到版本号,通过版本号匹配adapter<br/>
+	 * 优先匹配有版本要求的adapter(如SQL Server 2000),这类adapter会先验证版本号,版本不符合时返回false继续匹配其他adapter
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param feature 特征(已取到版本号)
+	 * @param adapterKey 配置文件中指定的adapter
+	 * @return DriverAdapter
+	 */
+	private static DriverAdapter matchByVersion(DataRuntime runtime, String feature, String adapterKey) {
+		// 优先匹配自己实现了版本判断的adapter(如SQL Server 2000),这类adapter会先验证版本号,版本不符合时返回false,继续匹配其他adapter
+		for(DriverAdapter item:user_adapters.values()) {
+			if(matchVersion(runtime, item, feature, adapterKey)) {
+				return item;
+			}
+		}
+		for(DriverAdapter item:adapters) {
+			if(matchVersion(runtime, item, feature, adapterKey)) {
+				return item;
+			}
+		}
+		for(DriverAdapter item:user_adapters.values()) {
+			if(null != item.version() && item.match(runtime, feature, adapterKey, true)) {
+				return item;
+			}
+		}
+		for(DriverAdapter item:adapters) {
+			if(null != item.version() && item.match(runtime, feature, adapterKey, true)) {
+				return item;
+			}
+		}
+		for(DriverAdapter item:user_adapters.values()) {
+			if(item.match(runtime, feature, adapterKey, true)) {
+				return item;
+			}
+		}
+		for(DriverAdapter item:adapters) {
+			if(item.match(runtime, feature, adapterKey, true)) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 匹配自己实现了版本判断的adapter(如SQL Server 2000)
+	 * @return boolean
+	 */
+	private static boolean matchVersion(DataRuntime runtime, DriverAdapter adapter, String feature, String adapterKey) {
+		if(!versionSensitive(adapter)) {
+			return false;
+		}
+		return adapter.match(runtime, feature, adapterKey, true);
+	}
+
+	/**
+	 * 是否自己实现了match(接口中的是default方法,实现match说明需要根据版本号或其他特征进一步判断)
+	 * @param adapter adapter
+	 * @return boolean
+	 */
+	private static boolean versionSensitive(DriverAdapter adapter) {
+		try {
+			Method method = adapter.getClass().getMethod("match", DataRuntime.class, String.class, String.class, boolean.class);
+			if(method.isDefault()) {
+				return false;
+			}
+			// 通用父类中(AbstractJDBCAdapter/AbstractDriverAdapter)的match只是转调顶层方法,不算版本判断
+			String declaring = method.getDeclaringClass().getName();
+			if(declaring.contains("Abstract")) {
+				return false;
+			}
+			return true;
+		}catch (Exception e) {
+			return false;
+		}
+	}
+
+	private static boolean same(String src, String dest) {
+		if(null == src) {
+			return null == dest;
+		}
+		return src.equals(dest);
 	}
 
 }

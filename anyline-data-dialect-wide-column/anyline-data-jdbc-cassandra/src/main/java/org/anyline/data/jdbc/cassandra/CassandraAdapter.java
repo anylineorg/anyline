@@ -18,6 +18,7 @@
 package org.anyline.data.jdbc.cassandra;
 
 import org.anyline.annotation.AnylineComponent;
+import org.anyline.data.adapter.function.SystemFunctionFactory;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.listener.DDListener;
@@ -66,6 +67,19 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
         for (CassandraTypeMetadataAlias alias : CassandraTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
+        }
+
+        // Register CQL Functions
+        for (CassandraFunction fn : CassandraFunction.values()) {
+            SystemFunctionFactory.reg(type(), fn);
+        }
+
+        // Register CQL 类型转换(writer/reader)
+        for (CassandraWriter writer : CassandraWriter.values()) {
+            reg(writer.supports(), writer.writer());
+        }
+        for (CassandraReader reader : CassandraReader.values()) {
+            reg(reader.supports(), reader.reader());
         }
         delimiterFr = "";
         delimiterTo = "";

@@ -17,6 +17,7 @@
 
 package org.anyline.environment.solon;
 
+import java.util.Iterator;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.init.DefaultEntityAdapter;
 import org.anyline.adapter.init.JavaTypeAdapter;
@@ -52,12 +53,13 @@ public class SolonAutoConfiguration {
         }
         //是否禁用默认adapter
         if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ) {
-            for(String key:adapters.keySet()) {
-                EntityAdapter adapter = adapters.get(key);
-                if(adapter instanceof DefaultEntityAdapter) {
-                    adapters.remove(key);
-                }
+            Iterator<Map.Entry<String, EntityAdapter>> iterator = adapters.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Map.Entry<String, EntityAdapter> entry = iterator.next();
+            if(entry.getValue() instanceof DefaultEntityAdapter) {
+                iterator.remove();
             }
+        }
         }
         EntityAdapterProxy.setAdapters(adapters);
     }

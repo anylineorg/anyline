@@ -85,10 +85,11 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
     public void setEntityAdapter(Map<String, EntityAdapter> adapters) {
         //是否禁用默认adapter
         if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ) {
-            for(String key:adapters.keySet()) {
-                EntityAdapter adapter = adapters.get(key);
-                if(adapter instanceof DefaultEntityAdapter) {
-                    adapters.remove(key);
+            Iterator<Map.Entry<String, EntityAdapter>> iterator = adapters.entrySet().iterator();
+            while(iterator.hasNext()) {
+                Map.Entry<String, EntityAdapter> entry = iterator.next();
+                if(entry.getValue() instanceof DefaultEntityAdapter) {
+                    iterator.remove();
                 }
             }
         }
@@ -129,6 +130,9 @@ public class SpringAutoConfiguration implements ApplicationListener<ContextRefre
 
     @Override
     public void afterSingletonsInstantiated() {
+        if(null == this.load_listeners || this.load_listeners.isEmpty()) {
+            return;
+        }
         //排序
         List<Map.Entry<String, LoadListener>> entries = new ArrayList<>(this.load_listeners.entrySet());
 

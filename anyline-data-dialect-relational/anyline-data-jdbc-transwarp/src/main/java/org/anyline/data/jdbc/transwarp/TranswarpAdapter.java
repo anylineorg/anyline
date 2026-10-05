@@ -23,6 +23,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Metadata;
+import org.anyline.metadata.type.DatabaseType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -30,10 +31,26 @@ import java.util.LinkedHashMap;
 
 public class TranswarpAdapter extends HiveAdapter {
 
+    /**
+     * 星环(Transwarp Inceptor/ArgoDB), SQL 兼容 Hive/Spark
+     */
+    @Override
+    public DatabaseType type() {
+        return DatabaseType.Transwarp;
+    }
+
     public TranswarpAdapter() {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        //类型体系与 Hive 一致(Inceptor 基于 Hive/Spark), 这里单独注册一份便于后续按星环特性调整
+        for(TranswarpTypeMetadataAlias alias : TranswarpTypeMetadataAlias.values()) {
+            clear(alias);
+        }
+        for(TranswarpTypeMetadataAlias alias : TranswarpTypeMetadataAlias.values()) {
+            reg(alias);
+            alias(alias.name(), alias.standard());
+        }
     }
 
     private String delimiter;

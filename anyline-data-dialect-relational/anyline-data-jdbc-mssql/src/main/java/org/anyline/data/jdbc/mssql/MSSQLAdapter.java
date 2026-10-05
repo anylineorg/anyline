@@ -1906,6 +1906,7 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT O.object_id AS ID, DB_NAME() AS TABLE_CATALOG, O.name AS NAME, SCHEMA_NAME(O.schema_id) AS TABLE_SCHEMA, O.type AS TYPE, O.type_desc AS TYPE_DESC, EP.value AS COMMENT \n");
+        builder.append(", O.create_date AS CREATE_TIME, O.modify_date AS UPDATE_TIME \n");
         builder.append("FROM sys.objects O \n");
         builder.append("LEFT JOIN sys.extended_properties EP ON O.object_id = EP.major_id AND EP.class = 1 AND EP.minor_id = 0 AND EP.name = 'MS_Description'\n");
          if((types & 2) == 2) {
@@ -1939,7 +1940,16 @@ WHERE
      */
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
-        return super.initTableFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Table.class);
+        refer.map(Table.FIELD_NAME, "TABLE_NAME,NAME,TABNAME");
+        refer.map(Table.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.map(Table.FIELD_SCHEMA, "TABLE_SCHEMA,SCHEMA_NAME");
+        refer.map(Table.FIELD_COMMENT, "TABLE_COMMENT,COMMENTS,COMMENT");
+        refer.map(Table.FIELD_OBJECT_ID, "OBJECT_ID,ID");
+        // sys.objects.create_date sys.objects.modify_date
+        refer.map(Table.FIELD_CREATE_TIME, "CREATE_TIME");
+        refer.map(Table.FIELD_UPDATE_TIME, "UPDATE_TIME");
+        return refer;
     }
 
     /**
@@ -3108,12 +3118,64 @@ WHERE
      */
     @Override
     public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
-        return super.buildSelectIndexesRun(runtime, greedy, query);
+        List<Run> runs = new ArrayList<>();
+        Run run = buildSelectIndexBody(runtime);
+        runs.add(run);
+        ConfigStore configs = run.getConfigs();
+        configs.and("TABLE_SCHEMA", query.getSchemaName());
+        configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
+        configs.and(Compare.LIKE_SIMPLE, "INDEX_NAME", query.getName());
+        configs.order("SEQ_IN_INDEX");
+        return runs;
     }
 
     @Override
     public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy,  Collection<? extends Table> tables) {
-        return super.buildSelectIndexesRun(runtime, greedy, tables);
+        List<Run> runs = new ArrayList<>();
+        Run run = buildSelectIndexBody(runtime);
+        runs.add(run);
+        ConfigStore configs = run.getConfigs();
+        if(null != tables && !tables.isEmpty()) {
+            Table table = tables.iterator().next();
+            configs.and("TABLE_SCHEMA", table.getSchemaName());
+            configs.in("TABLE_NAME", Table.names(tables));
+        }
+        configs.order("SEQ_IN_INDEX");
+        return runs;
+    }
+
+    /**
+     * index[命令合成]<br/>
+     * 查询索引的SQL主体(索引列一行一列)<br/>
+     * 参考:sys.indexes sys.index_columns sys.objects sys.schemas sys.columns<br/>
+     * sys.indexes.index_id = 0 表示堆,不是索引<br/>
+     * sys.index_columns.key_ordinal = 0 表示包含列或 XML/空间/列存储索引,不是键列<br/>
+     * 注:过滤条件写在子查询中,外层由 ConfigStore 追加条件
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return Run
+     */
+    protected Run buildSelectIndexBody(DataRuntime runtime) {
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM (\n");
+        builder.append("SELECT DB_NAME() AS TABLE_CATALOG\n");
+        builder.append(", S.NAME AS TABLE_SCHEMA\n");
+        builder.append(", O.NAME AS TABLE_NAME\n");
+        builder.append(", I.NAME AS INDEX_NAME\n");
+        builder.append(", I.TYPE_DESC AS INDEX_TYPE\n");
+        builder.append(", I.IS_UNIQUE AS IS_UNIQUE\n");
+        builder.append(", I.IS_PRIMARY_KEY AS IS_PRIMARY\n");
+        builder.append(", C.NAME AS COLUMN_NAME\n");
+        builder.append(", IC.KEY_ORDINAL AS SEQ_IN_INDEX\n");
+        builder.append(", CASE WHEN IC.IS_DESCENDING_KEY = 1 THEN 'DESC' ELSE 'ASC' END AS COLLATION\n");
+        builder.append("FROM SYS.INDEXES AS I\n");
+        builder.append("INNER JOIN SYS.OBJECTS AS O ON O.OBJECT_ID = I.OBJECT_ID\n");
+        builder.append("INNER JOIN SYS.SCHEMAS AS S ON S.SCHEMA_ID = O.SCHEMA_ID\n");
+        builder.append("INNER JOIN SYS.INDEX_COLUMNS AS IC ON IC.OBJECT_ID = I.OBJECT_ID AND IC.INDEX_ID = I.INDEX_ID\n");
+        builder.append("INNER JOIN SYS.COLUMNS AS C ON C.OBJECT_ID = IC.OBJECT_ID AND C.COLUMN_ID = IC.COLUMN_ID\n");
+        builder.append("WHERE I.INDEX_ID > 0 AND I.IS_HYPOTHETICAL = 0 AND IC.KEY_ORDINAL > 0 AND O.IS_MS_SHIPPED = 0\n");
+        builder.append(") AS IDX");
+        return run;
     }
 
     /**
@@ -3123,7 +3185,21 @@ WHERE
      */
     @Override
     public MetadataFieldRefer initIndexFieldRefer() {
-        return super.initIndexFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Index.class);
+        refer.map(Index.FIELD_NAME, "INDEX_NAME");
+        refer.map(Index.FIELD_CATALOG, "TABLE_CATALOG");
+        refer.map(Index.FIELD_SCHEMA, "TABLE_SCHEMA");
+        refer.map(Index.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Index.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(Index.FIELD_POSITION, "SEQ_IN_INDEX");
+        refer.map(Index.FIELD_ORDER, "COLLATION");
+        refer.map(Index.FIELD_TYPE, "INDEX_TYPE");
+        // IS_UNIQUE/IS_PRIMARY 是 bit,JDBC 返回 Boolean,这里同时提供 1 以兼容返回 1/0 的驱动
+        refer.map(Index.FIELD_UNIQUE_CHECK, "IS_UNIQUE");
+        refer.map(Index.FIELD_UNIQUE_CHECK_VALUE, "1");
+        refer.map(Index.FIELD_PRIMARY_CHECK, "IS_PRIMARY");
+        refer.map(Index.FIELD_PRIMARY_CHECK_VALUE, "1");
+        return refer;
     }
 
     /**
@@ -3269,7 +3345,75 @@ WHERE
      */
     @Override
     public List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
-        return super.buildSelectConstraintsRun(runtime, greedy, query);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        ConfigStore configs = run.getConfigs();
+        // 各类型约束分别保存在不同的系统视图中,UNION ALL 后需要用子查询包裹,由 ConfigStore 在最外层追加条件
+        builder.append("SELECT * FROM (\n");
+        // 主键约束(PK) 唯一约束(UQ):约束涉及的列来自对应的唯一索引 sys.key_constraints.unique_index_id
+        builder.append("SELECT K.NAME AS CONSTRAINT_NAME\n");
+        builder.append(", DB_NAME() AS CONSTRAINT_CATALOG\n");
+        builder.append(", S.NAME AS CONSTRAINT_SCHEMA\n");
+        builder.append(", O.NAME AS TABLE_NAME\n");
+        builder.append(", CASE K.TYPE WHEN 'PK' THEN 'PRIMARY KEY' WHEN 'UQ' THEN 'UNIQUE' END AS CONSTRAINT_TYPE\n");
+        builder.append(", C.NAME AS COLUMN_NAME\n");
+        builder.append(", IC.KEY_ORDINAL AS ORDINAL_POSITION\n");
+        builder.append("FROM SYS.KEY_CONSTRAINTS AS K\n");
+        builder.append("INNER JOIN SYS.OBJECTS AS O ON O.OBJECT_ID = K.PARENT_OBJECT_ID\n");
+        builder.append("INNER JOIN SYS.SCHEMAS AS S ON S.SCHEMA_ID = O.SCHEMA_ID\n");
+        builder.append("INNER JOIN SYS.INDEXES AS I ON I.OBJECT_ID = K.PARENT_OBJECT_ID AND I.INDEX_ID = K.UNIQUE_INDEX_ID\n");
+        builder.append("INNER JOIN SYS.INDEX_COLUMNS AS IC ON IC.OBJECT_ID = I.OBJECT_ID AND IC.INDEX_ID = I.INDEX_ID\n");
+        builder.append("INNER JOIN SYS.COLUMNS AS C ON C.OBJECT_ID = IC.OBJECT_ID AND C.COLUMN_ID = IC.COLUMN_ID\n");
+        builder.append("WHERE IC.KEY_ORDINAL > 0 AND O.IS_MS_SHIPPED = 0\n");
+        builder.append("UNION ALL\n");
+        // CHECK 约束(C):parent_column_id = 0 表示表级约束,此时不涉及具体列
+        builder.append("SELECT CHK.NAME AS CONSTRAINT_NAME\n");
+        builder.append(", DB_NAME() AS CONSTRAINT_CATALOG\n");
+        builder.append(", S.NAME AS CONSTRAINT_SCHEMA\n");
+        builder.append(", O.NAME AS TABLE_NAME\n");
+        builder.append(", 'CHECK' AS CONSTRAINT_TYPE\n");
+        builder.append(", COL_NAME(CHK.PARENT_OBJECT_ID, CHK.PARENT_COLUMN_ID) AS COLUMN_NAME\n");
+        builder.append(", 1 AS ORDINAL_POSITION\n");
+        builder.append("FROM SYS.CHECK_CONSTRAINTS AS CHK\n");
+        builder.append("INNER JOIN SYS.OBJECTS AS O ON O.OBJECT_ID = CHK.PARENT_OBJECT_ID\n");
+        builder.append("INNER JOIN SYS.SCHEMAS AS S ON S.SCHEMA_ID = O.SCHEMA_ID\n");
+        builder.append("WHERE O.IS_MS_SHIPPED = 0\n");
+        builder.append("UNION ALL\n");
+        // DEFAULT 约束(D)
+        builder.append("SELECT DEF.NAME AS CONSTRAINT_NAME\n");
+        builder.append(", DB_NAME() AS CONSTRAINT_CATALOG\n");
+        builder.append(", S.NAME AS CONSTRAINT_SCHEMA\n");
+        builder.append(", O.NAME AS TABLE_NAME\n");
+        builder.append(", 'DEFAULT' AS CONSTRAINT_TYPE\n");
+        builder.append(", COL_NAME(DEF.PARENT_OBJECT_ID, DEF.PARENT_COLUMN_ID) AS COLUMN_NAME\n");
+        builder.append(", 1 AS ORDINAL_POSITION\n");
+        builder.append("FROM SYS.DEFAULT_CONSTRAINTS AS DEF\n");
+        builder.append("INNER JOIN SYS.OBJECTS AS O ON O.OBJECT_ID = DEF.PARENT_OBJECT_ID\n");
+        builder.append("INNER JOIN SYS.SCHEMAS AS S ON S.SCHEMA_ID = O.SCHEMA_ID\n");
+        builder.append("WHERE O.IS_MS_SHIPPED = 0\n");
+        builder.append("UNION ALL\n");
+        // 外键约束(F):约束涉及的列来自 sys.foreign_key_columns
+        builder.append("SELECT F.NAME AS CONSTRAINT_NAME\n");
+        builder.append(", DB_NAME() AS CONSTRAINT_CATALOG\n");
+        builder.append(", S.NAME AS CONSTRAINT_SCHEMA\n");
+        builder.append(", O.NAME AS TABLE_NAME\n");
+        builder.append(", 'FOREIGN KEY' AS CONSTRAINT_TYPE\n");
+        builder.append(", COL_NAME(FC.PARENT_OBJECT_ID, FC.PARENT_COLUMN_ID) AS COLUMN_NAME\n");
+        builder.append(", FC.CONSTRAINT_COLUMN_ID AS ORDINAL_POSITION\n");
+        builder.append("FROM SYS.FOREIGN_KEYS AS F\n");
+        builder.append("INNER JOIN SYS.OBJECTS AS O ON O.OBJECT_ID = F.PARENT_OBJECT_ID\n");
+        builder.append("INNER JOIN SYS.SCHEMAS AS S ON S.SCHEMA_ID = O.SCHEMA_ID\n");
+        builder.append("INNER JOIN SYS.FOREIGN_KEY_COLUMNS AS FC ON FC.CONSTRAINT_OBJECT_ID = F.OBJECT_ID\n");
+        builder.append("WHERE O.IS_MS_SHIPPED = 0\n");
+        builder.append(") AS CST");
+        if(null != query) {
+            configs.and("CONSTRAINT_SCHEMA", query.getSchemaName());
+            configs.and(Compare.LIKE_SIMPLE, "TABLE_NAME", query.getTableName());
+        }
+        configs.order("ORDINAL_POSITION");
+        return runs;
     }
 
     /**
@@ -3279,7 +3423,47 @@ WHERE
      */
     @Override
     public MetadataFieldRefer initConstraintFieldRefer() {
-        return super.initConstraintFieldRefer();
+        MetadataFieldRefer refer = new MetadataFieldRefer(Constraint.class);
+        refer.map(Constraint.FIELD_NAME, "CONSTRAINT_NAME");
+        refer.map(Constraint.FIELD_CATALOG, "CONSTRAINT_CATALOG");
+        refer.map(Constraint.FIELD_SCHEMA, "CONSTRAINT_SCHEMA");
+        refer.map(Constraint.FIELD_TABLE, "TABLE_NAME");
+        refer.map(Constraint.FIELD_TYPE, "CONSTRAINT_TYPE");
+        refer.map(Constraint.FIELD_COLUMN, "COLUMN_NAME");
+        refer.map(Constraint.FIELD_POSITION, "ORDINAL_POSITION");
+        return refer;
+    }
+
+    /**
+     * constraint[结果集封装]<br/>
+     * 一个约束可能涉及多列(一行一列),逐行提取涉及的列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildSelectConstraintsRun 返回顺序
+     * @param meta Constraint
+     * @param query 查询条件 根据metadata属性
+     * @param row 查询到的约束数据
+     * @return T
+     */
+    @Override
+    public <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, Constraint query, DataRow row) {
+        MetadataFieldRefer refer = refer(runtime, Constraint.class);
+        String columnName = row.getStringWithoutEmpty(refer.maps(Constraint.FIELD_COLUMN));
+        if(null == columnName) {
+            return meta;
+        }
+        columnName = columnName.replace("\"", "");
+        Column column = meta.getColumn(columnName.toUpperCase());
+        if(null == column) {
+            column = new Column();
+        }
+        column.setName(columnName);
+        meta.addColumn(column);
+        Integer position = getInt(row, refer, Constraint.FIELD_POSITION);
+        if(null == position) {
+            position = 0;
+        }
+        column.setPosition(position);
+        return meta;
     }
 
     /**

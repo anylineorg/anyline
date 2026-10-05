@@ -192,7 +192,9 @@ public class WebUtil {
 		if(ConfigTable.HTTP_PARAM_ENCODE == -1) {
 			isEncode = false;
 		}else if(ConfigTable.HTTP_PARAM_ENCODE == 0) {
-			//TODO 自动识别
+			//自动识别: 只有出现 %XX 形式的转义时才解码, 避免把值中的 % 或 + 误解码
+			String query = request.getQueryString();
+			isEncode = BasicUtil.isNotEmpty(query) && query.matches(".*%[0-9A-Fa-f]{2}.*");
 		}
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map) {
@@ -1019,6 +1021,10 @@ public class WebUtil {
 	 */
 	public static void download(HttpServletRequest request, HttpServletResponse response, String title) {
 		try{
+			if(null != title) {
+				//过滤换行符, 避免响应头注入
+				title = title.replace("\r", "").replace("\n", "");
+			}
 			response.setCharacterEncoding("UTF-8");
 			response.setHeader("Location",   title );
 			if(null != request) {
@@ -1052,6 +1058,9 @@ public class WebUtil {
 	 * @return boolean
 	 */
 	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title) {
+		if(null == in) {
+			return false;
+		}
 		OutputStream out = null;
 		try {
 			download(request, response, title);
@@ -1074,7 +1083,8 @@ public class WebUtil {
 			}
 			if (null != out) {
 				try {
-					out.close();
+					//response 输出流由容器负责关闭, 这里只flush
+					out.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1083,7 +1093,12 @@ public class WebUtil {
 		return true;
 	}
 	public static String encode(HttpServletRequest request, String value) throws IOException {
-		String agent = request.getHeader("User-Agent").toLowerCase(); // 获取浏览器
+		String agent = request.getHeader("User-Agent");
+		if(null == agent) {
+			//无 User-Agent 时不做特殊处理
+			return value;
+		}
+		agent = agent.toLowerCase(); // 获取浏览器
 		if (agent.contains("firefox")) {
 			value = URLEncoder.encode(value, "utf-8");
 		} else if(agent.contains("msie")) {

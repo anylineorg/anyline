@@ -1,1 +1,5 @@
-org.anyline.data.vespa.VespaAdapter
+org.anyline.data.vespa.adapter.VespaActuator
+org.anyline.data.vespa.adapter.VespaAdapter
+org.anyline.data.vespa.datasource.VespaDataSourceLoader
+org.anyline.data.vespa.datasource.VespaDataSourceHolder
+org.anyline.data.vespa.runtime.VespaRuntimeHolder

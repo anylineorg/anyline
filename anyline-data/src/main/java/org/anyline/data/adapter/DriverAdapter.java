@@ -9013,8 +9013,12 @@ public interface DriverAdapter {
 			// 去掉末尾的 () 做统一比对（NOW() → NOW,  SYSDATE() → SYSDATE）
 			String bare = chk.endsWith("()") ? chk.substring(0, chk.length() - 2) : chk;
 
+			// 日期时间类(缺少该分支时 CURRENT_DATETIME 会被当成普通字符串原样写入DDL,造成语法错误)
+			if("CURRENT_DATETIME".equals(bare)) {
+				result = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
+			}
 			// 时间戳类：SYSDATE / NOW / CURRENT_TIMESTAMP / GETDATE 等 → CURRENT_TIMESTAMP
-			if("CURRENT_TIMESTAMP".equals(bare)
+			else if("CURRENT_TIMESTAMP".equals(bare)
 				|| "CURRENT TIMESTAMP".equals(bare) // Oracle 写法
 				|| "SYSDATE".equals(bare)
 				|| "SYSTIMESTAMP".equals(bare)

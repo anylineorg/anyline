@@ -152,7 +152,7 @@ public class HttpClient {
 			is = response.getEntity().getContent();
 			result.setInputStream(is);
 		}catch(Exception e) {
-
+			log.error("post stream exception:", e);
 		}
 		return result;
 	}
@@ -201,6 +201,9 @@ public class HttpClient {
 				} catch (Exception e) {
 					log.error("http exception:", e);
 				}
+			}else{
+				//stream模式下不能关闭response(否则调用方读不到流), 只释放连接, 由调用方负责关闭流
+				method.releaseConnection();
 			}
 		}
 		return result;
@@ -230,6 +233,7 @@ public class HttpClient {
 		boolean override = task.isOverride();
 		if(dst.exists() && !override) {
 			past = dst.length();
+			length = past;
 			task.init(length, past);
 			task.finish();
 //			progress.init(url, "", length, past);
@@ -283,6 +287,14 @@ public class HttpClient {
 				code = response.getStatusLine().getStatusCode();
 				log.info("[http download][断点设置异常][url:{}]", url);
 			}
+			if(code == 200 && start > 0) {
+				//服务端忽略Range返回完整内容, 需从头下载, 否则会写成[旧片段+全文]的损坏文件
+				log.warn("[http download][服务端忽略Range, 重新开始下载][url:{}]", url);
+				start = 0;
+				if(tmpFile.exists()) {
+					tmpFile.delete();
+				}
+			}
 			if(code != 200 && code !=206) {
 				// progress.error(url, "", code, "状态异常");
 				task.error(code, "状态异常");
@@ -294,7 +306,7 @@ public class HttpClient {
 				// progress.init(url, "", total, start);
 				task.init(total, past);
 				int buf = 1024*1024*10;
-				if(buf > total) {
+				if(total > 0 && buf > total) {
 					buf = (int)total;
 				}
 				is = entity.getContent();
@@ -342,8 +354,15 @@ public class HttpClient {
 			}
 		}
 		if(result) {
-			tmpFile.renameTo(dst);
-			task.finish();
+			if(dst.exists() && !dst.delete()) {
+				log.warn("[http download][目标文件已存在且删除失败][file:{}]", dst.getAbsolutePath());
+			}
+			if(!tmpFile.renameTo(dst)) {
+				result = false;
+				log.warn("[http download][重命名失败][tmp:{}][dst:{}]", tmpFile.getAbsolutePath(), dst.getAbsolutePath());
+			}else{
+				task.finish();
+			}
 		}
 		return result;
 	}
@@ -416,7 +435,9 @@ public class HttpClient {
 			log.error("check connection status exception:", e);
 		}finally {
 			try {
-				response.close();
+				if(null != response) {
+					response.close();
+				}
 				method.releaseConnection();
 				client.close();
 			} catch (Exception e) {

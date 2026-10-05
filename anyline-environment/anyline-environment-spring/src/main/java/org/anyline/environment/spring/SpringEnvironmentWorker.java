@@ -50,7 +50,11 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
-        factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
+        if(context.getAutowireCapableBeanFactory() instanceof DefaultListableBeanFactory) {
+            factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
+        }else{
+            log.warn("[获取BeanFactory失败][type:{}]", context.getAutowireCapableBeanFactory().getClass());
+        }
         ConfigTable.setEnvironment(this);
     }
 

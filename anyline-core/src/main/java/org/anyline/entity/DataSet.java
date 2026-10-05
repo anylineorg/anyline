@@ -4718,7 +4718,7 @@ public class DataSet<E extends DataRow> implements Collection<E>, Serializable, 
         return omit("*", vol, left, right, columns);
     }
     public DataSet<E> omit(String ellipsis, int left, int right, String ... columns) {
-        return omit("*", left, right, columns);
+        return omit(ellipsis, 0, left, right, columns);
     }
     public boolean equals(DataRow row, String ... columns) {
         if(null == row || null == columns || columns.length == 0) {

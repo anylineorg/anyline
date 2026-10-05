@@ -640,15 +640,28 @@ public class HttpUtil {
 	public static CloseableHttpClient defaultClient() {
 		return defaultClient(default_user_agent);
 	}
-	public static CloseableHttpClient defaultClient(String userAgent) {
-		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(default_request_config);
+	public static RequestConfig defaultRequestConfig() {
+		if(null == default_request_config) {
+			default_request_config = RequestConfig.custom()
+					.setConnectTimeout(default_connect_timeout)
+					.setSocketTimeout(default_socket_timeout)
+					.setConnectionRequestTimeout(5000)
+					.build();
+		}
+		return default_request_config;
+	}
+	public static synchronized CloseableHttpClient defaultClient(String userAgent) {
+		if(null != default_client) {
+			return default_client;
+		}
+		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig());
 		builder.setUserAgent(userAgent);
 		default_client = builder.build();
 		return default_client;
 	}
 	public static CloseableHttpClient createClient(String userAgent) {
 		CloseableHttpClient client = null;
-		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(default_request_config);
+		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig());
 		builder.setUserAgent(userAgent);
 		client = builder.build();
 		return client;
@@ -738,7 +751,8 @@ public class HttpUtil {
 			}
 		}else{
 			result = result
-					.replace(" ","+")
+					.replace("%","%25")
+					.replace(" ","%20")
 					.replace("\n","")
 					.replace("\r","")
 					.replace("\t","")
@@ -747,7 +761,6 @@ public class HttpUtil {
 					.replace("@","%40")
 					.replace("#","%23")
 					.replace("$","%24")
-					.replace("%","%25")
 					.replace("^","%5E")
 					.replace("&","%26")
 					.replace("(","%28")
@@ -775,7 +788,6 @@ public class HttpUtil {
 				.replace("%3A", ":")
 				.replace("%2F", "/");
 		}
-		result = result.replace("+", "%20"); //原来的 空格 被转成了 + 再把 + 转成 %20
 		return result;
 	}
 }

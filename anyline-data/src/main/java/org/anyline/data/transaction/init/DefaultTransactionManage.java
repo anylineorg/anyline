@@ -80,6 +80,8 @@ public class DefaultTransactionManage implements TransactionManage {
         if(isNew) {
             con.setAutoCommit(false);
         }
+        //记录是否新建事务, commit/rollback 时据此决定是否归还连接
+        ((DefaultTransactionState)state).setNewTransaction(isNew);
         TransactionManage.records.put(state, this);
         return state;
     }
@@ -88,18 +90,37 @@ public class DefaultTransactionManage implements TransactionManage {
     public void commit(TransactionState state) throws SQLException {
         DataSource ds = state.getDataSource();
         Connection con = state.getConnection();
-        con.commit();
-        con.setAutoCommit(true);
-        con.close();
-        String name = state.getName();
-        log.info("[提交事务][name:{}]", name);
-        TransactionDefine.MODE mode = state.getMode();
-        if(TransactionDefine.MODE.THREAD == mode) {
-            ThreadConnectionHolder.remove(ds);
-        }else if(TransactionDefine.MODE.APPLICATION == mode) {
-            ApplicationConnectionHolder.remove(ds, name);
+        try {
+            con.commit();
+        } finally {
+            release(state, ds, con);
         }
-        TransactionManage.records.remove(state);
+        log.info("[提交事务][name:{}]", state.getName());
+    }
+
+    /**
+     * 归还连接, 只有新建的事务才负责恢复自动提交并关闭连接
+     * 加入已有事务(嵌套)的连接由最外层事务负责, 否则外层再提交时会拿到已关闭的连接
+     */
+    private void release(TransactionState state, DataSource ds, Connection con) throws SQLException {
+        String name = state.getName();
+        TransactionDefine.MODE mode = state.getMode();
+        try {
+            if(state.isNewTransaction() && null != con) {
+                try {
+                    con.setAutoCommit(true);
+                } finally {
+                    con.close();
+                }
+            }
+        } finally {
+            if(TransactionDefine.MODE.THREAD == mode) {
+                ThreadConnectionHolder.remove(ds);
+            }else if(TransactionDefine.MODE.APPLICATION == mode) {
+                ApplicationConnectionHolder.remove(ds, name);
+            }
+            TransactionManage.records.remove(state);
+        }
     }
 
     @Override
@@ -107,21 +128,18 @@ public class DefaultTransactionManage implements TransactionManage {
         DataSource ds = state.getDataSource();
         Connection con = state.getConnection();
         Savepoint point = state.getPoint();
-        if(null != point) {
-            con.rollback(point);
-        }else{
-            con.rollback();
+        try {
+            if(null != point) {
+                //回滚到保存点, 事务并未结束, 不归还连接
+                con.rollback(point);
+            }else{
+                con.rollback();
+            }
+        } finally {
+            if(null == point) {
+                release(state, ds, con);
+            }
         }
-        con.setAutoCommit(true);
-        con.close();
-        String name = state.getName();
-        log.info("[回滚事务][name:{}]", name);
-        TransactionDefine.MODE mode = state.getMode();
-        if(TransactionDefine.MODE.THREAD == mode) {
-            ThreadConnectionHolder.remove(ds);
-        }else if(TransactionDefine.MODE.APPLICATION == mode) {
-            ApplicationConnectionHolder.remove(ds, name);
-        }
-        TransactionManage.records.remove(state);
+        log.info("[回滚事务][name:{}]", state.getName());
     }
 }

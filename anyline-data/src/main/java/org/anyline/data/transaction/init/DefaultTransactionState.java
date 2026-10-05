@@ -63,6 +63,10 @@ public class DefaultTransactionState implements TransactionState {
         return isNewTransaction;
     }
 
+    public void setNewTransaction(boolean isNewTransaction) {
+        this.isNewTransaction = isNewTransaction;
+    }
+
     @Override
     public void setRollbackOnly() {
 

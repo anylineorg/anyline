@@ -261,7 +261,7 @@ public class Downloader {
 			Map<String, Object> extras = task.getExtras();
 			if(null != extras) {
 				Object val = extras.get(extKey); 
-				if(val.equals(extVal)) {
+				if(null != val && val.equals(extVal)) {
 					result.put(task.getUrl(), task);
 				} 
 			} 

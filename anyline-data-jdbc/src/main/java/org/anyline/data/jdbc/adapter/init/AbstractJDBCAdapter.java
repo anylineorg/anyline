@@ -1300,6 +1300,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
         if(null != prepare) {
             return createConditionIn(runtime, builder, compare, prepare, placeholder, unicode);
         } else {
+            //返回值不能为null,否则调用方(DefaultAutoCondition)会认为适配器未实现该方法,再按compare的公式追加一次条件(如重复的" IN ")
+            List<RunValue> rvs = new ArrayList<>();
             if(value instanceof Collection) {
                 Collection<Object> values = (Collection)value;
                 if(values.isEmpty()){
@@ -1318,7 +1320,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                     }
                     first = false;
                     if(placeholder) {
-                        convert(runtime, builder, value, null, placeholder, unicode, null);
+                        //占位符模式下每个值一个占位符,并把值收集起来交给调用方作为参数
+                        convert(runtime, builder, v, null, placeholder, unicode, null);
+                        rvs.add(new RunValue((String) null, v));
                     }else{
                         if(v instanceof Number) {
                             builder.append(v);
@@ -1335,6 +1339,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                     }else {
                         builder.append(" = ? ");
                     }
+                    rvs.add(new RunValue((String) null, value));
                 }else{
                     if(compare == Compare.NOT_IN){
                         builder.append(" != ");
@@ -1348,8 +1353,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
                     }
                 }
             }
+            return rvs;
         }
-        return null;
     }
 
     public List<RunValue> createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, RunPrepare prepare, Boolean placeholder, Boolean unicode) {

@@ -139,7 +139,7 @@ public class TemplateController extends AnylineController {
 		String bak_url = getRequest().getHeader("Referer");
 		if(null != msgs) {
 			for(String msg:msgs) {
-				message += "<br/>"+ msg;
+				message += "<br/>"+ escapeHtml(msg);
 			}
 		}
 
@@ -153,7 +153,7 @@ public class TemplateController extends AnylineController {
 		String bak_url = getRequest().getHeader("Referer");
 		if(null != msgs) {
 			for(String msg:msgs) {
-				message += "<br/>"+ msg;
+				message += "<br/>"+ escapeHtml(msg);
 			}
 		}
 
@@ -161,6 +161,16 @@ public class TemplateController extends AnylineController {
 		view.addObject("msg", message);
 		view.addObject("bak_url",bak_url);
 		return view;
+	}
+	protected String escapeHtml(String msg) {
+		if(null == msg) {
+			return "";
+		}
+		return msg.replace("&","&amp;")
+				.replace("<","&lt;")
+				.replace(">","&gt;")
+				.replace("\"","&quot;")
+				.replace("'","&#39;");
 	}
 	protected ModelAndView emptyView() {
 		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));

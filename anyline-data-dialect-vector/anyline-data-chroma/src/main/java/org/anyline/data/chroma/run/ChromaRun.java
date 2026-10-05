@@ -29,6 +29,8 @@ import java.util.List;
 public class ChromaRun extends TableRun implements Run {
 
     private String filter;  // Chroma metadata filter expression
+    private List<Float> queryVector; // 向量检索的查询向量
+    private int topK = 10;  // 向量检索返回条数
 
     public ChromaRun(DataRuntime runtime) {
         super(runtime, (Table)null);
@@ -48,6 +50,22 @@ public class ChromaRun extends TableRun implements Run {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    public List<Float> getQueryVector() {
+        return queryVector;
+    }
+
+    public void setQueryVector(List<Float> queryVector) {
+        this.queryVector = queryVector;
+    }
+
+    public int getTopK() {
+        return topK;
+    }
+
+    public void setTopK(int topK) {
+        this.topK = topK;
     }
 
     @Override

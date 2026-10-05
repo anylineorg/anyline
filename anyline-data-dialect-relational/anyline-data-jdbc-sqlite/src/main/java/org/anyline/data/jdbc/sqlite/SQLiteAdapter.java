@@ -65,6 +65,23 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		}
 	}
 
+	/**
+	 * SQLite不支持的元数据查询<br/>
+	 * 不直接返回空集合, 而是输出日志, 避免调用方把"不支持"误判为"查询成功但结果为空"
+	 * @return 空集合
+	 */
+	private List<Run> notSupport() {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		String method = null;
+		if(stack.length > 2) {
+			method = stack[2].getMethodName();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug("[SQLite 不支持的元数据查询][method:" + method + "]");
+		}
+		return new ArrayList<>();
+	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -611,8 +628,9 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectSequence(DataRuntime runtime, boolean next, String ... names) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -1204,8 +1222,12 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectProductRun(DataRuntime runtime) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT 'SQLite' AS PRODUCT_NAME, sqlite_version() AS PRODUCT_VERSION");
+		return runs;
 	}
 
 	/**
@@ -1217,8 +1239,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectVersionRun(DataRuntime runtime) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//version()入口实际执行的是buildSelectProductRun, 这里保持同样结构避免取不到值
+		return buildSelectProductRun(runtime);
 	}
 
 	/**
@@ -1232,8 +1254,16 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectDatabasesRun(DataRuntime runtime, boolean greedy, Database query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//sqlite每个连接对应一个库文件, database_list返回 seq,name,file
+		builder.append("PRAGMA database_list");
+		if(null != query && null != query.getName()) {
+			builder.append("/*").append(query.getName()).append("*/");
+		}
+		return runs;
 	}
 	/**
 	 * database[结果集封装]<br/>
@@ -1305,7 +1335,20 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet<DataRow> set) {
-		return super.product(runtime, index, create, product, set);
+		if(null != set) {
+			for(DataRow row:set) {
+				String name = row.getString("PRODUCT_NAME");
+				String ver = row.getString("PRODUCT_VERSION");
+				if(null != name) {
+					product = name;
+					if(null != ver) {
+						product = name + " " + ver;
+					}
+				}
+				break;
+			}
+		}
+		return product;
 	}
 
 	/**
@@ -1332,7 +1375,22 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet<DataRow> set) {
-		return super.version(runtime, index, create, version, set);
+		if(null != set) {
+			for(DataRow row:set) {
+				//version()入口执行的是buildSelectProductRun, 取其中的版本号列
+				String ver = row.getString("PRODUCT_VERSION");
+				if(null != ver) {
+					version = ver;
+				}else{
+					ver = row.getString("VERSION");
+					if(null != ver) {
+						version = ver;
+					}
+				}
+				break;
+			}
+		}
+		return version;
 	}
 
 	/**
@@ -1399,8 +1457,16 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectCatalogsRun(DataRuntime runtime, boolean greedy, Catalog query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//SQLite 通过 ATTACH DATABASE 挂载多个库文件, database_list 返回 seq,name,file
+		builder.append("SELECT name AS NAME, name AS CATALOG_NAME, file AS FILE FROM pragma_database_list() WHERE 1=1");
+		if(null != query && null != query.getName()) {
+			builder.append(" AND name = '").append(query.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -1535,8 +1601,9 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildSelectSchemasRun(DataRuntime runtime, boolean greedy, Schema query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -1696,8 +1763,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public <T extends Table<T>> List<Run> buildSelectTablesCommentRun(DataRuntime runtime, Table<T> query, int types) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -1823,8 +1891,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Table table) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//sqlite_master.sql中保存建表SQL
+		builder.append("SELECT sql FROM sqlite_master WHERE type='table'");
+		if(null != table && null != table.getName()) {
+			builder.append(" AND name = '").append(table.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -1838,7 +1914,18 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet<DataRow> set) {
-		return super.ddl(runtime, index, table, ddls, set);
+		if(null == ddls) {
+			ddls = new ArrayList<>();
+		}
+		if(null != set) {
+			for(DataRow row:set) {
+				String ddl = row.getString("SQL");
+				if(null != ddl) {
+					ddls.add(ddl);
+				}
+			}
+		}
+		return ddls;
 	}
 
 	/* *****************************************************************************************************************
@@ -1957,8 +2044,15 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, View view) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT sql FROM sqlite_master WHERE type='view'");
+		if(null != view && null != view.getName()) {
+			builder.append(" AND name = '").append(view.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -1972,7 +2066,18 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet<DataRow> set) {
-		return super.ddl(runtime, index, view, ddls, set);
+		if(null == ddls) {
+			ddls = new ArrayList<>();
+		}
+		if(null != set) {
+			for(DataRow row:set) {
+				String ddl = row.getString("SQL");
+				if(null != ddl) {
+					ddls.add(ddl);
+				}
+			}
+		}
+		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 * 													master table
@@ -2018,8 +2123,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public <T extends MasterTable<T>> List<Run> buildSelectMasterTablesRun(DataRuntime runtime, boolean greedy, MasterTable<T> query, int types, ConfigStore configs) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime, configs);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//SQLite 没有主表/子表之分, 所有普通表都视为可承载分区的主表
+		builder.append("SELECT name AS NAME, name AS TABLE_NAME, name AS \"TABLE\", sql AS DEFINITION FROM sqlite_master WHERE type='table'");
+		if(null != query && null != query.getName()) {
+			builder.append(" AND name = '").append(query.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -2084,8 +2197,16 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, MasterTable table) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		//sqlite_master.sql 中保存建表 SQL
+		builder.append("SELECT sql FROM sqlite_master WHERE type='table'");
+		if(null != table && null != table.getName()) {
+			builder.append(" AND name = '").append(table.getName().replace("'", "''")).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -2145,8 +2266,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public <T extends PartitionTable<T>> List<Run> buildSelectPartitionTablesRun(DataRuntime runtime, boolean greedy,  PartitionTable<T> query, int types) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -2203,8 +2325,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, PartitionTable table) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -2307,8 +2430,31 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectColumnsRun(DataRuntime runtime, boolean metadata, Collection<? extends Table> tables, Column query, ConfigStore configs) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		if(null == tables || tables.isEmpty()) {
+			return runs;
+		}
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		//pragma_table_info 返回 cid,name,type,notnull,dflt_value,pk, 结果集中没有表名
+		//这里补一列表名常量, 封装时用来把列分配到各自的表中
+		boolean first = true;
+		for(Table table:tables) {
+			if(null == table || null == table.getName()) {
+				continue;
+			}
+			String name = table.getName().replace("'", "''");
+			if(first) {
+				first = false;
+			}else{
+				builder.append(" UNION ALL ");
+			}
+			builder.append("SELECT '").append(name).append("' AS TABLE_NAME, '").append(name).append("' AS \"TABLE\", t.* FROM pragma_table_info('").append(name).append("') t");
+		}
+		if(!first) {
+			runs.add(run);
+		}
+		return runs;
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -2485,8 +2631,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectTagsRun(DataRuntime runtime, boolean greedy, Tag query) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -2946,8 +3093,15 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 * @return runs
 	 */
 	public List<Run> buildSelectTriggersRun(DataRuntime runtime, boolean greedy, Trigger query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT name AS NAME, tbl_name AS TBL_NAME, sql AS SQL FROM sqlite_master WHERE type='trigger'");
+		if(null != query && null != query.getName()) {
+			builder.append(" AND name = '").append(query.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -3024,8 +3178,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectProceduresRun(DataRuntime runtime, boolean greedy, Procedure query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3094,8 +3249,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Procedure procedure) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3170,8 +3326,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectFunctionsRun(DataRuntime runtime, boolean greedy, Function query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3251,8 +3408,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Function meta) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3327,8 +3485,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectSequencesRun(DataRuntime runtime, boolean greedy, Sequence query) {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**
@@ -3399,8 +3558,9 @@ public <T extends Table<T>> LinkedHashMap<String, T> tables(DataRuntime runtime,
 	 */
 	@Override
 	public List<Run> buildSelectDdlRun(DataRuntime runtime, Sequence meta) throws Exception {
-		//TOTO 待实现
-		return new ArrayList<>();
+		//SQLite 不提供该元数据(数据库中没有此类对象), 返回空集合并输出日志
+		//不直接返回空集合而不提示, 是为了避免调用方把"不支持"误判为"查询成功但结果为空"
+		return notSupport();
 	}
 
 	/**

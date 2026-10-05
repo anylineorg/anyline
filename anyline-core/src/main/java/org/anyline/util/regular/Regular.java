@@ -31,7 +31,7 @@ public interface Regular {
 		 */
 		EAMIL{
 			public String getName() {return "邮箱";}
-			public String getCode() {return "(?:\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,3}$)";}
+			public String getCode() {return "(?:^\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,}$)";}
 		}
 		/**
 		 * 匹配图象
@@ -41,7 +41,7 @@ public interface Regular {
 		 */
 		, IMG{
 			public String getName() {return "图片";}
-			public String getCode() {return "^(/{0,1}\\w) {1,}\\.(gif|dmp|png|jpg|ico)$|^\\w{1,}\\.(gif|dmp|png|jpg|ico)$";}
+			public String getCode() {return "^(/{0,1}\\w){1,}\\.(gif|dmp|png|jpg|ico)$|^\\w{1,}\\.(gif|dmp|png|jpg|ico)$";}
 		}
 		/**
 		 * 匹配匹配并提取url
@@ -122,7 +122,7 @@ public interface Regular {
 		 */
 		, ID_CARD{
 			public String getName() {return "身份证";}
-			public String getCode() {return "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$";}
+			public String getCode() {return "(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$)";}
 		}
 		, ZIP_CODE{
 			public String getName() {return "邮编代码";}
@@ -230,7 +230,7 @@ public interface Regular {
 		}
 		, IP{
 			public String getName() {return "IP地址";}
-			public String getCode() {return "^([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])) {3}$";}
+			public String getCode() {return "^([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$";}
 		}
 		;
 		public abstract String getName();

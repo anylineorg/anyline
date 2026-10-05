@@ -78,9 +78,11 @@ public class HttpBuilder {
                     .setConnectTimeout(default_connect_timeout) // 设置连接超时为5000毫秒（5秒）
                     .setConnectionRequestTimeout(5000) // 设置从连接池获取连接的等待超时为5000毫秒（5秒）
                     .build();
-            this.client = HttpClients.custom()
-                    .setConnectionManager(manager)
-                    .setDefaultRequestConfig(requestConfig).build();
+            if(null == this.client) {
+                this.client = HttpClients.custom()
+                        .setConnectionManager(manager)
+                        .setDefaultRequestConfig(requestConfig).build();
+            }
         }catch (Exception e) {
             log.error("build http client exception:", e);
         }
@@ -244,7 +246,12 @@ public class HttpBuilder {
         return this;
     }
     public HttpBuilder addPair(List<NameValuePair> pairs) {
-        this.pairs = pairs;
+        if(null == this.pairs) {
+            this.pairs = new ArrayList<>();
+        }
+        if(null != pairs) {
+            this.pairs.addAll(pairs);
+        }
         return this;
     }
     public HttpBuilder addDownloadTask(DownloadTask task) {

@@ -133,12 +133,12 @@ public class PineconeActuator implements DriverActuator {
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         List<Map<String, Object>> result = new ArrayList<>();
         Pinecone client = client(runtime);
-        if(run instanceof PineconeRun) {
-            PineconeRun pineconeRun = (PineconeRun) run;
-            String tableName = pineconeRun.getTableName();
-            List<String> selectColumns = pineconeRun.getSelectColumns();
-            List<RunValue> runValues = pineconeRun.getRunValues();
-            PageNavi navi = pineconeRun.getPageNavi();
+        //参考图数据库的方式: 从通用Run接口取表名/列/参数/分页, PineconeRun只作为可选增强
+        if(null != run) {
+            String tableName = run.getTableName();
+            List<String> selectColumns = run.getSelectColumns();
+            List<RunValue> runValues = run.getRunValues();
+            PageNavi navi = run.getPageNavi();
 
             // Detect vector parameter
             Object vectorParam = null;
@@ -164,7 +164,7 @@ public class PineconeActuator implements DriverActuator {
             }
 
             // Build filter expression
-            String filterExpr = (pineconeRun.getFilterStr() != null) ? pineconeRun.getFilterStr() : buildFilter(runValues, vectorField);
+            String filterExpr = (run instanceof PineconeRun && null != ((PineconeRun) run).getFilterStr()) ? ((PineconeRun) run).getFilterStr() : buildFilter(runValues, vectorField);
 
             io.pinecone.clients.Index index = client.getIndexConnection(tableName);
 
@@ -273,9 +273,8 @@ public class PineconeActuator implements DriverActuator {
 
     public long count(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         Pinecone client = client(runtime);
-        if(run instanceof PineconeRun) {
-            PineconeRun pineconeRun = (PineconeRun) run;
-            String tableName = pineconeRun.getTableName();
+        if(null != run) {
+            String tableName = run.getTableName();
 
             io.pinecone.clients.Index index = client.getIndexConnection(tableName);
             DescribeIndexStatsResponse resp = index.describeIndexStats();
@@ -288,9 +287,8 @@ public class PineconeActuator implements DriverActuator {
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception {
         Pinecone client = client(runtime);
-        if(run instanceof PineconeRun) {
-            PineconeRun pineconeRun = (PineconeRun) run;
-            String tableName = pineconeRun.getTableName();
+        if(null != run) {
+            String tableName = run.getTableName();
 
             io.pinecone.clients.Index index = client.getIndexConnection(tableName);
 
@@ -389,10 +387,9 @@ public class PineconeActuator implements DriverActuator {
     @Override
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         Pinecone client = client(runtime);
-        if(run instanceof PineconeRun) {
-            PineconeRun pineconeRun = (PineconeRun) run;
-            String tableName = pineconeRun.getTableName();
-            List<Object> values = pineconeRun.getValues();
+        if(null != run) {
+            String tableName = run.getTableName();
+            List<Object> values = run.getValues();
 
             if(values != null && !values.isEmpty()) {
                 io.pinecone.clients.Index index = client.getIndexConnection(tableName);

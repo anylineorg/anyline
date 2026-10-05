@@ -1619,7 +1619,7 @@
 				<targetPath>META-INF/solon</targetPath>
 			</resource>
 			<resource>
-				<directory>/src/main/webapp/WEB-INF</directory>
+				<directory>src/main/webapp/WEB-INF</directory>
 				<includes>
 					<include>*.tld</include>
 					<include>*.xsd</include>

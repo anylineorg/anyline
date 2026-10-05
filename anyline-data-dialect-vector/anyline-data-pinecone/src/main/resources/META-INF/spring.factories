@@ -1,1 +1,6 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.pinecone.PineconeAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.pinecone.adapter.PineconeActuator,\
+org.anyline.data.pinecone.adapter.PineconeAdapter,\
+org.anyline.data.pinecone.datasource.PineconeDataSourceLoader,\
+org.anyline.data.pinecone.datasource.PineconeDataSourceHolder,\
+org.anyline.data.pinecone.runtime.PineconeRuntimeHolder

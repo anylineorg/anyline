@@ -19,6 +19,7 @@ package org.anyline.data.jdbc.pgvector;
 
 import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.function.SystemFunctionFactory;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.postgresql.PostgresqlAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -52,6 +53,17 @@ public class PGVectorAdapter extends PostgresqlAdapter implements JDBCAdapter {
 
 	public PGVectorAdapter() {
 		super();
+		//pgvector 是 postgresql 的扩展, 复用父类能力, 这里只补充向量类型(vector)的映射
+		for(PGVectorTypeMetadataAlias alias : PGVectorTypeMetadataAlias.values()) {
+			clear(alias);
+		}
+		for(PGVectorTypeMetadataAlias alias : PGVectorTypeMetadataAlias.values()) {
+			reg(alias);
+		}
+		//向量距离/相似度/工具函数映射(<-> L2, <=> cosine, <#> 内积, <+> L1, <~> Hamming, <%> Jaccard)
+		for(PGVectorFunction fn : PGVectorFunction.values()) {
+			SystemFunctionFactory.reg(type(), fn);
+		}
 	}
 
 	/* *****************************************************************************************************************

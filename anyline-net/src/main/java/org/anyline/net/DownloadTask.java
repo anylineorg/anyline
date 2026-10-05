@@ -98,7 +98,7 @@ public class DownloadTask {
 		    	} 
 		    } 
 		} 
-		long time =System.currentTimeMillis(); 
+		long time = System.currentTimeMillis() - fr; 
 		if(time >0) {
 			return sum*1000/(time); 
 		}else{
@@ -115,18 +115,18 @@ public class DownloadTask {
 		} 
 		Long len = 0L;	// 最后一次下载长度 
 		Long time = 0L; 
-		Long curTime = 0L; 
+		Long preTime = null;
 		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();
 		while (entries.hasNext()) {
 			Map.Entry<Long, Long> entry =  entries.next();
 			Long key = entry.getKey(); // 记录时间
 			Long value = entry.getValue();//记录值 
-			curTime = key; 
 			// 最后一组 
 			if(!entries.hasNext()) {
 				len = value; 
-				time = key - curTime; 
+				time = (null == preTime ? 0 : key - preTime); 
 			} 
+			preTime = key; 
 		} 
 		if(time >0) {
 			return len*1000/(time); 
@@ -252,17 +252,14 @@ public class DownloadTask {
 	} 
 	 
 	public void start() {
-		if(!isRunning() &&  action == 1) {
-			action = 1; 
-			status = 1; 
-			if(start ==0) {
-				start = System.currentTimeMillis(); 
-			}
+		action = 1; 
+		status = 1; 
+		if(start ==0) {
+			start = System.currentTimeMillis(); 
+		}
+		if(!isRunning()) {
 			HttpBuilder.init().addDownloadTask(this).build().download();
-		}else{
-			action = 1; 
-			status = 1; 
-		} 
+		}
 	} 
 	/** 
 	 * 停止下载任务 

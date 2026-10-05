@@ -21,6 +21,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -110,16 +111,22 @@ public class Result {
         return json();
     }
     private void init() {
-       request =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-       response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+       ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+       if(null == attributes) {
+           //非web环境(定时任务/异步线程)下没有请求上下文
+           finish_time = System.currentTimeMillis();
+           return;
+       }
+       request = attributes.getRequest();
+       response = attributes.getResponse();
         if(null != request) {
             Object request_time_ = request.getParameter(ConfigTable.getString("HTTP_REQUEST_TIME_KET","_anyline_request_time"));
             if(null != request_time_) {
-                request_time = (Long)request_time_;
+                request_time = BasicUtil.parseLong(request_time_, request_time);
             }
             Object response_time_ = request.getAttribute(ConfigTable.getString("HTTP_RESPONSE_TIME_KEY","_anyline_response_time"));
             if(null != response_time_) {
-                response_time = (Long)response_time_;
+                response_time = BasicUtil.parseLong(response_time_, response_time);
             }
         }
         finish_time = System.currentTimeMillis();
@@ -137,8 +144,6 @@ public class Result {
         String response_key_navi_total_page = ConfigTable.getString("RESPONSE_KEY_NAVI_PAGES","pages");
         String response_key_navi_total_row = ConfigTable.getString("RESPONSE_KEY_NAVI_ROWS","rows");
         String response_key_navi_page_rows = ConfigTable.getString("RESPONSE_KEY_NAVI_PAGE_ROWS","vol");
-
-        map.put("type", dataType);
         map.put("result", success);
         map.put(response_key_message, message);
         map.put(response_key_data, data);
@@ -226,6 +231,7 @@ public class Result {
         } else {
             dataType = "map";
         }
+        map.put("type", dataType);
 
 
         if (null != response) {

@@ -17,13 +17,14 @@
 
 package org.anyline.log;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LogProxy {
-    private static final List<LogFactory> factors = new ArrayList<>();
-    private static final Vector<Group> caches = new Vector<>();
+    private static final List<LogFactory> factors = new CopyOnWriteArrayList<>();
+    private static final Map<Object, Group> caches = new ConcurrentHashMap<>();
     public static int size() {
         return factors.size();
     }
@@ -32,7 +33,7 @@ public class LogProxy {
         enrich();
     }
     private static void enrich() {
-        for(Group group:caches) {
+        for(Group group:caches.values()) {
             for(LogFactory factory:factors) {
                 if(factory.disabled()){
                     continue;
@@ -48,7 +49,11 @@ public class LogProxy {
         }
     }
     public static Log get(String name) {
-        Group group = new Group();
+        Group group = caches.get(name);
+        if(null != group) {
+            return group;
+        }
+        group = new Group();
         group.setName(name);
         for(LogFactory factory:factors) {
             if(factory.disabled()){
@@ -56,11 +61,15 @@ public class LogProxy {
             }
             group.add(factory.get(name));
         }
-        caches.add(group);
+        caches.put(name, group);
         return group;
     }
     public static Log get(Class<?> clazz) {
-        Group group = new Group();
+        Group group = caches.get(clazz);
+        if(null != group) {
+            return group;
+        }
+        group = new Group();
         group.setClazz(clazz);
         for(LogFactory factory:factors) {
             if(factory.disabled()){
@@ -68,7 +77,7 @@ public class LogProxy {
             }
             group.add(factory.get(clazz));
         }
-        caches.add(group);
+        caches.put(clazz, group);
         return group;
     }
 }

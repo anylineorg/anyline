@@ -34,6 +34,8 @@ import java.sql.DatabaseMetaData;
 public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
     private static final Log log = LogProxy.get(JDBCRuntime.class);
     protected DataSource processor;
+    /** feature是否只是根据数据源属性识别的(没有连接数据库,不含产品名),连接数据库后需要重新识别 */
+    protected boolean urlOnlyFeature;
 
     public JDBCRuntime(String key, DataSource datasource, DriverAdapter adapter) {
         setKey(key);
@@ -66,6 +68,10 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
             keep = true;
             if(BasicUtil.isEmpty(feature)) {
                 feature = BasicUtil.concat("_", url, driver);
+                if(BasicUtil.isNotEmpty(feature)) {
+                    // 根据url driver识别出的特征不含产品名
+                    urlOnlyFeature = true;
+                }
             }
         }
         if(!keep) {
@@ -74,8 +80,33 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
             url = null;
         }
 
-        if(BasicUtil.isEmpty(feature)) {
-            if(connection || null == driver || null == url) {
+        if(BasicUtil.isEmpty(feature) || (connection && urlOnlyFeature)) {
+            // 先尝试在不建立连接的情况下识别数据库特征
+            // 通过DataSource对象注册的数据源没有配置url driver,但可以从数据源属性中读取(如HikariDataSource#getJdbcUrl DruidDataSource#getUrl)
+            if(null == url) {
+                url = DataSourceUtil.parseUrl(processor);
+            }
+            if(null == driver) {
+                driver = DataSourceUtil.parseDriver(processor);
+            }
+            if(BasicUtil.isNotEmpty(url)) {
+                feature = url;
+                urlOnlyFeature = true;
+                if(null == adapterKey && ConfigTable.KEEP_ADAPTER == 1) {
+                    adapterKey = DataSourceUtil.parseAdapterKey(url);
+                }
+            }
+            if(BasicUtil.isNotEmpty(driver)) {
+                if(BasicUtil.isEmpty(feature)) {
+                    feature = driver;
+                    urlOnlyFeature = true;
+                }else {
+                    feature = driver + "_" + feature;
+                }
+            }
+            // 只有在不建立连接就无法识别的情况下才建立连接
+            // 根据url driver识别出的特征不含产品名,不够准确,要求建立连接时重新识别
+            if(connection && (BasicUtil.isEmpty(feature) || urlOnlyFeature)) {
                 if (null != processor) {
                     Connection con = null;
                     try {
@@ -86,6 +117,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                             adapterKey = DataSourceUtil.parseAdapterKey(url);
                         }
                         feature = meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;
+                        urlOnlyFeature = false;
                         if (null == version) {
                             version = meta.getDatabaseProductVersion();
                         }
@@ -99,11 +131,6 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                         }
                     }
                 }
-            }else{
-                feature = url;
-            }
-            if(null != driver) {
-                feature = driver + "_" + feature;
             }
         }
         if(null == adapterKey && keep) {

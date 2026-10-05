@@ -321,11 +321,17 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 					if(null != rvs){
 						runValues.addAll(rvs);
 						variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}else{
+						//适配器未实现 createConditionIn 时回退到通用公式, 避免只生成值不生成占位符
+						adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
 					}
 				}else if((compareCode >= 50 && compareCode <= 52) 															// LIKE ?
 						|| (compareCode >= 150 && compareCode <= 152)) { 													// NOT LIKE ?
-					RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder, unicode) ;
-					if(rv.isPlaceholder()) {
+										RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder, unicode) ;
+					if(null == rv) {
+						//适配器未实现 createConditionLike 时回退到通用公式, 避免空指针
+						adapter.formula(runtime, builder, column, compare, null, val, placeholder, unicode);
+					}else if(rv.isPlaceholder()) {
 						val = rv.getValue();
 					}else{
 						//没有占位符
@@ -412,8 +418,18 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	public List<Object> getValues(Object src) {
 		List<Object> values = new ArrayList<>();
 		if(null != src) {
-			if(src instanceof List) {
+						if(src instanceof List) {
 				values = (List)src; 
+			}else if(src.getClass().isArray()){
+				//BETWEEN/IN 等多值条件 数组需要展开, 否则只会生成1个值
+				int len = Array.getLength(src);
+				for(int i=0; i<len; i++){
+					values.add(Array.get(src, i));
+				}
+			}else if(src instanceof String && src.toString().contains(",")){
+				for(String tmp:src.toString().split(",")){
+					values.add(tmp);
+				}
 			}else{
 				values.add(src); 
 			} 

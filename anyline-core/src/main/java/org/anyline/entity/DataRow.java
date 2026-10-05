@@ -179,7 +179,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static DataRow build(KEY_CASE keyCase, String json) {
         DataRow row = new DataRow(keyCase);
         DataRow data = parseJson(keyCase, json);
+        if(null == data) {
+            return row;
+        }
         row.setTable(data.getString("table"));
+        Object values = data.get("data");
+        if(values instanceof Map) {
+            Map<String, Object> map = (Map<String, Object>)values;
+            for(Map.Entry<String, Object> entry:map.entrySet()) {
+                row.put(entry.getKey(), entry.getValue());
+            }
+        }
         return row;
     }
     /*
@@ -4077,12 +4087,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return null;
         }
         if(ignoreCase) {
-            if (ignores.isEmpty()) {
+            if (ignores.size() != size()) {
+                ignores.clear();
                 for (String k : keySet()) {
                     ignores.put(k.toUpperCase(), k);
                 }
             }
-            key = ignores.get(key.toUpperCase());
+            String real = ignores.get(key.toUpperCase());
+            if(null != real) {
+                key = real;
+            }
         }
         return super.get(key);
     }
@@ -4111,7 +4125,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return ignoreSeparator;
     }
 
-    public void stIgnoreSeparator(Boolean ignoreSeparator) {
+    public void setIgnoreSeparator(Boolean ignoreSeparator) {
         this.ignoreSeparator = ignoreSeparator;
     }
 

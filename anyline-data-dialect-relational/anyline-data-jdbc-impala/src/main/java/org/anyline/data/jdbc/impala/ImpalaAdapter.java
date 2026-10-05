@@ -18,6 +18,7 @@
 package org.anyline.data.jdbc.impala;
 
 import org.anyline.annotation.AnylineComponent;
+import org.anyline.data.adapter.function.SystemFunctionFactory;
 import org.anyline.data.jdbc.adapter.init.ImpalaGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
 
@@ -43,6 +44,9 @@ public class ImpalaAdapter extends ImpalaGenusAdapter {
         }
         for(ImpalaReader reader: ImpalaReader.values()) {
             reg(reader.supports(), reader.reader());
+        }
+        for(ImpalaFunction fn : ImpalaFunction.values()) {
+            SystemFunctionFactory.reg(type(), fn);
         }
     }
 }

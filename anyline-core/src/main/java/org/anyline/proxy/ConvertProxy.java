@@ -153,8 +153,7 @@ public class ConvertProxy {
                     }
                 }else if(value instanceof Map) {
                     Map map = (Map)value;
-                    //return BeanUtil.map2json(map);
-                    return BeanUtil.map2object(map,  target);
+                    return BeanUtil.map2json(map);
                 }else if(ClassUtil.isPrimitiveClass(value.getClass()) || value instanceof String) {
                     return value.toString();
                 }

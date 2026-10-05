@@ -21,6 +21,7 @@ import org.anyline.annotation.AnylineComponent;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
+import org.anyline.data.chroma.client.ChromaClient;
 import org.anyline.data.chroma.runtime.ChromaRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
@@ -40,13 +41,8 @@ public class ChromaDataSourceHolder extends AbstractDataSourceHolder implements 
     public ChromaDataSourceHolder() {
         DataSourceHolder.register("chroma", this);
         DataSourceHolder.register(DatabaseType.Chroma, this);
-        // 如果有Chroma Java SDK添加了依赖，也自动注册
-        try {
-            Class<?> clientClass = Class.forName("tech.amikos.chroma.Client");
-            DataSourceHolder.register(clientClass, this);
-        } catch (Exception e) {
-            // SDK 未添加，忽略
-        }
+        //驱动类 → Holder 的路由: 官方没有Java SDK, 这里用按官方REST API实现的ChromaClient
+        DataSourceHolder.register(ChromaClient.class, this);
     }
 
     public String reg(String key, String prefix) {
@@ -127,43 +123,28 @@ public class ChromaDataSourceHolder extends AbstractDataSourceHolder implements 
             String apiKey = value(prefix, params, "apiKey,token,password", String.class, null);
             String database = value(prefix, params, "database,dbName,tenant", String.class, "default_database");
 
-            // TODO: 当 Chroma Java SDK 依赖添加后，替换为实际的客户端创建逻辑
-            // 示例（需要添加 io.github.amikos-tech:chromadb-java-client 依赖）:
-            // Client client = new Client(host);
-            // if(BasicUtil.isNotEmpty(apiKey)) {
-            //     client.setApiKey(apiKey);
-            // }
-
-            Object client = buildClient(host, apiKey, database);
-            if(null != client) {
-                ChromaRuntimeHolder.instance().reg(key, client);
-            }
+            //Chroma 官方没有 Java SDK(只有 Python/JS/Rust/Kotlin/Swift), 按官方 REST API(v2) 创建客户端
+            String tenant = value(prefix, params, "tenant", String.class, ChromaClient.DEFAULT_TENANT);
+            ChromaClient client = new ChromaClient(host, apiKey, tenant, database);
+            ChromaRuntimeHolder.instance().reg(key, client);
         } catch (Exception e) {
             log.error("[注册数据源失败][type:chroma][key:{}][msg:{}]", key, e.toString());
             return null;
         }
-        return null;
+        return datasource_id;
     }
 
     /**
-     * 构建Chroma客户端
-     * 可通过反射加载Chroma SDK的Client类来创建实例
+     * 构建Chroma客户端<br/>
+     * Chroma 官方未提供 Java SDK, 这里返回按官方 REST API 实现的客户端(ChromaClient)<br/>
+     * 如果业务方引入了第三方 Java 客户端(如 tech.amikos.chroma.Client), 可覆盖本方法替换实现
      * @param host Chroma服务地址
      * @param apiKey API密钥
      * @param database 数据库/租户名
      * @return Chroma客户端实例
      */
-    private Object buildClient(String host, String apiKey, String database) {
-        // 尝试通过反射使用 Chroma Java SDK 创建客户端
-        try {
-            Class<?> clientClass = Class.forName("tech.amikos.chroma.Client");
-            Object client = clientClass.getConstructor(String.class).newInstance(host);
-            return client;
-        } catch (Exception e) {
-            // SDK 未找到或创建失败，忽略
-        }
-        log.warn("[Chroma Java SDK未找到][请添加chromadb-java-client依赖]");
-        return null;
+    protected Object buildClient(String host, String apiKey, String database) {
+        return new ChromaClient(host, apiKey, ChromaClient.DEFAULT_TENANT, database);
     }
 
     @Override
@@ -196,6 +177,9 @@ public class ChromaDataSourceHolder extends AbstractDataSourceHolder implements 
     }
 
     public boolean exeValidate(Object client) {
+        if(client instanceof ChromaClient) {
+            return ((ChromaClient) client).heartbeat();
+        }
         return true;
     }
 

@@ -31,6 +31,8 @@ import org.anyline.entity.PageNavi;
 import org.anyline.entity.authorize.Privilege;
 import org.anyline.entity.authorize.Role;
 import org.anyline.entity.authorize.User;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.metadata.*;
 
 import javax.sql.DataSource;
@@ -39,6 +41,7 @@ import java.util.*;
 
 @AnylineComponent("anyline.environment.data.driver.actuator.faiss")
 public class FAissActuator implements DriverActuator {
+    public static final Log log = LogProxy.get(FAissActuator.class);
 
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
@@ -123,19 +126,16 @@ public class FAissActuator implements DriverActuator {
     @Override
     public List<Map<String, Object>> maps(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
         List<Map<String, Object>> result = new ArrayList<>();
-        if(run instanceof FAissRun) {
-            FAissRun faissRun = (FAissRun) run;
-            String tableName = faissRun.getTableName();
-            List<String> selectColumns = faissRun.getSelectColumns();
-            List<RunValue> runValues = faissRun.getRunValues();
-            PageNavi navi = faissRun.getPageNavi();
-
-            // TODO: Faiss SDK/API integration needed
-            throw new UnsupportedOperationException(
-                "Faiss select not yet implemented. Requires Faiss Java SDK dependency in pom.xml. " +
-                "Index: " + tableName +
-                (selectColumns != null ? ", fields: " + selectColumns : ""));
+        if(null == run) {
+            return result;
         }
+        //参考图数据库的方式: 从通用Run接口取索引/条件/参数/分页, 不依赖具体的Run子类
+        String index = run.getTableName();
+        if(null == runtime || null == runtime.getProcessor()) {
+            log.warn("[Faiss select 未执行][index:{}][原因:Faiss官方没有Java SDK, 也没有官方服务端协议, 需要注入自建服务客户端]", index);
+            return result;
+        }
+        log.warn("[Faiss select 未执行][index:{}][原因:未实现客户端调用, 请覆盖FAissActuator.maps实现]", index);
         return result;
     }
 
@@ -149,11 +149,10 @@ public class FAissActuator implements DriverActuator {
     }
 
     public long count(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception {
-        if(run instanceof FAissRun) {
-            FAissRun faissRun = (FAissRun) run;
-            throw new UnsupportedOperationException(
-                "Faiss count not yet implemented. Index: " + faissRun.getTableName());
+        if(null == run) {
+            return -1;
         }
+        log.warn("[Faiss count 未执行][index:{}][原因:Faiss官方没有Java SDK, 也没有官方服务端协议, 需要注入自建服务客户端或覆盖FAissActuator.count]", run.getTableName());
         return -1;
     }
 

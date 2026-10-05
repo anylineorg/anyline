@@ -571,8 +571,11 @@ public class DefaultService<E> implements AnylineService<E> {
             set = selects(table, configs, obj, conditions);
         } else {
             if (null != CacheProxy.provider) {
-                //TODO
-                //set = queryFromCache(cache, table, configs, conditions);
+                set = queryFromCache(cache, table, configs, conditions);
+                if(null == set) {
+                    //缓存未命中时回退到直接查询, 避免返回 null
+                    set = selects(table, configs, obj, conditions);
+                }
             } else {
                 set = selects(table, configs, obj, conditions);
             }
@@ -1802,6 +1805,13 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         prepare.disposable(true);
         return prepare;
+    }
+
+    protected DataSet<DataRow> queryFromCache(String cache, RunPrepare prepare, ConfigStore configs, String... conditions) {
+        if(null == prepare) {
+            return null;
+        }
+        return queryFromCache(cache, prepare.getTable(), configs, conditions);
     }
 
     protected DataSet<DataRow> queryFromCache(String cache, String dest, ConfigStore configs, String... conditions) {

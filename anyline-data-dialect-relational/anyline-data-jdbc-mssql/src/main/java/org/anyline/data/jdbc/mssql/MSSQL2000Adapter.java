@@ -26,6 +26,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Constraint;
+import org.anyline.metadata.Index;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.refer.MetadataFieldRefer;
@@ -293,6 +295,45 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     @Override
     public MetadataFieldRefer initTableFieldRefer() {
         return super.initTableFieldRefer();
+    }
+
+    /**
+     * index[命令合成]<br/>
+     * SQL Server 2000 没有 sys.indexes、sys.index_columns 目录视图(2005 才开始提供),这里不提供查询SQL,
+     * 由运行环境通过 JDBC DatabaseMetaData.getIndexInfo 兜底
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param query 查询条件 根据metadata属性
+     * @return runs
+     */
+    @Override
+    public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy, Index query) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * index[命令合成]<br/>
+     * SQL Server 2000 没有 sys.indexes、sys.index_columns 目录视图(2005 才开始提供),这里不提供查询SQL,
+     * 由运行环境通过 JDBC DatabaseMetaData.getIndexInfo 兜底
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param tables 多表查询时涉及的表
+     * @return runs
+     */
+    @Override
+    public List<Run> buildSelectIndexesRun(DataRuntime runtime, boolean greedy, Collection<? extends Table> tables) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * constraint[命令合成]<br/>
+     * SQL Server 2000 没有 sys.key_constraints、sys.check_constraints、sys.default_constraints、sys.foreign_key_columns
+     * 等目录视图(2005 才开始提供),这里不提供查询SQL
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param query 查询条件 根据metadata属性
+     * @return runs
+     */
+    @Override
+    public List<Run> buildSelectConstraintsRun(DataRuntime runtime, boolean greedy, Constraint query) {
+        return new ArrayList<>();
     }
 
     /**

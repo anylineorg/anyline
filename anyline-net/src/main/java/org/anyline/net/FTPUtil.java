@@ -73,6 +73,7 @@ public class FTPUtil {
     	FTPUtil util = instances.get(key); 
     	if(null == util) {
     		util = new FTPUtil(host, account, password, port);
+    		instances.put(key, util);
     	} 
     	return util; 
     }   
@@ -118,9 +119,12 @@ public class FTPUtil {
         	if(null != _localDir && !_localDir.exists()) {
         		_localDir.mkdirs(); 
         	} 
-            OutputStream is = new FileOutputStream(local);    
-	        client.retrieveFile(remote, is);
-	        success = true;   
+            OutputStream is = new FileOutputStream(local);
+            try {
+            	success = client.retrieveFile(remote, is);
+            }finally {
+            	is.close();
+            }   
 	    } catch (IOException e) {
             log.error("download file exception:", e);
 	    } 
@@ -294,9 +298,10 @@ public class FTPUtil {
         } 
         if(local.isDirectory()) {
         	uploadDir(remote, local);
+        	result = true;
         }else{
-        	uploadFile(remote, local);
-        } 
+        	result = uploadFile(remote, local);
+        }
         return result; 
     }   
        

@@ -15,15 +15,12 @@
     <packaging>jar</packaging>
     <name>anyline data tugraph</name>
     <url>http://www.anyline.org/tugraph</url>
+    <!-- TuGraph 官方 Java SDK 离线不可用, 这里按官方 REST API 实现, 无需额外依赖 -->
 
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
             <artifactId>anyline-data-graph</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.vesoft</groupId>
-            <artifactId>client</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -97,7 +97,8 @@ public class TemplateView extends JstlView {
 				content_url = getBeanName();
 			}
 			String template_url = "";
-			String prefix = content_url.substring(0, content_url.indexOf(getBeanName()));
+			int idx = content_url.indexOf(getBeanName());
+			String prefix = (idx > 0 ? content_url.substring(0, idx) : "");
 			if(!template.contains(prefix) && !template.startsWith("/")) {
 				template_url = prefix + template;
 			}else{

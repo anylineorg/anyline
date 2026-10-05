@@ -1,1 +1,5 @@
-org.anyline.data.weaviate.WeaviateAdapter
+org.anyline.data.weaviate.adapter.WeaviateActuator
+org.anyline.data.weaviate.adapter.WeaviateAdapter
+org.anyline.data.weaviate.datasource.WeaviateDataSourceLoader
+org.anyline.data.weaviate.datasource.WeaviateDataSourceHolder
+org.anyline.data.weaviate.runtime.WeaviateRuntimeHolder

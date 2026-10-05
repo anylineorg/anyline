@@ -22,13 +22,19 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
+import org.anyline.log.Log;
+import org.anyline.log.LogProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.Driver;
 import java.util.Collection;
 
 public class DataSourceUtil {
+    private static final Log log = LogProxy.get(DataSourceUtil.class);
 
     public static String[] parseRuntime(Metadata meta) {
         if(null != meta) {
@@ -134,6 +140,103 @@ public class DataSourceUtil {
             table = EntityAdapterProxy.table(obj.getClass());
         }
         return table;
+    }
+
+    /**
+     * 从数据源中解析jdbc-url(不建立连接)<br/>
+     * 支持 HikariDataSource#getJdbcUrl DruidDataSource#getUrl 以及 jdbcUrl/url 等属性
+     * @param datasource 数据源(DataSource)
+     * @return String 解析不到返回null
+     */
+    public static String parseUrl(Object datasource) {
+        // SQLServerDataSource#getURL OracleDataSource#getURL 是大写后缀
+        String url = parseAttribute(datasource, new String[]{"getJdbcUrl", "getUrl", "getURL"}, new String[]{"jdbcUrl", "url"});
+        if(null != url) {
+            // 部分数据源(如PGSimpleDataSource)返回的是补全了默认参数的url,这里只保留url主体,避免参数干扰特征识别
+            int idx = url.indexOf("?");
+            if(idx > 0) {
+                url = url.substring(0, idx);
+            }
+        }
+        return url;
+    }
+
+    /**
+     * 从数据源中解析驱动类(不建立连接)<br/>
+     * 支持 DruidDataSource#getDriverClassName 以及 driverClassName/driverClass 等属性
+     * @param datasource 数据源(DataSource)
+     * @return String 解析不到返回null
+     */
+    public static String parseDriver(Object datasource) {
+        return parseAttribute(datasource, new String[]{"getDriverClassName", "getDriverClass", "getDriver"}, new String[]{"driverClassName", "driverClass", "driver"});
+    }
+
+    /**
+     * 从数据源中读取属性(不建立连接)<br/>
+     * 先尝试public方法,再尝试属性(含父类属性)
+     * @param datasource 数据源
+     * @param methods 候选方法名
+     * @param fields 候选属性名
+     * @return String
+     */
+    private static String parseAttribute(Object datasource, String[] methods, String[] fields) {
+        if(null == datasource) {
+            return null;
+        }
+        Class<?> clazz = datasource.getClass();
+        for(String method:methods) {
+            try {
+                Method m = clazz.getMethod(method);
+                String result = parseAttributeValue(m.invoke(datasource));
+                if(BasicUtil.isNotEmpty(result)) {
+                    return result;
+                }
+            }catch (Throwable e) {
+                // 有些数据源的属性只允许写入,不允许读取,读取时会主动抛出异常(如未初始化的数据源),这里忽略
+                if(log.isDebugEnabled()) {
+                    log.debug("[解析数据源属性][忽略异常][数据源:{}][方法:{}][异常:{}]", datasource.getClass(), method, e.toString());
+                }
+            }
+        }
+        while(null != clazz && clazz != Object.class) {
+            for(String field:fields) {
+                try {
+                    Field f = clazz.getDeclaredField(field);
+                    f.setAccessible(true);
+                    String result = parseAttributeValue(f.get(datasource));
+                    if(BasicUtil.isNotEmpty(result)) {
+                        return result;
+                    }
+                }catch (Throwable e) {
+                    // 同上,属性不可读或不允许反射访问时忽略
+                    if(log.isDebugEnabled()) {
+                        log.debug("[解析数据源属性][忽略异常][数据源:{}][属性:{}][异常:{}]", datasource.getClass(), field, e.toString());
+                    }
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+
+    /**
+     * 数据源属性值转换<br/>
+     * 只接受字符串,Driver实例取类名(如SimpleDriverDataSource#getDriver)<br/>
+     * 其他类型(如URL对象)不作为特征,避免误判
+     * @param value 属性值
+     * @return String
+     */
+    private static String parseAttributeValue(Object value) {
+        if(null == value) {
+            return null;
+        }
+        if(value instanceof String) {
+            return (String) value;
+        }
+        if(value instanceof Driver) {
+            return value.getClass().getName();
+        }
+        return null;
     }
 
     public static String parseAdapterKey(String url) {

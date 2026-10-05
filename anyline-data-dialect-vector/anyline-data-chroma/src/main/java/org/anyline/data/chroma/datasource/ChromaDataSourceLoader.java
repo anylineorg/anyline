@@ -18,6 +18,7 @@
 package org.anyline.data.chroma.datasource;
 
 import org.anyline.annotation.AnylineComponent;
+import org.anyline.data.chroma.client.ChromaClient;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -94,18 +95,11 @@ public class ChromaDataSourceLoader extends AbstractDataSourceLoader implements 
      * @return Chroma客户端实例，未找到返回null
      */
     private Object findChromaClient() {
-        // 尝试通过已知的Chroma Java SDK类名查找
-        String[] clientClassNames = {
-            "tech.amikos.chroma.Client",
-        };
-        for(String className : clientClassNames) {
-            try {
-                Class<?> clientClass = Class.forName(className);
-                return ConfigTable.environment().getBean(clientClass);
-            } catch (Exception e) {
-                // 类不存在或没有bean注册，尝试下一个
-            }
+        //从Spring上下文中查找按官方REST API实现的客户端
+        try {
+            return ConfigTable.environment().getBean(ChromaClient.class);
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 }

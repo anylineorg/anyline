@@ -2,3 +2,4 @@ org.anyline.data.milvus.adapter.MilvusActuator
 org.anyline.data.milvus.adapter.MilvusAdapter
 org.anyline.data.milvus.datasource.MilvusDataSourceLoader
 org.anyline.data.milvus.datasource.MilvusDataSourceHolder
+org.anyline.data.milvus.runtime.MilvusRuntimeHolder

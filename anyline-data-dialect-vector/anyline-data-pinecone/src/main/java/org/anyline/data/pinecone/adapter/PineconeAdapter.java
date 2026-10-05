@@ -77,16 +77,14 @@ public class PineconeAdapter extends AbstractDriverAdapter {
     }
 
     @Override
-    public Run buildSelectRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, Boolean placeholder, Boolean unicode, String ... conditions) {
+    public Run initSelectRun(DataRuntime runtime, RunPrepare prepare) {
+        //参考图数据库(neo4j/nebula)的方式: 不覆盖buildSelectRun
+        //由父类AbstractDriverAdapter.buildSelectRun统一执行 init(占位符解析/configs/unions/元数据校验) 与 fillSelectContent
+        //这里只负责决定Run的类型, 用来承载Pinecone特有的查询参数(过滤条件/向量/topK)
         PineconeRun run = new PineconeRun(runtime, prepare.getTableName());
         run.setRuntime(runtime);
-        run.setConfigStore(configs);
         run.setPrepare(prepare);
-        run.addCondition(conditions);
-        if(run.checkValid()) {
-            run.init();
-            fillSelectContent(runtime, run, placeholder, unicode);
-        }
+        run.action(ACTION.DML.SELECT);
         return run;
     }
 

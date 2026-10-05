@@ -919,12 +919,25 @@ public class DateUtil {
 	 * @return Date
 	 */
 	public static Date parse(String date, String format) throws RuntimeException {
-		DateTimeFormatter formatter = null;
-		if(null != format && !format.isEmpty()) {
-			formatter = DateTimeFormatter.ofPattern(format);
-		}else{
-			formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+		if(null == format || format.isEmpty()) {
+			//未指定格式时按ISO格式依次尝试, 避免 format.toUpperCase() 空指针
+			RuntimeException exception = null;
+			try {
+				return parse(LocalDateTime.parse(date, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+			}catch (Exception e) {
+				exception = new RuntimeException(e);
+			}
+			try {
+				return parse(LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE));
+			}catch (Exception e) {
+			}
+			try {
+				return parse(LocalTime.parse(date, DateTimeFormatter.ISO_LOCAL_TIME));
+			}catch (Exception e) {
+			}
+			throw exception;
 		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 		if(format.toUpperCase().contains("HH")) {
 			if(format.toUpperCase().contains("D")) {
 				return parse(LocalDateTime.parse(date, formatter));
@@ -1068,8 +1081,12 @@ public class DateUtil {
 			// 不带毫秒 2020-01-01 HH:mm:ss
 			format = FORMAT_DATE_TIME;
 		}else{
-			String[] tmp = str.split("\\.");
-			if(tmp[1].length() > 3){
+			String[] tmp = str.split("\\.", -1);
+			if(tmp.length < 2) {
+				//以.结尾(如 2020-01-01 00:00:00.) split 会丢弃尾部空串, 这里去掉末尾的 .
+				str = tmp[0];
+				format = FORMAT_DATE_TIME;
+			}else if(tmp[1].length() > 3){
 				format = FORMAT_MS;
 				str = tmp[0] + "." + BasicUtil.fillChar(tmp[1], 6);
 			}else {
@@ -1853,6 +1870,13 @@ public class DateUtil {
 		return localDateTime(date, ZoneId.systemDefault());
 	}
 	public static ZonedDateTime zonedDateTime(Date date) {
+		if(null == date) {
+			return null;
+		}
+		if(date instanceof java.sql.Date) {
+			//因为不支持toInstant
+			date = parse(date);
+		}
 		ZoneId zone = ZoneId.systemDefault();
 		return date.toInstant().atZone(zone);
 	}
