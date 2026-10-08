@@ -52,9 +52,17 @@ public class ZipUtil {
 	public static boolean remove(File zip, String item) {
 		Map properties = new HashMap<>();
 		properties.put("create", "false");
-		URI zip_disk = URI.create("jar:file:/"+zip.getAbsolutePath().replace("\\", "/"));
+		//URI 必须由 zip 文件自身的 file URI 拼出来(形如 jar:file:/data/x.zip),不能直接拼 "jar:file:/"+绝对路径:
+		//Linux/Mac 的绝对路径以 / 开头,拼出来是 jar:file://data/x.zip,zipfs 会把第一段 data 当成 authority,
+		//抛 "URI has an authority component"(Windows 路径以盘符开头,拼出来是 jar:file:/D:/xxx 不受影响)
+		//toURI() 同时会把空格等特殊字符转义,避免 URI.create 直接失败
+		URI zip_disk = URI.create("jar:"+zip.toURI());
 		try (FileSystem fs = FileSystems.newFileSystem(zip_disk, properties)) {
 			Path path = fs.getPath(item);
+			if(!Files.exists(path)) {
+				//条目本来就不存在,不算异常,静默返回
+				return false;
+			}
 			log.debug("[删除压缩文件条目][zip:{}][item:{}]", zip.getAbsolutePath(), path.toUri());
 			Files.delete(path);
 		}catch (Exception e) {
