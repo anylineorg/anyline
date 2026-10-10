@@ -4146,6 +4146,22 @@ public class YashanDBAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	}
 
 	/**
+	 * index[命令合成-主体]<br/>
+	 * 崖山没有 ALL_IND_EXPRESSIONS 视图(函数索引表达式),去掉该 JOIN
+	 * 用 M.COLUMN_NAME 填充 COLUMN_EXPRESSION,保持结果集列结构不变,避免改动字段映射
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return Run
+	 */
+	protected Run buildSelectIndexBody(DataRuntime runtime) {
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT I.*, M.DESCEND, M.COLUMN_POSITION, M.COLUMN_NAME AS COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
+		builder.append("LEFT JOIN ALL_INDEXES I\n");
+		builder.append("ON M.INDEX_OWNER = I.OWNER AND M.INDEX_NAME = I.INDEX_NAME\n");
+		return run;
+	}
+
+	/**
 	 * Index[结果集封装]<br/>
 	 * Index 属性与结果集对应关系
 	 * @return MetadataFieldRefer
